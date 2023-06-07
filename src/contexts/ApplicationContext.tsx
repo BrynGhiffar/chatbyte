@@ -1,8 +1,9 @@
 import { ContactService } from "@/service/api/ContactService";
-import MessageService from "@/service/api/MessageService";
+import MessageService, { WebSocketIncomingMessage, WebSocketOutgoingMessage } from "@/service/api/MessageService";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { FC, PropsWithChildren, createContext, useContext, useState } from "react";
 import { useEffectOnce, useUpdateEffect } from "usehooks-ts";
+import useWebSocket from "react-use-websocket";
 
 type Message = {
   id: number;
@@ -76,6 +77,36 @@ export const ApplicationContext: FC<PropsWithChildren> = (props) => {
   // const messageMutation = trpc.getMessages.useMutation();
   // const sendMessageMutation = trpc.sendMessage.useMutation();
   const [chatState, setChatState ] = useState(InitialChatState);
+
+  const { sendMessage: sendWsMessageRaw, lastMessage, readyState } = useWebSocket(`ws://localhost:8080/messagews?token=${LocalStorage.getLoginToken() ?? ""}`);
+
+  const sendMessageWs = (receiverUid: number, message: string) => {
+    console.log("Message sent");
+    const req: WebSocketIncomingMessage = {
+        type: "message",
+        content: message,
+        receiverUid: receiverUid,
+    }
+    sendWsMessageRaw(JSON.stringify(req));
+  };
+
+
+  useUpdateEffect(() => {
+    // console.log("Message receied");
+    // console.log(lastMessage?.data);
+    if (!lastMessage?.data) return;
+    const msgParse = WebSocketOutgoingMessage.safeParse(JSON.parse(lastMessage?.data));
+    if (!msgParse.success) return;
+    const newMessage: Message = {
+      id: msgParse.data.id,
+      content: msgParse.data.content,
+      sender: "",
+      time: msgParse.data.sentAt,
+      isUser: msgParse.data.isUser
+    };
+    setChatState(s => ({ ...s, messages: [ ...s.messages, newMessage ]}))
+  }, [lastMessage]);
+
   const sendMessage = (message: string) => {
     if (chatListState.selectedContact === null) return;
     const receiverUid = chatListState.selectedContact.uid;
@@ -90,7 +121,7 @@ export const ApplicationContext: FC<PropsWithChildren> = (props) => {
       time: `${hour}:${min}`,
       isUser: true
     };
-    setChatState(s => ({ ...s, messages: [ ...s.messages, newMessage ] }))
+    sendMessageWs(receiverUid, message);
   };
 
   const selectContact = async (uid: number) => {

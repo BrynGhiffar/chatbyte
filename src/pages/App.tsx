@@ -4,8 +4,12 @@ import { ApplicationContext } from "../contexts/ApplicationContext";
 import ChatList from "../components/ChatList/ChatList";
 import Chat from "../components/Chat/Chat";
 
+const device = {
+  laptop: "(max-width: 1000px)"
+}
 
 const AppWindow = styled.div`
+  min-height: 800px; 
   height: 80vh;
   width: 70%;
   display: grid;
@@ -14,6 +18,11 @@ const AppWindow = styled.div`
   background-color: ${color.lightBlue};
   border-radius: 5px;
   overflow: hidden;
+
+  @media ${device.laptop} {
+    width: 90%;
+  }
+
 `;
 
 export default function App() {

@@ -62,8 +62,10 @@ const ChatInputBar: FC = () => {
   const [ input, setInput ] = useState("");
   const { sendMessage } = useChatContext();
   const onClickSend = async () => {
+    const message = input.trim();
+    if (message.length === 0) return;
     setInput("");
-    sendMessage(input);
+    sendMessage(message);
   }
   return (
     <ChatInputBarStyled>
@@ -72,6 +74,7 @@ const ChatInputBar: FC = () => {
         type="text"
         value={input}
         onChange={e => setInput(e.target.value)}
+        onKeyDown={e => (e.key === 'Enter') && onClickSend()}
       />
       <SendButton onClick={onClickSend}>
         <SendSymbol />
