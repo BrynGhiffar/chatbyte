@@ -1,10 +1,11 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 import ChatWindow from "./ChatWindow";
 import ChatNavigation from "./ChatNavigation";
 import ChatGrid from "./ChatGrid";
 import ChatBubble from "./ChatBubble";
 import ChatInputBar from "./ChatInputBar";
-import { useChatContext } from "@/contexts/ApplicationContext";
+import { useUpdateEffect } from "usehooks-ts";
+import { useChatContext } from "@/utility/UtilityHooks";
 
 type Message = {
   id: number,
@@ -21,10 +22,17 @@ const useMessages = () => {
 
 const Chat: FC = () => {
   const messages: Message[] = useMessages();
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  useUpdateEffect(() => {
+    if (gridRef.current === null) return;
+    const e = gridRef.current;
+    e.scrollTo(0, e.scrollHeight);
+  }, [messages]);
+
   return (
     <ChatWindow>
       <ChatNavigation />
-      <ChatGrid>
+      <ChatGrid ref={gridRef}>
         {
           messages.map(m => (<ChatBubble
             key={m.id}

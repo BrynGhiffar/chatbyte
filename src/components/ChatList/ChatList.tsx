@@ -4,7 +4,7 @@ import { ChatContactListItem } from "./ChatListListItem"
 import ChatListWindow from "@/components/ChatList/ChatListWindow"
 import ChatListSearch from "@/components/ChatList/ChatListSearch"
 import ChatListNav from "./ChatListNav"
-import { useChatListContext } from "@/contexts/ApplicationContext"
+import { useChatListContext } from "@/utility/UtilityHooks"
 
 const useContacts = () => {
     const { state } = useChatListContext();

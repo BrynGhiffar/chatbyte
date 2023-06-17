@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, commonCss } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useChatListContext } from "@/contexts/ApplicationContext";
+import { useChatListContext } from "@/utility/UtilityHooks";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   ${commonCss.transition}

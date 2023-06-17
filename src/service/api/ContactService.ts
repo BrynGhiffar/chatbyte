@@ -16,9 +16,10 @@ const GetContactResponse = z.object({
 
 type GetContactResponse = z.infer<typeof GetContactResponse>;
 
-const getContacts = async (): Promise<GetContactResponse> => {
+const getContacts = async (token: string): Promise<GetContactResponse> => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${token}`);
 
     const requestOptions: RequestInit = {
         method: 'GET',

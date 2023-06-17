@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, commonCss } from "@/components/Palette";
 import { FC, useContext, useState } from "react";
 import { SnackbarContext } from "../common/Snackbar";
-import { useChatContext } from "@/contexts/ApplicationContext";
+import { useChatContext } from "@/utility/UtilityHooks";
 
 const SendSvg = styled.svg``;
 const ChatInputBarStyled = styled.div`

@@ -48,7 +48,7 @@ const getMessage = async (token: string, receiverUid: number): Promise<GetMessag
     return parsedJson.data;
 };
 export const WebSocketIncomingMessage = z.object({
-    type: z.literal("message"),
+    // type: z.literal("message"),
     content: z.string(),
     receiverUid: z.number(),
 });
@@ -56,7 +56,7 @@ export const WebSocketIncomingMessage = z.object({
 export type WebSocketIncomingMessage = z.infer<typeof WebSocketIncomingMessage>;
 
 export const WebSocketOutgoingMessage = z.object({
-    type: z.literal("message_notification"),
+    // type: z.literal("message_notification"),
     id: z.number(),
     senderUid: z.number(),
     receiverUid: z.number(),

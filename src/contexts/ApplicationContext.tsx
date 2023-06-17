@@ -4,58 +4,10 @@ import { LocalStorage } from "@/utility/LocalStorage";
 import { FC, PropsWithChildren, createContext, useContext, useState } from "react";
 import { useEffectOnce, useUpdateEffect } from "usehooks-ts";
 import useWebSocket from "react-use-websocket";
-
-type Message = {
-  id: number;
-  content: string;
-  sender: string;
-  time: string;
-  isUser: boolean;
-}
-
-type ChatState = {
-  messages: Message[]
-}
-
-type ChatContextType = {
-  state: ChatState;
-  sendMessage: (message: string) => void;
-};
-
-type Contact = {
-  uid: number;
-  urlProfile: string;
-  name: string;
-}
-
-type ChatListState = {
-  selectedContact: Contact | null;
-  contacts: Contact[]
-}
-
-type ChatListContextType = {
-  state: ChatListState;
-  selectContact: (uid: number) => void;
-}
-
-const InitialChatState: ChatState = {
-  messages: []
-};
-
-const InitialChatListState: ChatListState = {
-  selectedContact: null,
-  contacts: []
-}
-
-const ChatContext = createContext<ChatContextType>({
-  state: InitialChatState,
-  sendMessage: (message: string) => {},
-});
-
-const ChatListContext = createContext<ChatListContextType>({
-  state: InitialChatListState,
-  selectContact: (uid: number) => {}
-});
+import { useNavigate } from "react-router-dom";
+import { ChatContext, InitialChatState, Message } from "./ChatContext";
+import { ChatListContext, Contact, InitialChatListState } from "./ChatListContext";
+import { useToken } from "@/utility/UtilityHooks";
 
 type UserIdEmail = {
   uid: number,
@@ -72,24 +24,19 @@ type ClientMessage = {
 };
 
 export const ApplicationContext: FC<PropsWithChildren> = (props) => {
-  // const { data: users, isLoading } = trpc.getUsers.useQuery();
-  const users: UserIdEmail[] = [];
-  // const messageMutation = trpc.getMessages.useMutation();
-  // const sendMessageMutation = trpc.sendMessage.useMutation();
   const [chatState, setChatState ] = useState(InitialChatState);
-
-  const { sendMessage: sendWsMessageRaw, lastMessage, readyState } = useWebSocket(`ws://localhost:8080/messagews?token=${LocalStorage.getLoginToken() ?? ""}`);
+  const { sendMessage: sendWsMessageRaw, lastMessage, readyState } = useWebSocket(`ws://localhost:8080/api/message/ws?token=${LocalStorage.getLoginToken() ?? ""}`);
+  const token = useToken();
 
   const sendMessageWs = (receiverUid: number, message: string) => {
     console.log("Message sent");
     const req: WebSocketIncomingMessage = {
-        type: "message",
+        // type: "message",
         content: message,
         receiverUid: receiverUid,
     }
     sendWsMessageRaw(JSON.stringify(req));
   };
-
 
   useUpdateEffect(() => {
     // console.log("Message receied");
@@ -153,7 +100,7 @@ export const ApplicationContext: FC<PropsWithChildren> = (props) => {
   const [ chatListState, setChatListState ] = useState(InitialChatListState);
   useEffectOnce(() => {
     const run = async () => {
-      const response = await ContactService.getContacts();
+      const response = await ContactService.getContacts(token);
       if (!response.success) return;
       const contacts: Contact[] = response.payload.map(u => ({
         uid: u.id,
@@ -174,11 +121,3 @@ export const ApplicationContext: FC<PropsWithChildren> = (props) => {
     </ChatListContext.Provider>
   )
 }
-
-export const useChatContext = () => {
-  return useContext(ChatContext);
-};
-
-export const useChatListContext = () => {
-  return useContext(ChatListContext);
-};
