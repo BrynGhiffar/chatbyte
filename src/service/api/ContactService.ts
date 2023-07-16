@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { BackendEndpoint, Endpoint, request } from "./Endpoint";
 
 const GetContactResponse = z.object({
     success: z.literal(true),
@@ -16,27 +17,46 @@ const GetContactResponse = z.object({
 
 type GetContactResponse = z.infer<typeof GetContactResponse>;
 
+const GetContactRecentResponse = z.object({
+    success: z.literal(true),
+    payload: z.array(
+        z.object({
+            contact_id: z.number(),
+            content: z.string(),
+            sent_at: z.string(),
+            unread_count: z.number(),
+            username: z.string()
+        })
+    )
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+type GetContactRecentResponse = z.infer<typeof GetContactRecentResponse>;
+
+
 const getContacts = async (token: string): Promise<GetContactResponse> => {
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${token}`);
-
-    const requestOptions: RequestInit = {
-        method: 'GET',
-        headers: headers,
-        redirect: 'follow'
-    };
-
-    const res = await fetch("http://localhost:8080/api/contacts", requestOptions);
-    const json = await res.json();
-    const parseJson = GetContactResponse.safeParse(json);
-    if (!parseJson.success) return {
-        success: false,
-        message: "? Failed parsing schema"
-    };
-    return parseJson.data;
+    const res = await request(GetContactResponse, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+        ept: Endpoint.contacts()
+    });
+    if (!res.success) return res;
+    return res.payload;
 };
 
+const getContactsRecent = async (token: string): Promise<GetContactRecentResponse> => {
+    const res = await request(GetContactRecentResponse, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}`},
+        ept: Endpoint.contactsRecent()
+    });
+    if (!res.success) return res;
+    return res.payload;
+}
+
 export const ContactService = {
-    getContacts
+    getContacts,
+    getContactsRecent
 };

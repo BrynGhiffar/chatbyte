@@ -1,5 +1,5 @@
-import { False, True } from "@/utility/UtilityTypes";
 import { z } from "zod";
+import { Endpoint, request } from "./Endpoint";
 
 const LoginResponse = z.object({
     success: z.literal(true),
@@ -12,29 +12,16 @@ const LoginResponse = z.object({
 type LoginResponse = z.infer<typeof LoginResponse>;
 
 const Login = async (email: string, password: string): Promise<LoginResponse> => {
-
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    const raw = JSON.stringify({
-        "email": email,
-        "password": password
+    const req = await request(LoginResponse, {
+        method: "POST",
+        ept: Endpoint.authLogin(),
+        headers: { "Content-Type": "application/json" },
+        body: {
+            email, password
+        }
     });
-
-    const requestOptions: RequestInit = {
-        method: 'POST',
-        headers: headers,
-        body: raw,
-        redirect: 'follow'
-    };
-      
-    const response = await fetch("http://localhost:8080/api/auth/login", requestOptions);
-    const json = await response.json();
-    const parseJson = LoginResponse.safeParse(json);
-    if (!parseJson.success) return {
-        success: false,
-        message: "? LoginResponse schema parsing error"
-    };
-    return parseJson.data;
+    if (!req.success) return req;
+    return req.payload;
 };
 
 export const AuthService = {

@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../rust/vite-chat-app-be"
+		}
+	],
+	"settings": {}
+}

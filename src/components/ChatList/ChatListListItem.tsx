@@ -63,18 +63,39 @@ const DescriptionNotificationIcon = styled.div`
     font-size: 0.8rem;
 `;
 
-export const ChatListListItem: FC = () => {
+type ChatListListItemProps = {
+    uid: number;
+    name: string;
+    time: string;
+    message: string;
+    unread_count: number;
+};
+
+export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
+    const unread_count = props.unread_count > 9 ? "9+" : `${props.unread_count}`
+    const uid = useCurrentContactUid();
+    const { selectContact } = useChatListContext();
+    const selected = uid === props.uid;
+    const chopLength = 15;
+    const message = props.message.length > chopLength ? `${props.message.slice(0, 15)}...` : props.message;
+    const onClickListItem = () => {
+        selectContact(props.uid);
+    };
     return (
-        <ChatListListItemStyled $selected={false}>
+        <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
             <ProfilePicture width={60} />
             <Description>
-                <DescriptionName>Jack</DescriptionName>
-                <DescriptionTime>10:55</DescriptionTime>
-                <DescriptionMessage>Hello World</DescriptionMessage>
+                <DescriptionName>{props.name}</DescriptionName>
+                <DescriptionTime>{props.time}</DescriptionTime>
+                <DescriptionMessage>{message}</DescriptionMessage>
                 <DescriptionNotification>
-                    <DescriptionNotificationIcon>
-                        9+
-                    </DescriptionNotificationIcon>
+                    { props.unread_count > 0 ? 
+                        (
+                            <DescriptionNotificationIcon>
+                                {unread_count}
+                            </DescriptionNotificationIcon>
+                        ) : (<></>)
+                    }
                 </DescriptionNotification>
             </Description>
         </ChatListListItemStyled>

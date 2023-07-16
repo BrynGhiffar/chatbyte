@@ -1,13 +1,11 @@
 import { ContactService } from "@/service/api/ContactService";
-import MessageService, { WebSocketIncomingMessage, WebSocketOutgoingMessage } from "@/service/api/MessageService";
-import { LocalStorage } from "@/utility/LocalStorage";
-import { FC, PropsWithChildren, createContext, useContext, useState } from "react";
+import MessageService from "@/service/api/MessageService";
+import { FC, PropsWithChildren, useState } from "react";
 import { useEffectOnce, useUpdateEffect } from "usehooks-ts";
-import useWebSocket from "react-use-websocket";
-import { useNavigate } from "react-router-dom";
 import { ChatContext, InitialChatState, Message } from "./ChatContext";
-import { ChatListContext, Contact, InitialChatListState } from "./ChatListContext";
+import { ChatContactMessageItem, ChatListContext, Contact, InitialChatListState } from "./ChatListContext";
 import { useToken } from "@/utility/UtilityHooks";
+import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
 
 type UserIdEmail = {
   uid: number,
@@ -24,97 +22,137 @@ type ClientMessage = {
 };
 
 export const ApplicationContext: FC<PropsWithChildren> = (props) => {
-  const [chatState, setChatState ] = useState(InitialChatState);
-  const { sendMessage: sendWsMessageRaw, lastMessage, readyState } = useWebSocket(`ws://localhost:8080/api/message/ws?token=${LocalStorage.getLoginToken() ?? ""}`);
+  const [ chatState, setChatState ] = useState(InitialChatState);
+  const [ chatListState, setChatListState ] = useState(InitialChatListState);
+  const { sendMessageSocket , lastMessageSocket } = useSocket();
   const token = useToken();
 
   const sendMessageWs = (receiverUid: number, message: string) => {
-    console.log("Message sent");
     const req: WebSocketIncomingMessage = {
-        // type: "message",
         content: message,
         receiverUid: receiverUid,
-    }
-    sendWsMessageRaw(JSON.stringify(req));
+    };
+    sendMessageSocket(req);
   };
 
   useUpdateEffect(() => {
-    // console.log("Message receied");
-    // console.log(lastMessage?.data);
-    if (!lastMessage?.data) return;
-    const msgParse = WebSocketOutgoingMessage.safeParse(JSON.parse(lastMessage?.data));
-    if (!msgParse.success) return;
+    if (lastMessageSocket.type !== "message_notification") return;
+    const msg = lastMessageSocket.payload;
     const newMessage: Message = {
-      id: msgParse.data.id,
-      content: msgParse.data.content,
+      id: lastMessageSocket.payload.id,
+      content: lastMessageSocket.payload.content,
       sender: "",
-      time: msgParse.data.sentAt,
-      isUser: msgParse.data.isUser
+      time: lastMessageSocket.payload.sentAt,
+      isUser: lastMessageSocket.payload.isUser
     };
-    setChatState(s => ({ ...s, messages: [ ...s.messages, newMessage ]}))
-  }, [lastMessage]);
+    const contactId = msg.isUser ? msg.receiverUid : msg.senderUid;
+    setChatState(s => {
+      const ns = structuredClone(s);
+      const msgs = ns.messages.get(contactId);
+      if (msgs === undefined) {
+        ns.messages.set(contactId, [newMessage]);
+        return ns;
+      }
+      ns.messages.set(contactId, [...msgs, newMessage]);
+      return ns;
+    });
+    const selectedContact = chatListState.selectedContact;
+    (async () => {
+      const resRecent = await ContactService.getContactsRecent(token);
+      if (!resRecent.success) return;
+      const contactMessagesProm: Promise<ChatContactMessageItem>[] = resRecent.payload.map(async u => {
+        const unreadNotif = {
+          id: u.contact_id,
+          message: u.content,
+          name: u.username,
+          time: u.sent_at,
+          unread_count: u.unread_count
+        };
+        if (selectedContact === null) return unreadNotif;
+        if (selectedContact.uid !== u.contact_id) return unreadNotif;
+        await MessageService.setMessagesRead(token, selectedContact.uid);
+        unreadNotif.unread_count = 0;
+        return unreadNotif;
+      });
+      const contactMessages = await Promise.all(contactMessagesProm);
+      setChatListState(s => ({ ...s, contactMessages }));
+    })();
+  }, [lastMessageSocket]);
 
   const sendMessage = (message: string) => {
     if (chatListState.selectedContact === null) return;
     const receiverUid = chatListState.selectedContact.uid;
-    const date = new Date();
-    const hour = date.getHours();
-    const min = date.getMinutes();
-    const randomId = Math.floor( Math.random() * 1_000_000 );
-    const newMessage: Message = {
-      id: randomId,
-      content: message,
-      sender: "user",
-      time: `${hour}:${min}`,
-      isUser: true
-    };
     sendMessageWs(receiverUid, message);
   };
 
+  const setList = (
+    list: "message" | "contact"
+  ) => {
+    setChatListState(s => ({ ...s, list }));
+  };
+
   const selectContact = async (uid: number) => {
-    const contacts = chatListState.contacts.filter(c => c.uid === uid);
-    if (contacts.length < 1) return;
-    const contact = contacts[0];
-    setChatListState(s => ({
-      ...s,
-      selectedContact: contact
-    }));
-    const token = LocalStorage.getLoginToken();
-    if (!token) return;
+    const contact = chatListState.contacts.find(c => c.uid === uid);
+    if (!contact) return;
+
+    await MessageService.setMessagesRead(token, contact.uid);
     const response = await MessageService.getMessage(token, contact.uid);
-    // console.log(response)
     if (!response.success) return;
     const messages: ClientMessage[] = response.payload;
-    setChatState(s => ({
+
+    setChatListState(s => ({
       ...s,
-      messages: messages.map(m => ({
+      selectedContact: contact,
+      contactMessages: s.contactMessages.map(m => {
+        if (m.id !== contact.uid) return m;
+        return { ...m, unread_count: 0 };
+      })
+    }));
+
+    setChatState(s => {
+      const msgs = s.messages.get(contact.uid);
+      if (msgs) return s;
+      const ns = structuredClone(s);
+      ns.messages.set(contact.uid, messages.map(m => ({
         id: m.id,
         content: m.content,
         isUser: m.isUser,
         sender: "",
         time: m.time
-      }))
-    }));
+      })));
+      return ns;
+    });
   };
 
-  const [ chatListState, setChatListState ] = useState(InitialChatListState);
   useEffectOnce(() => {
     const run = async () => {
       const response = await ContactService.getContacts(token);
-      if (!response.success) return;
-      const contacts: Contact[] = response.payload.map(u => ({
-        uid: u.id,
-        name: u.email,
-        urlProfile: ""
-      }))
-      setChatListState(s => ({...s, contacts }));
+      if (response.success) {
+        const contacts: Contact[] = response.payload.map(u => ({
+          uid: u.id,
+          name: u.email,
+          urlProfile: ""
+        }))
+        setChatListState(s => ({...s, contacts }));
+      }
+      const resRecent = await ContactService.getContactsRecent(token);
+      if (resRecent.success) {
+        const contactMessages: ChatContactMessageItem[] = resRecent.payload.map(u => ({
+          id: u.contact_id,
+          message: u.content,
+          name: u.username,
+          time: u.sent_at,
+          unread_count: u.unread_count
+        }));
+        setChatListState(s => ({ ...s, contactMessages }));
+      }
     };
     run();
   });
 
 
   return (
-    <ChatListContext.Provider value={{ state: chatListState, selectContact }}>
+    <ChatListContext.Provider value={{ state: chatListState, selectContact, setList }}>
       <ChatContext.Provider value={{ state: chatState, sendMessage }}>
         {props.children}
       </ChatContext.Provider>

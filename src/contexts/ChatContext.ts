@@ -8,23 +8,23 @@ export type Message = {
   isUser: boolean;
 };
 
-
-export type ChatContextType = {
+export type ChatContext = {
   state: ChatState;
   sendMessage: (message: string) => void;
 };
 
+type ContactId = number;
 
 export type ChatState = {
-  messages: Message[]
+  messages: Map<ContactId, Message[]>,
 };
 
 export const InitialChatState: ChatState = {
-  messages: []
+  messages: new Map()
 };
 
 
-export const ChatContext = createContext<ChatContextType>({
+export const ChatContext = createContext<ChatContext>({
   state: InitialChatState,
   sendMessage: (message: string) => {},
 });
