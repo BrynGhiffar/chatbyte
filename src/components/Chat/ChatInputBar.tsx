@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, commonCss } from "@/components/Palette";
 import { FC, useContext, useState } from "react";
 import { SnackbarContext } from "../common/Snackbar";
-import { useChatContext } from "@/utility/UtilityHooks";
+import { useChatContext, useSendMessage } from "@/utility/UtilityHooks";
 
 const SendSvg = styled.svg``;
 const ChatInputBarStyled = styled.div`
@@ -60,7 +60,7 @@ const SendButton = styled.button`
 const ChatInputBar: FC = () => {
   const { push } = useContext(SnackbarContext);
   const [ input, setInput ] = useState("");
-  const { sendMessage } = useChatContext();
+  const sendMessage = useSendMessage();
   const onClickSend = async () => {
     const message = input.trim();
     if (message.length === 0) return;

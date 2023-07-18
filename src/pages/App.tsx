@@ -80,10 +80,7 @@ export default function App() {
   return (
     <ApplicationContext>
       <WindowContextProvider >
-      <AppWindow/>
-        {/* <ChatWindow/> */}
-        {/* <SettingsWindow/> */}
-      {/* </AppWindow> */}
+        <AppWindow/>
       </WindowContextProvider>
     </ApplicationContext>
   )

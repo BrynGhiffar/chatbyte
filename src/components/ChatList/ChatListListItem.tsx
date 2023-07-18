@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, commonCss } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useChatListContext } from "@/utility/UtilityHooks";
+import { useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   ${commonCss.transition}
@@ -74,7 +74,7 @@ type ChatListListItemProps = {
 export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
     const unread_count = props.unread_count > 9 ? "9+" : `${props.unread_count}`
     const uid = useCurrentContactUid();
-    const { selectContact } = useChatListContext();
+    const selectContact = useSelectContact();
     const selected = uid === props.uid;
     const chopLength = 15;
     const message = props.message.length > chopLength ? `${props.message.slice(0, 15)}...` : props.message;
@@ -124,7 +124,7 @@ const useCurrentContactUid = () => {
 
 export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
     const uid = useCurrentContactUid();
-    const { selectContact } = useChatListContext();
+    const selectContact = useSelectContact();
     const selected = uid === props.uid;
     const onClickListItem = () => {
         selectContact(props.uid);

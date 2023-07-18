@@ -3,7 +3,8 @@ import { ChatListContext } from "@/contexts/ChatListContext";
 import { useContext } from "react";
 import { LocalStorage } from "./LocalStorage";
 import { useNavigate } from "react-router-dom";
-// import { ChatCon}
+import MessageService from "@/service/api/MessageService";
+import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
 export const useChatContext = () => {
   return useContext(ChatContext);
 };
@@ -21,3 +22,72 @@ export const useToken = () => {
     }
     return token;
 };
+
+
+type ClientMessage = {
+  id: number;
+  receiverId: number;
+  senderId: number;
+  isUser: boolean;
+  content: string;
+  time: string;
+};
+
+export const useSelectContact = () => {
+  const token = useToken();
+  const { state: chatListState, setState: setChatListState } = useContext(ChatListContext);
+  const { setState: setChatState } = useContext(ChatContext);
+
+  const selectContact = async (uid: number) => {
+    const contact = chatListState.contacts.find(c => c.uid === uid);
+    if (!contact) return;
+
+    await MessageService.setMessagesRead(token, contact.uid);
+    const response = await MessageService.getMessage(token, contact.uid);
+    if (!response.success) return;
+    const messages: ClientMessage[] = response.payload;
+
+    setChatListState(s => ({
+      ...s,
+      selectedContact: contact,
+      contactMessages: s.contactMessages.map(m => {
+        if (m.id !== contact.uid) return m;
+        return { ...m, unread_count: 0 };
+      })
+    }));
+
+    setChatState(s => {
+      const msgs = s.messages.get(contact.uid);
+      if (msgs) return s;
+      const ns = structuredClone(s);
+      ns.messages.set(contact.uid, messages.map(m => ({
+        id: m.id,
+        content: m.content,
+        isUser: m.isUser,
+        sender: "",
+        time: m.time
+      })));
+      return ns;
+    });
+  };
+  return selectContact;
+};
+
+
+export const useSendMessage = () => {
+
+  const { state: chatListState } = useChatListContext();
+  const { sendMessageSocket } = useSocket();
+  
+  const sendMessageWs = (message: string) => {
+    if (chatListState.selectedContact === null) return;
+    const receiverUid = chatListState.selectedContact.uid;
+    const req: WebSocketIncomingMessage = {
+      content: message,
+      receiverUid: receiverUid,
+    };
+    sendMessageSocket(req);
+  };
+
+  return sendMessageWs;
+}

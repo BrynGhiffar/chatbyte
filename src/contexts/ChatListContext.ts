@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { SetStateAction, createContext, Dispatch } from "react";
 
 
 export type Contact = {
@@ -24,33 +24,10 @@ export type ChatContactListState = {
 
 export type ChatListContextType = {
     state: ChatContactListState;
-    selectContact: (uid: number) => void;
+    // selectContact: (uid: number) => void;
     setList: (list: "message" | "contact") => void;
+    setState: Dispatch<SetStateAction<ChatContactListState>>;
 };
-
-const DummyContactMessages = [
-    {
-        id: 1,
-        name: "Jackoo",
-        time: "11:02",
-        message: "Wat the hell",
-        unread_count: 5,
-    },
-    {
-        id: 1,
-        name: "Catalina",
-        time: "23:59",
-        message: "Wassup!",
-        unread_count: 10,
-    },
-    {
-        id: 1,
-        name: "Catalina",
-        time: "23:59",
-        message: "Wassup!",
-        unread_count: 0,
-    },
-];
 
 export const InitialChatListState: ChatContactListState = {
     list: "message",
@@ -61,6 +38,7 @@ export const InitialChatListState: ChatContactListState = {
 
 export const ChatListContext = createContext<ChatListContextType>({
     state: InitialChatListState,
-    selectContact: (uid: number) => {},
-    setList: (list: "message" | "contact") => {}
+    // selectContact: (uid: number) => {},
+    setList: (list: "message" | "contact") => {},
+    setState: () => {}
 });

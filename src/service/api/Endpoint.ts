@@ -6,7 +6,19 @@ export const BackendEndpoint = (): string | null => {
     const schema = z.string().safeParse(import.meta.env.VITE_BACKEND_SCHEMA);
     const base_path = z.string().safeParse(import.meta.env.VITE_BACKEND_BASE_PATH);
     const port = z.string().safeParse(import.meta.env.VITE_BACKEND_PORT);
-    if (!host.success) return null
+    if (!host.success) return null;
+    if (!schema.success) return null;
+    if (!base_path.success) return null;
+    if (!port.success) return null;
+    return `${schema.data}://${host.data}:${port.data}${base_path.data}`
+}
+
+export const WebSocketEndpoint = (): string | null => {
+    const host = z.string().safeParse(import.meta.env.VITE_BACKEND_HOST);
+    const schema = z.string().safeParse(import.meta.env.VITE_BACKEND_WS_SCHEMA);
+    const base_path = z.string().safeParse(import.meta.env.VITE_BACKEND_BASE_PATH);
+    const port = z.string().safeParse(import.meta.env.VITE_BACKEND_PORT);
+    if (!host.success) return null;
     if (!schema.success) return null;
     if (!base_path.success) return null;
     if (!port.success) return null;
@@ -19,6 +31,7 @@ export class Endpoint {
     static contacts = () => "/contacts";
     static contactsRecent = () => "/contacts/recent";
     static authLogin = () => "/auth/login";
+    static messageWebSocket = (token: string) => `/message/ws?token=${token}`;
 }
 
 

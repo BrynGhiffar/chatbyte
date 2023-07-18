@@ -1,8 +1,10 @@
 import { useToken } from "@/utility/UtilityHooks";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
+import { Endpoint, WebSocketEndpoint } from "../api/Endpoint";
+import { SnackbarContext } from "@/components/common/Snackbar";
 
 export const WebSocketIncomingMessage = z.object({
     // type: z.literal("message"),
@@ -33,22 +35,30 @@ export const WebSocketOutgoingMessage = z.object({
 
 export type WebSocketOutgoingMessage = z.infer<typeof WebSocketOutgoingMessage>;
 
-export const useSocket = () => {
+const useRawDataWebSocket = () => {
     const token = useToken();
-    const { sendMessage: sendMessageRaw, lastMessage: lastMessageRaw } = useWebSocket(`ws://localhost:8080/api/message/ws?token=${token}`);
+    const ept = `${WebSocketEndpoint()}${Endpoint.messageWebSocket(token)}`;
+    const { sendMessage: sendMessageRaw, lastMessage: lastMessageRaw } = useWebSocket(ept);
+    return { sendMessageRaw, lastMessageRaw };
+}
+
+export const useSocket = () => {
+    const { sendMessageRaw, lastMessageRaw } = useRawDataWebSocket();
+    const { push: pushError } = useContext(SnackbarContext);
     const [ lastMessageSocket, setLastMessage ] = useState<WebSocketOutgoingMessage>({ type: "empty" })
+
     useUpdateEffect(() => {
         if (!lastMessageRaw?.data) return;
         const lastMessageJson = JSON.parse(lastMessageRaw?.data);
         const parseLastMessageRaw = WebSocketMessageNotification.safeParse(lastMessageJson);
         if (parseLastMessageRaw.success) {
-            console.log("Received message notification");
             return setLastMessage(_ => ({ type: "message_notification", payload: parseLastMessageRaw.data }))
         } else {
-            console.log(parseLastMessageRaw.error);
+            pushError("There was an issue parsing a message notification");
         }
         return setLastMessage(_ => ({type: "error", message: "A parsing error occured"}));
-    }, [lastMessageRaw])
+    }, [lastMessageRaw]);
+
     const sendMessageSocket = (message: WebSocketIncomingMessage) => sendMessageRaw(JSON.stringify(message));
     return { sendMessageSocket, lastMessageSocket };
 };
