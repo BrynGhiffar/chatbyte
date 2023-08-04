@@ -5,6 +5,11 @@ const ProfilePicContainer = styled.div<{ $width?: number }>`
   width: ${props => props.$width ?? 50}px;
   aspect-ratio: 1 / 1;
   object-fit: contain;
+  object-position: center;
+  img {
+    width: ${props => props.$width ?? 50}px;
+    aspect-ratio: 1 / 1;
+  }
   position: relative;
   border-radius: 50%;
   overflow: hidden;
@@ -13,11 +18,11 @@ const ProfilePicContainer = styled.div<{ $width?: number }>`
 
 type ProfilePictureProps = {
   width?: number;
+  imageUrl: string;
 };
 
 export const ProfilePicture: FC<ProfilePictureProps> = (props) => {
-  const imageUrl = "/profile.png";
   return (<ProfilePicContainer $width={props.width}>
-      <img src={imageUrl} alt=""/>
+      <img src={props.imageUrl} alt=""/>
   </ProfilePicContainer>)
 };

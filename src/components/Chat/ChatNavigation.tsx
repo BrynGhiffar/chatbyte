@@ -3,6 +3,7 @@ import { color, font } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useChatListContext } from "@/utility/UtilityHooks";
+import { avatarImageUrl } from "@/service/api/UserService";
 
 export const ChatNavigationStyled = styled.div`
   width: 100%;
@@ -27,11 +28,22 @@ const useChatProfileName = ( )=> {
   return state.selectedContact?.name;
 }
 
+const useCurrentContactUid = () => {
+    const { state } = useChatListContext();
+    if (state.selectedContact)
+    {
+        return state.selectedContact.uid;
+    }
+    return null;
+}
+
 const ChatNavigation: FC = () => {
   const name = useChatProfileName();
+  const uid = useCurrentContactUid();
+  const avatarImage = uid !== null ? avatarImageUrl(uid) : "";
   return (
     <ChatNavigationStyled>
-      <ProfilePicture/>
+      <ProfilePicture imageUrl={avatarImage}/>
       <ChatNavigationNameStyled>{name}</ChatNavigationNameStyled>
     </ChatNavigationStyled>
   );

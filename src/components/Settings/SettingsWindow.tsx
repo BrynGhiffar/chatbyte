@@ -1,10 +1,12 @@
-import { FC, useRef, useCallback, ChangeEvent, useContext } from 'react';
+import { FC, useRef, useCallback, ChangeEvent, useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { color, commonCss } from '../Palette';
 import { InputField } from '../common/InputField';
 import { Button } from '../common/Button';
 import { CloseSVG } from '../common/Svg';
 import { WindowContext } from '@/contexts/WindowContext';
+import { UserService, avatarImageUrl } from '@/service/api/UserService';
+import { LocalStorage } from '@/utility/LocalStorage';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */
@@ -25,13 +27,14 @@ const ProfilePictureSectionStyled = styled.div`
     justify-content: center;
 `;
 
-const ImageContainerStyled = styled.div`
+const ImageContainerStyled = styled.div<{imageUrl: string}>`
     aspect-ratio: 1 / 1;
     height: 220px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    background-image: url('/profile.png');
+    background-size: contain;
+    background-image: url(${props => props.imageUrl});
 `;
 
 const CameraSVG: FC = () => (
@@ -74,20 +77,27 @@ position: absolute;
     height: 0px;
 `;
 
-const ProfilePictureSection: FC = props => {
+type ProfilePictureSectionProps = {
+    imageUrl: string
+}
+
+const ProfilePictureSection: FC<ProfilePictureSectionProps> = props => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const onFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files === null) return;
         const file = e.target.files[0];
         if (!file) return;
-
+        const token = LocalStorage.getLoginToken();
+        if (!token) return;
+        console.log(file)
+        UserService.uploadUserAvatar(token, file);
     }, []);
 
 
     return (
         <ProfilePictureSectionStyled>
-            <ImageContainerStyled>
+            <ImageContainerStyled imageUrl={props.imageUrl}>
                 <AttemptBlur
                     onClick={() => inputRef.current?.click()}
                 >
@@ -159,11 +169,27 @@ const UserDataSection: FC = props => {
     )
 };
 
+type UserDetail = {
+    uid: number,
+    username: string
+}
 
 export const SettingsWindow: FC = props => {
+    const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+    useEffect(() => {
+        const run = async () => {
+            const token = LocalStorage.getLoginToken();
+            if (!token) return;
+            const res = await UserService.getUserDetails(token);
+            if (!res.success) return;
+            setUserDetail(_ => res.payload);
+        };
+        run();
+    }, [setUserDetail]);
+    const imageUrl = userDetail !== null ? avatarImageUrl(userDetail.uid) : "";
     return (<SettingsWindowStyled>
         <CloseButton/>
-        <ProfilePictureSection/>
+        <ProfilePictureSection imageUrl={imageUrl}/>
         <UserDataSection/>
     </SettingsWindowStyled>)
 };

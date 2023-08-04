@@ -12,7 +12,7 @@ const device = {
 }
 
 const AppWindowStyled = styled.div`
-  min-height: 800px; 
+  min-height: 90vh; 
   height: 80vh;
   width: 70%;
   box-shadow: 0px 0px 20px 0px black;

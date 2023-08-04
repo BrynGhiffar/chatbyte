@@ -32,12 +32,15 @@ export class Endpoint {
     static contactsRecent = () => "/contacts/recent";
     static authLogin = () => "/auth/login";
     static messageWebSocket = (token: string) => `/message/ws?token=${token}`;
+    static userAvatar = (uid: number) => `/user/avatar/${uid}`;
+    static postUserAvatar = () => `/user/avatar`;
+    static userDetails = () => `/user/details`;
 }
 
 
 type KeyStringValueString = { [key: string ]: string; };
 
-type RequestWithBody = { method: "POST" | "PUT", ept: string, headers: KeyStringValueString, body: object };
+type RequestWithBody = { method: "POST" | "PUT", ept: string, headers: KeyStringValueString, body: any };
 type Request = { method: "GET" | "DELETE", ept: string, headers: KeyStringValueString };
 
 export const request = async <T extends z.ZodTypeAny>(parser: T, request: RequestWithBody | Request): Promise<{ success: true, payload: z.infer<T>} | { success: false, message: string }> => {
@@ -52,7 +55,10 @@ export const request = async <T extends z.ZodTypeAny>(parser: T, request: Reques
     }
     let response: Response | null = null;
     if (request.method === "POST" || request.method === "PUT") {
-        const body = request.body === undefined ? request.body : JSON.stringify(request.body);
+        let body = request.body;
+        if (!(body instanceof File)) {
+            body = JSON.stringify(body);
+        }
         const requestOptions: RequestInit = {
             method: request.method,
             headers,
