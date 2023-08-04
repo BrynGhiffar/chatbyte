@@ -7,6 +7,7 @@ import { CloseSVG } from '../common/Svg';
 import { WindowContext } from '@/contexts/WindowContext';
 import { UserService, avatarImageUrl } from '@/service/api/UserService';
 import { LocalStorage } from '@/utility/LocalStorage';
+import { useAvatarImage } from '@/utility/UtilityHooks';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */
@@ -79,6 +80,7 @@ position: absolute;
 
 type ProfilePictureSectionProps = {
     imageUrl: string
+    reloadImage: () => void
 }
 
 const ProfilePictureSection: FC<ProfilePictureSectionProps> = props => {
@@ -90,10 +92,9 @@ const ProfilePictureSection: FC<ProfilePictureSectionProps> = props => {
         if (!file) return;
         const token = LocalStorage.getLoginToken();
         if (!token) return;
-        console.log(file)
-        UserService.uploadUserAvatar(token, file);
+        await UserService.uploadUserAvatar(token, file);
+        props.reloadImage();
     }, []);
-
 
     return (
         <ProfilePictureSectionStyled>
@@ -186,10 +187,11 @@ export const SettingsWindow: FC = props => {
         };
         run();
     }, [setUserDetail]);
-    const imageUrl = userDetail !== null ? avatarImageUrl(userDetail.uid) : "";
+    const uid = userDetail !== null ? userDetail.uid : null;
+    const [imageUrl, reload] = useAvatarImage(uid);
     return (<SettingsWindowStyled>
         <CloseButton/>
-        <ProfilePictureSection imageUrl={imageUrl}/>
+        <ProfilePictureSection imageUrl={imageUrl} reloadImage={reload}/>
         <UserDataSection/>
     </SettingsWindowStyled>)
 };

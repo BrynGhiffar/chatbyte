@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, commonCss } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
+import { useAvatarImage, useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
 import { avatarImageUrl } from "@/service/api/UserService";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
@@ -82,9 +82,10 @@ export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
     const onClickListItem = () => {
         selectContact(props.uid);
     };
+    const [avatarImage, ] = useAvatarImage(props.uid);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
-            <ProfilePicture width={60} imageUrl={avatarImageUrl(props.uid)}/>
+            <ProfilePicture width={60} imageUrl={avatarImage}/>
             <Description>
                 <DescriptionName>{props.name}</DescriptionName>
                 <DescriptionTime>{props.time}</DescriptionTime>
@@ -130,7 +131,7 @@ export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
     const onClickListItem = () => {
         selectContact(props.uid);
     };
-    const avatarImage = avatarImageUrl(props.uid);
+    const [avatarImage, ] = useAvatarImage(props.uid);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
             <ProfilePicture width={60} imageUrl={avatarImage}/>

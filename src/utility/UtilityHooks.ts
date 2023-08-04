@@ -1,10 +1,11 @@
 import { ChatContext } from "@/contexts/ChatContext";
 import { ChatListContext } from "@/contexts/ChatListContext";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { LocalStorage } from "./LocalStorage";
 import { useNavigate } from "react-router-dom";
 import MessageService from "@/service/api/MessageService";
 import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
+import { avatarImageUrl } from "@/service/api/UserService";
 export const useChatContext = () => {
   return useContext(ChatContext);
 };
@@ -31,6 +32,17 @@ type ClientMessage = {
   isUser: boolean;
   content: string;
   time: string;
+};
+
+export const useAvatarImage = (uid: number | null): [string, () => void] => {
+  const [num, setNum] = useState(Math.floor(Math.random() * 1_000));
+  const reload = () => {
+    setNum(_ => Math.floor(Math.random() * 100));
+  };
+  if (uid === null) {
+    return ["", reload]
+  }
+  return [ avatarImageUrl(uid)(num), reload ];
 };
 
 export const useSelectContact = () => {

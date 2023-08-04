@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { color, font } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useChatListContext } from "@/utility/UtilityHooks";
+import { useAvatarImage, useChatListContext } from "@/utility/UtilityHooks";
 import { avatarImageUrl } from "@/service/api/UserService";
 
 export const ChatNavigationStyled = styled.div`
@@ -40,7 +40,7 @@ const useCurrentContactUid = () => {
 const ChatNavigation: FC = () => {
   const name = useChatProfileName();
   const uid = useCurrentContactUid();
-  const avatarImage = uid !== null ? avatarImageUrl(uid) : "";
+  const [avatarImage] = useAvatarImage(uid);
   return (
     <ChatNavigationStyled>
       <ProfilePicture imageUrl={avatarImage}/>

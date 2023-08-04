@@ -1,7 +1,7 @@
 import { BackendEndpoint, Endpoint, request } from "./Endpoint";
 import { z } from "zod";
 
-export const avatarImageUrl = (uid: number) => `${BackendEndpoint()}${Endpoint.userAvatar(uid)}`;
+export const avatarImageUrl = (uid: number) => (randNum: number) => `${BackendEndpoint()}${Endpoint.userAvatar(uid)}?random=${randNum}`;
 
 const GetUserDetailsResponse = z.object({
     success: z.literal(true),
