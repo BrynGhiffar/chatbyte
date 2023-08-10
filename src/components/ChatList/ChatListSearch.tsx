@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { color, font } from "@/components/Palette";
 import { FC } from "react";
+import { useChatListSearch } from "@/utility/UtilityHooks";
 
 const ChatListSearchStyled = styled.div`
   background-color: ${color.darkBlue};
@@ -32,11 +33,12 @@ const ChatListSearchInput = styled.input`
 `;
 
 const ChatListSearch: FC = () => {
+  const [_, setSearch] = useChatListSearch();
 
   return (
     <ChatListSearchStyled>
         <ChatListTitle>Chats</ChatListTitle>
-        <ChatListSearchInput type="text" placeholder="Search something"/>
+        <ChatListSearchInput type="text" placeholder="Search something" onChange={e => setSearch(e.target.value)}/>
     </ChatListSearchStyled>
   );
 };

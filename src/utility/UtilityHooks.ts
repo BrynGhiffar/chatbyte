@@ -94,7 +94,6 @@ export const useSelectContact = () => {
   return selectContact;
 };
 
-
 export const useSendMessage = () => {
 
   const { state: chatListState } = useChatListContext();
@@ -112,3 +111,11 @@ export const useSendMessage = () => {
 
   return sendMessageWs;
 }
+
+export const useChatListSearch = (): [string, (searchStr: string) => void] => {
+  const { state, setState } = useContext(ChatListContext);
+  const setSearch = (searchStr: string) => {
+    setState(prev => ({ ...prev, searchInput: searchStr }));
+  };
+  return [ state.searchInput, setSearch ];
+};

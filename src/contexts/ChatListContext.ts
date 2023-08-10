@@ -16,6 +16,7 @@ export type ChatContactMessageItem = {
 };
 
 export type ChatContactListState = {
+    searchInput: string;
     list: "message" | "contact";
     selectedContact: Contact | null;
     contacts: Contact[]
@@ -30,6 +31,7 @@ export type ChatListContextType = {
 };
 
 export const InitialChatListState: ChatContactListState = {
+    searchInput: "",
     list: "message",
     selectedContact: null,
     contacts: [],
