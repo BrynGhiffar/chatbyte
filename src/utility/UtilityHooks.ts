@@ -1,11 +1,12 @@
 import { ChatContext } from "@/contexts/ChatContext";
 import { ChatListContext } from "@/contexts/ChatListContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LocalStorage } from "./LocalStorage";
 import { useNavigate } from "react-router-dom";
 import MessageService from "@/service/api/MessageService";
 import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
 import { avatarImageUrl } from "@/service/api/UserService";
+import { AuthService } from "@/service/api/AuthService";
 export const useChatContext = () => {
   return useContext(ChatContext);
 };
@@ -17,11 +18,19 @@ export const useChatListContext = () => {
 export const useToken = () => {
     const navigate = useNavigate();
     const token = LocalStorage.getLoginToken();
-    if (!token) {
-        navigate("/auth");
-        return "";
-    }
-    return token;
+    useEffect(() => {
+      const run = async () => {
+        if (!token) {
+            return navigate("/auth");
+        }
+        const response = await AuthService.validateToken(token);
+        if (!response.success) {
+          return navigate("/auth");
+        }
+      };
+      run();
+    }, [token, navigate]);
+    return token || "";
 };
 
 
@@ -37,7 +46,7 @@ type ClientMessage = {
 export const useAvatarImage = (uid: number | null): [string, () => void] => {
   const [num, setNum] = useState(Math.floor(Math.random() * 1_000));
   const reload = () => {
-    setNum(_ => Math.floor(Math.random() * 100));
+    setNum(_ => Math.floor(Math.random() * 1_000));
   };
   if (uid === null) {
     return ["", reload]

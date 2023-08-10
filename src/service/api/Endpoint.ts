@@ -31,6 +31,7 @@ export class Endpoint {
     static contacts = () => "/contacts";
     static contactsRecent = () => "/contacts/recent";
     static authLogin = () => "/auth/login";
+    static authVerifyToken = () => "/auth/valid-token";
     static messageWebSocket = (token: string) => `/message/ws?token=${token}`;
     static userAvatar = (uid: number) => `/user/avatar/${uid}`;
     static postUserAvatar = () => `/user/avatar`;

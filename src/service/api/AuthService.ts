@@ -24,6 +24,30 @@ const Login = async (email: string, password: string): Promise<LoginResponse> =>
     return req.payload;
 };
 
+const ValidateTokenResponse = z.object({
+    success: z.literal(true),
+    payload: z.string(),
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+type ValidateTokenResponse = z.infer<typeof ValidateTokenResponse>;
+
+const validateToken = async (token: string): Promise<ValidateTokenResponse> => {
+    const headers = { 
+        "Authorization": `Bearer ${token}`
+    };
+
+    const req = await request(ValidateTokenResponse, {
+        method: "GET",
+        ept: Endpoint.authVerifyToken(),
+        headers,
+    });
+    if (!req.success) return req;
+    return req.payload;
+}
+
 export const AuthService = {
-    Login
+    Login, validateToken
 };
