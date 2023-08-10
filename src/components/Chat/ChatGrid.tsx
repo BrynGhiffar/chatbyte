@@ -5,6 +5,7 @@ import { useUpdateEffect } from "usehooks-ts";
 import { Message } from "@/contexts/ChatContext";
 import { useChatContext, useChatListContext } from "@/utility/UtilityHooks";
 import ChatBubble from "./ChatBubble";
+import { useSpring } from "framer-motion";
 
 const ChatGridStyled = styled.div`
     ${commonCss.transition}
@@ -30,10 +31,11 @@ const useMessages = () => {
 
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {
     const messages: Message[] = useMessages();
+    const springScroll = useSpring(0);
     useUpdateEffect(() => {
         if (ref.current === null) return;
         const e = ref.current;
-        e.scrollTo(0, e.scrollHeight);
+        e.scrollTo({ top: e.scrollHeight, behavior: "smooth" });
     }, [messages]);
 };
 

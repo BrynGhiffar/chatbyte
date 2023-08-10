@@ -6,6 +6,7 @@ import Chat from "../components/Chat/Chat";
 import { FC, PropsWithChildren, useCallback, useContext, useState } from "react";
 import { SettingsWindow } from "@/components/Settings/SettingsWindow";
 import { Window, WindowContext } from "@/contexts/WindowContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const device = {
   laptop: "(max-width: 1000px)"
@@ -19,6 +20,7 @@ const AppWindowStyled = styled.div`
   background-color: ${color.lightBlue};
   border-radius: 5px;
   overflow: hidden;
+  position: relative;
 
   @media ${device.laptop} {
     width: 90%;
@@ -39,7 +41,26 @@ const ChatWindow: FC = props => {
       <Chat />
     </ChatWindowStyled>
   )
-}
+};
+
+const AnimateChildWindowStyled = styled(motion.div)`
+  height: 100%;
+  width: 100%;
+  position: absolute;
+`;
+
+const AnimateChildWindow: FC<PropsWithChildren> = props => {
+  return (
+    <AnimateChildWindowStyled
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      transition={{ type: "ease-in-out", }}
+      exit={{opacity: 0}}
+    >
+      {props.children}
+    </AnimateChildWindowStyled>
+  )
+};
 
 const WindowContextProvider: FC<PropsWithChildren> = (props) => {
   const [windowStack, setWindowStack] = useState<Window[]>([ "CHAT_WINDOW" ]);
@@ -65,13 +86,20 @@ const WindowContextProvider: FC<PropsWithChildren> = (props) => {
 
 const AppWindow: FC = () => {
   const { top } = useContext(WindowContext);
-  const Window: FC = useCallback(() => {
-    if (top === "CHAT_WINDOW") return <ChatWindow/>
-    if (top === "SETTINGS_WINDOW") return <SettingsWindow/>
-  }, [top]);
   return (
     <AppWindowStyled>
-      <Window/>
+      <AnimatePresence initial={false}>
+        <AnimateChildWindowStyled>
+            <ChatWindow/>
+        </AnimateChildWindowStyled>
+        { 
+          top === "SETTINGS_WINDOW" && (
+            <AnimateChildWindow key="settings">
+              <SettingsWindow/>
+            </AnimateChildWindow>
+          )
+        }
+      </AnimatePresence>
     </AppWindowStyled>
   );
 }
