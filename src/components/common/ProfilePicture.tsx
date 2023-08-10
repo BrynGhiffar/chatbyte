@@ -8,7 +8,7 @@ const ProfilePicContainer = styled.div<{ $width?: number }>`
   object-position: center;
   img {
     width: ${props => props.$width ?? 50}px;
-    aspect-ratio: 1 / 1;
+    /* aspect-ratio: 1 / 1; */
   }
   position: relative;
   border-radius: 50%;
