@@ -4,16 +4,22 @@ import ChatNavigation from "./ChatNavigation";
 import ChatGrid from "./ChatGrid";
 import ChatBubble from "./ChatBubble";
 import ChatInputBar from "./ChatInputBar";
-import { useUpdateEffect } from "usehooks-ts";
-import { useChatContext, useChatListContext } from "@/utility/UtilityHooks";
+import { useCurrentContactUid } from "@/utility/UtilityHooks";
+import EmptyChatWindow from "./EmptyChatWindow";
 
 const Chat: FC = () => {
+  const uid = useCurrentContactUid();
+  if (uid) {
+    return (
+          <ChatWindow>
+            <ChatNavigation />
+            <ChatGrid/>
+            <ChatInputBar />
+          </ChatWindow>
+    )
+  }
   return (
-    <ChatWindow>
-      <ChatNavigation />
-      <ChatGrid/>
-      <ChatInputBar />
-    </ChatWindow>
+    <EmptyChatWindow/>
   );
 }
 

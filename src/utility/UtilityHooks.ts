@@ -119,3 +119,12 @@ export const useChatListSearch = (): [string, (searchStr: string) => void] => {
   };
   return [ state.searchInput, setSearch ];
 };
+
+export const useCurrentContactUid = () => {
+    const { state } = useChatListContext();
+    if (state.selectedContact)
+    {
+        return state.selectedContact.uid;
+    }
+    return null;
+}
