@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { color, commonCss } from '../Palette';
 import { InputField } from '../common/InputField';
 import { Button } from '../common/Button';
-import { CloseSVG } from '../common/Svg';
+import { CameraSVG, CloseSVG } from '../common/Svg';
 import { WindowContext } from '@/contexts/WindowContext';
-import { UserService, avatarImageUrl } from '@/service/api/UserService';
+import { UserService } from '@/service/api/UserService';
 import { LocalStorage } from '@/utility/LocalStorage';
-import { useAvatarImage } from '@/utility/UtilityHooks';
+import { useAvatarImage, useToken } from '@/utility/UtilityHooks';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */
@@ -40,12 +40,6 @@ const ImageContainerStyled = styled.div<{imageUrl: string}>`
     background-position: center;
 `;
 
-const CameraSVG: FC = () => (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path fillRule="evenodd" clipRule="evenodd" d="M3.46447 3.46447C2 4.92893 2 7.28595 2 12C2 16.714 2 19.0711 3.46447 20.5355C4.92893 22 7.28595 22 12 22C16.714 22 19.0711 22 20.5355 20.5355C22 19.0711 22 16.714 22 12C22 7.28595 22 4.92893 20.5355 3.46447C19.0711 2 16.714 2 12 2C7.28595 2 4.92893 2 3.46447 3.46447ZM7.25 12C7.25 9.37665 9.37665 7.25 12 7.25C14.6234 7.25 16.75 9.37665 16.75 12C16.75 14.6234 14.6234 16.75 12 16.75C9.37665 16.75 7.25 14.6234 7.25 12ZM8.75 12C8.75 10.2051 10.2051 8.75 12 8.75C13.7949 8.75 15.25 10.2051 15.25 12C15.25 13.7949 13.7949 15.25 12 15.25C10.2051 15.25 8.75 13.7949 8.75 12Z" fill="currentColor"/>
-    </svg>
-)
-
 const AttemptBlur = styled.div`
     height: 100%;
     width: 100%;
@@ -74,7 +68,7 @@ const AttemptBlur = styled.div`
 `;
 
 const InvisibleInput = styled.input`
-position: absolute;
+    position: absolute;
     visibility: hidden;
     width: 0px;
     height: 0px;
@@ -180,16 +174,15 @@ type UserDetail = {
 
 export const SettingsWindow: FC = props => {
     const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
+    const token = useToken();
     useEffect(() => {
         const run = async () => {
-            const token = LocalStorage.getLoginToken();
-            if (!token) return;
             const res = await UserService.getUserDetails(token);
             if (!res.success) return;
             setUserDetail(_ => res.payload);
         };
         run();
-    }, [setUserDetail]);
+    }, [setUserDetail, token]);
     const uid = userDetail !== null ? userDetail.uid : null;
     const [imageUrl, reload] = useAvatarImage(uid);
     return (<SettingsWindowStyled>

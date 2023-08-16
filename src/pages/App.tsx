@@ -52,10 +52,10 @@ const AnimateChildWindowStyled = styled(motion.div)`
 const AnimateChildWindow: FC<PropsWithChildren> = props => {
   return (
     <AnimateChildWindowStyled
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      transition={{ type: "ease-in-out", }}
-      exit={{opacity: 0}}
+      initial={{opacity: 0, scale: 0.8 }}
+      animate={{opacity: 1, scale: 1}}
+      exit={{opacity: 0, scale: 0.8}}
+      transition={{ ease: "easeInOut", }}
     >
       {props.children}
     </AnimateChildWindowStyled>

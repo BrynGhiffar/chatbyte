@@ -5,12 +5,11 @@ import { FC } from "react";
 
 const ChatBubbleStyled = styled.div`
   max-width: 60ch;
+  min-width: 5ch;
   min-height: 2rem;
-  border-radius: 6px;
+  border-radius: 15px;
   padding: 0.5rem 1ch;
   display: grid;
-  justify-content: center;
-  align-items: center;
   background-color: ${color.kindaWhite};
   gap: 5px;
   font-family: ${font.appleFont};
@@ -22,7 +21,18 @@ const ChatBubbleNameStyled = styled.span`
 
 const ChatBubbleTimeStyled = styled.span``;
 
-const ChatBubbleMessageStyled = styled.p``;
+const ChatBubbleMessageStyled = styled.p<{ $side: "left" | "right"}>`
+  ${props => {
+    if (props.$side === "right") {
+      return css`
+        display: flex;
+        justify-content: flex-end;
+      `
+    } else {
+      return ""
+    }
+  }}
+`;
 
 type ChatRowStyledProps = {
   $side: "left" | "right";
@@ -35,31 +45,33 @@ const ChatRowStyled = styled.div<ChatRowStyledProps>`
   align-items: center;
   padding: 0.5rem 1rem;
   justify-content: ${props => props.$side === "left" ? "flex-start" : "flex-end"};
+  /* outline: 1px solid red; */
 
   > ${ChatBubbleStyled} {
     ${props => {
-        if (props.$side === "left") {
-            return css`
+      if (props.$side === "left") {
+        return css`
           border-top-left-radius: 0px;
         `;
-        } else {
-            return css`
+      } else {
+        return css`
           border-top-right-radius: 0px;
         `;
-        }
+      }
     }}
 
     > ${ChatBubbleTimeStyled} {
-        ${props => {
-            if (props.$side === "left") {
-                return css`
-                  display: flex;
-                  justify-content: flex-end;
-                `
-            } else {
-                return ""
-            }
-        }}
+      font-size: 0.8rem;
+      ${props => {
+        if (props.$side === "left") {
+          return css`
+            display: flex;
+            justify-content: flex-end;
+          `
+        } else {
+          return ""
+        }
+      }}
     }
   }
 `;
@@ -78,7 +90,7 @@ const ChatBubble: FC<ChatBubbleProps> = (props) => {
         <ChatBubbleNameStyled>
           {props.name}
         </ChatBubbleNameStyled>
-        <ChatBubbleMessageStyled>
+        <ChatBubbleMessageStyled $side={props.side}>
           {props.message}
         </ChatBubbleMessageStyled>
         <ChatBubbleTimeStyled>

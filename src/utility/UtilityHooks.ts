@@ -33,6 +33,14 @@ export const useToken = () => {
     return token || "";
 };
 
+export const useLogout = () => {
+  const navigate = useNavigate();
+  return () => {
+    LocalStorage.removeLoginToken();
+    navigate("/auth");
+  };
+};
+
 
 type ClientMessage = {
   id: number;

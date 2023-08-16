@@ -3,37 +3,49 @@ import styled, { css, keyframes } from "styled-components";
 import { color, commonCss, font } from "../Palette";
 import { useEffectOnce, useTimeout, useUpdateEffect } from "usehooks-ts";
 import { CloseSVG } from "./Svg";
+import { motion, AnimatePresence } from "framer-motion";
 
 type SnackbarContextType = {
     push: (message: string) => void
 };
+
+type SnackbarMessage = {
+    id: number;
+    message: string;
+}
 
 export const SnackbarContext = createContext<SnackbarContextType>({ 
     push: (message: string) => {}
 });
 
 export const SnackbarProvider: FC<PropsWithChildren> = (props) => {
-    const [ data, setData ] = useState({ message: "", open: false });
+    const [ data, setData ] = useState<SnackbarMessage[]>([]);
     const push = (message: string) => {
-        setData(_ => ({
-            message: message,
-            open: true,
-        }));
+        const id = Math.floor(Math.random() * 1_000);
+        const snackbarMessage = { id, message }
+        setData(prev => ([snackbarMessage, ...prev]));
     };
-    const onClose = () => {
-        setData(m => ({
-            ...m,
-            open: false,
-        }));
+    const onClose = (id: number) => {
+        return () => {
+            setData(prev => prev.filter(ob => ob.id !== id));
+        }
     }
     return (
         <SnackbarContext.Provider value={{ push }}>
             {props.children}
-            <Snackbar 
-                open={data.open} 
-                message={data.message} 
-                onClose={onClose}
-            />
+            <SnackbarContainerStyled>
+                <AnimatePresence mode="popLayout">
+                    {
+                        data.map(ob => (
+                            <Snackbar 
+                                key={ob.id}
+                                message={ob.message} 
+                                onClose={onClose(ob.id)}
+                            />
+                        ))
+                    }
+                </AnimatePresence>
+            </SnackbarContainerStyled>
         </SnackbarContext.Provider>
     )
 }
@@ -58,37 +70,30 @@ const DisappearAnimation = keyframes`
     }
 `;
 
-const SnackbarStyled = styled.div<{ $open: boolean }>`
+
+const SnackbarContainerStyled = styled.div`
     position: absolute;
     bottom: 10px;
     left: 10px;
+    top: 10px;
+    min-width: 300px;
+    /* outline: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+    grid-template-rows: auto;
+`;
+
+const SnackbarStyled = styled(motion.div)`
     height: 50px;
     min-width: 300px;
     display: none;
-    /* background-color: #0079FF; */
-    /* background-color: #CD1818; */
-    /* background-color: #1B9C85; */
-    /* background-color: ${color.seaGreen}; */
-    /* background-color: #060505; */
     background-color:#f95959 ;
     border-radius: 4px;
     display: grid;
     grid-template-columns: auto 50px;
     box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
-    /* animation-name: ${props => props.$open ? AppearAnimation : DisappearAnimation}; */
-    /* animation-duration: 1s; */
-
-    transition: visibility 200ms linear, opacity 200ms linear;
-    ${
-        props => props.$open ? css`
-            visibility: visible;
-            opacity: 1;
-        ` : css`
-            visibility: hidden;
-            opacity: 0;
-            /* transition: visibility 0s linear 200ms, opacity 200ms linear; */
-        `
-    }
 `;
 
 const CloseSnackbarButton = styled.button`
@@ -121,39 +126,30 @@ const SnackbarDescription = styled.div`
 `;
 
 type SnackbarProps = {
-    open?: boolean;
     timeout?: number;
     onClose?: () => void;
     message?: string;
 }
 
 const Snackbar: FC<SnackbarProps> = (props) => {
-    const open = props.open ?? false;
     const timeout = props.timeout ?? 4000;
     const onClose = props.onClose ?? (() => {});
 
     useEffectOnce(() => {
-        if (open) {
-            const id = setTimeout(onClose, timeout);
-            return () => {
-                clearInterval(id);
-            };
-        }
-    })
-
-    useUpdateEffect(() => {
-        if (open) {
-            const id = setTimeout(onClose, timeout);
-            return () => {
-                clearInterval(id);
-            };
-        }
-    }, [open]);
+        const id = setTimeout(onClose, timeout);
+        return () => {
+            clearInterval(id);
+        };
+    });
 
     return (
-        // open ? 
-        // (
-        <SnackbarStyled $open={open}>
+        <SnackbarStyled
+            layout
+            initial={{opacity: 0, scale: 0.8 }}
+            animate={{opacity: 1, scale: 1}}
+            exit={{opacity: 0, scale: 0.8}}
+            transition={{ ease: "easeInOut" }}
+        >
             <SnackbarDescription>
                 {props.message ?? ""}
             </SnackbarDescription>
@@ -161,10 +157,6 @@ const Snackbar: FC<SnackbarProps> = (props) => {
                 <CloseSVG/>
             </CloseSnackbarButton>
         </SnackbarStyled>
-        // )
-        // : (
-        //     <></>
-        // )
     );
 };
 
