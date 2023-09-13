@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { color, font } from "@/components/Palette";
+import { color, colorConfig, font } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useAvatarImage, useChatListContext, useCurrentContactUid } from "@/utility/UtilityHooks";
@@ -7,13 +7,12 @@ import { avatarImageUrl } from "@/service/api/UserService";
 
 export const ChatNavigationStyled = styled.div`
   width: 100%;
-  background-color: ${color.darkBlue};
+  background-color: ${colorConfig.chatNavBackgroundColor};
   display: grid;
   grid-template-columns: 50px 1fr;
   align-items: center;
   padding-left: 1rem;
   gap: 1rem;
-  border-bottom: 1px solid black;
 `;
 
 const ChatNavigationNameStyled = styled.span`

@@ -1,9 +1,9 @@
 import { FC, useContext } from "react";
 import styled, { css } from "styled-components";
-import { color, commonCss } from "../Palette";
+import { color, colorConfig, commonCss } from "../Palette";
 import { useChatListContext, useLogout } from "@/utility/UtilityHooks";
 import { WindowContext } from "@/contexts/WindowContext";
-import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, SettingsSVG } from "../common/Svg";
+import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, PowerSymbolSVG, SettingsSVG } from "../common/Svg";
 
 const ChatListNavStyled = styled.div`
     background-color: ${color.darkBlue};
@@ -16,7 +16,7 @@ const ChatListNavStyled = styled.div`
 `;
 
 const ChatListNavDoubleColumnParent = styled.div`
-    background-color: ${color.darkBlue};
+    background-color: ${colorConfig.chatListNavBackgroundColor};
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0px 1rem;
@@ -39,15 +39,34 @@ const ButtonStyled = styled.button<{ $selected: boolean }>`
     height: 25px;
     padding: 2px;
     aspect-ratio: 1 / 1;
-    background-color: ${props => props.$selected ? color.lightBlue : color.darkBlue};
+    background-color: transparent;
+    /* background-color: ${props => props.$selected ? colorConfig.chatListNavButtonSelectedBackgroundColor : 'transparent'}; */
     cursor: pointer;
     > svg {
+        color: ${props => props.$selected ? colorConfig.chatListNavButtonSelectedColor : colorConfig.chatListNavButtonColor};;
+    }
+    :hover {
+        > svg {
+            color: ${colorConfig.chatListNavButtonHoverColor};
+        }
+        /* background-color: ${colorConfig.chatListNavButtonHoverBackgroundColor}; */
+    }
+`;
+
+const PowerButton = styled(ButtonStyled)`
+background-color: ${colorConfig.chatListNavPowerButtonColor};
+    > svg {
+        /* color: ${colorConfig.chatListNavPowerButtonColor}; */
         color: white;
     }
     :hover {
-        background-color: ${color.lightBlue};
+        > svg {
+            color: white;
+            /* color: ${colorConfig.chatListNavPowerButtonColor}; */
+        }
     }
 `;
+
 type ButtonProps = {
     selected: boolean;
     onClick: () => void;
@@ -88,12 +107,13 @@ const SettingsButton: FC<ButtonProps> = props => {
 
 const LogoutButton: FC<ButtonProps> = props => {
     return (
-        <ButtonStyled
+        <PowerButton
             $selected={props.selected}
             onClick={props.onClick}
         >
-            <ExitSVG/>
-        </ButtonStyled>
+            {/* <ExitSVG/> */}
+            <PowerSymbolSVG/>
+        </PowerButton>
     );
 }
 

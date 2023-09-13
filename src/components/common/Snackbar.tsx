@@ -1,37 +1,46 @@
 import { Dispatch, FC, PropsWithChildren, createContext, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { color, commonCss, font } from "../Palette";
-import { useEffectOnce, useTimeout, useUpdateEffect } from "usehooks-ts";
+import { useEffectOnce } from "usehooks-ts";
 import { CloseSVG } from "./Svg";
 import { motion, AnimatePresence } from "framer-motion";
 
+type SnackbarType = "success" | "failure";
+
 type SnackbarContextType = {
-    push: (message: string) => void
+    pushError: (message: string) => void
+    pushSuccess: (message: string) => void
 };
 
 type SnackbarMessage = {
     id: number;
     message: string;
+    type: SnackbarType;
 }
 
 export const SnackbarContext = createContext<SnackbarContextType>({ 
-    push: (message: string) => {}
+    pushError: (message: string) => {},
+    pushSuccess: (message: string) => {},
 });
 
 export const SnackbarProvider: FC<PropsWithChildren> = (props) => {
     const [ data, setData ] = useState<SnackbarMessage[]>([]);
-    const push = (message: string) => {
+    const push = (message: string, type: SnackbarType) => {
         const id = Math.floor(Math.random() * 1_000);
-        const snackbarMessage = { id, message }
+        const snackbarMessage = { id, message, type } as SnackbarMessage;
         setData(prev => ([snackbarMessage, ...prev]));
     };
+
+    const pushError = (message: string) => push(message, "failure");
+    const pushSuccess = (message: string) => push(message, "success");
+
     const onClose = (id: number) => {
         return () => {
             setData(prev => prev.filter(ob => ob.id !== id));
         }
     }
     return (
-        <SnackbarContext.Provider value={{ push }}>
+        <SnackbarContext.Provider value={{ pushError, pushSuccess }}>
             {props.children}
             <SnackbarContainerStyled>
                 <AnimatePresence mode="popLayout">
@@ -41,6 +50,7 @@ export const SnackbarProvider: FC<PropsWithChildren> = (props) => {
                                 key={ob.id}
                                 message={ob.message} 
                                 onClose={onClose(ob.id)}
+                                type={ob.type}
                             />
                         ))
                     }
@@ -83,13 +93,17 @@ const SnackbarContainerStyled = styled.div`
     justify-content: flex-end;
     gap: 10px;
     grid-template-rows: auto;
+    pointer-events: none;
+    > *{
+        pointer-events: auto;
+    }
 `;
 
-const SnackbarStyled = styled(motion.div)`
+const SnackbarStyled = styled(motion.div)<{backgroundColor: string}>`
     height: 50px;
     min-width: 300px;
     display: none;
-    background-color:#f95959 ;
+    background-color:${props => props.backgroundColor} ;
     border-radius: 4px;
     display: grid;
     grid-template-columns: auto 50px;
@@ -127,6 +141,7 @@ const SnackbarDescription = styled.div`
 
 type SnackbarProps = {
     timeout?: number;
+    type?: SnackbarType;
     onClose?: () => void;
     message?: string;
 }
@@ -134,6 +149,8 @@ type SnackbarProps = {
 const Snackbar: FC<SnackbarProps> = (props) => {
     const timeout = props.timeout ?? 4000;
     const onClose = props.onClose ?? (() => {});
+    const type = props.type ?? "failure";
+    const backgroundColor = type === "failure" ? "#f95959" : "#42b883";
 
     useEffectOnce(() => {
         const id = setTimeout(onClose, timeout);
@@ -144,6 +161,7 @@ const Snackbar: FC<SnackbarProps> = (props) => {
 
     return (
         <SnackbarStyled
+            backgroundColor={backgroundColor}
             layout
             initial={{opacity: 0, scale: 0.8 }}
             animate={{opacity: 1, scale: 1}}

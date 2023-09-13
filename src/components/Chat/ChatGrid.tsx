@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { commonCss } from "@/components/Palette";
-import { useRef, MutableRefObject } from "react";
-import { useUpdateEffect } from "usehooks-ts";
+import { useRef, MutableRefObject, useEffect } from "react";
 import { Message } from "@/contexts/ChatContext";
 import { useChatContext, useChatListContext } from "@/utility/UtilityHooks";
 import ChatBubble from "./ChatBubble";
@@ -31,12 +30,11 @@ const useMessages = () => {
 
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {
     const messages: Message[] = useMessages();
-    const springScroll = useSpring(0);
-    useUpdateEffect(() => {
+    useEffect(() => {
         if (ref.current === null) return;
         const e = ref.current;
         e.scrollTo({ top: e.scrollHeight, behavior: "smooth" });
-    }, [messages]);
+    }, [messages, ref]);
 };
 
 const ChatGrid = () => {
@@ -52,6 +50,7 @@ const ChatGrid = () => {
                     message={m.content}
                     time={m.time}
                     side={m.isUser ? "right" : "left"}
+                    receiverRead={m.receiverRead}
                 />))
             }
         </ChatGridStyled>

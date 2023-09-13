@@ -1,8 +1,8 @@
 import { ChatContext } from "@/contexts/ChatContext";
 import { ChatListContext } from "@/contexts/ChatListContext";
-import { useContext, useEffect, useState } from "react";
+import { useMemo, useContext, useEffect, useState } from "react";
 import { LocalStorage } from "./LocalStorage";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import MessageService from "@/service/api/MessageService";
 import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
 import { avatarImageUrl } from "@/service/api/UserService";
@@ -49,6 +49,7 @@ type ClientMessage = {
   isUser: boolean;
   content: string;
   time: string;
+  receiverRead: boolean;
 };
 
 export const useAvatarImage = (uid: number | null): [string, () => void] => {
@@ -94,7 +95,8 @@ export const useSelectContact = () => {
         content: m.content,
         isUser: m.isUser,
         sender: "",
-        time: m.time
+        time: m.time,
+        receiverRead: m.receiverRead
       })));
       return ns;
     });
@@ -135,4 +137,10 @@ export const useCurrentContactUid = () => {
         return state.selectedContact.uid;
     }
     return null;
+}
+
+export const useQuery = () => {
+  const { search } = useLocation();
+
+  return useMemo(() => new URLSearchParams(search), [search]);
 }

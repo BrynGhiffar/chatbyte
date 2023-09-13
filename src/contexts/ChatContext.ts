@@ -6,6 +6,7 @@ export type Message = {
   sender: string;
   time: string;
   isUser: boolean;
+  receiverRead: boolean;
 };
 
 export type ChatContext = {

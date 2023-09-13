@@ -13,7 +13,8 @@ const GetMessageResponse = z.object({
             senderId: z.number(),
             isUser: z.boolean(),
             content: z.string(),
-            time: z.string()
+            time: z.string(),
+            receiverRead: z.boolean(),
         })
     )
 })

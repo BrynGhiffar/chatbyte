@@ -4,7 +4,38 @@ export const color = {
     darkBlue: '#233142',
     lightBlue: '#455d7a',
     seaGreen: '#42b883',
-    kindaWhite: '#e3e3e3'
+    kindaWhite: '#e3e3e3',
+    chatBlue: '#3d72ff',
+    white: '#ffffff',
+};
+
+export const colorConfig = {
+    chatListBackgroundColor: '#ffffff',
+    chatListTextColor: '#000000',
+    chatListBorderLeftColor: 'rgb(200, 200, 200)',
+    chatListSeparatorBorderColor: 'rgb(200,200,200)',
+    chatListSeparatorTextColor: 'rgb(150,150,150)',
+    chatListItemHoverColor: "#eff4ff",
+    chatListItemSelectedColor: "#eff4ff",
+    chatListNavTextColor: '#ffffff',
+    chatListNavBackgroundColor: color.chatBlue,
+    chatListNavSearchBackgroundColor: color.white,
+    chatListNavSearchBorderColor: 'rgb(200,200,200)',
+    chatListNavButtonColor: color.white,
+    chatListNavPowerButtonColor: '#f05d23',
+    chatListNavButtonSelectedBackgroundColor: 'rgba(100, 100, 100, 0.5)',
+    chatListNavButtonSelectedColor: '#00204a',
+    chatListNavButtonHoverBackgroundColor: 'rgba(100, 100, 100, 0.5)',
+    chatListNavButtonHoverColor: '#00204a',
+    chatNavBackgroundColor: color.chatBlue,
+    chatGridBackgroundColor: '#ffffff',
+    chatBubbleBackgroundColor: '#ededed',
+    chatBubbleBackgroundColorUserSent: '#d8e2ff',
+    chatInputBackgroundColor: '#ffffff',
+    chatEmptyBackgroundColor: '#ffffff',
+    chatInputBorderColor: 'rgb(200,200,200)',
+    chatInputSendButtonColor: 'gray',
+    chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
 };
 
 export const font = {

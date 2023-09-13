@@ -6,6 +6,7 @@ import { color, commonCss, font } from "@/components/Palette";
 import { AuthService } from "@/service/api/AuthService";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { InputField } from "@/components/common/InputField";
+import { useQuery } from "@/utility/UtilityHooks";
 
 const LoginWrapper = styled.div`
     height: 50%;
@@ -66,7 +67,7 @@ const LoginFieldEmpty: LoginField = {
 
 const Page: FC = () => {
     const [ loginField, setLoginField ] = useState(LoginFieldEmpty);
-    const { push: pushError } = useContext(SnackbarContext);
+    const { pushError, pushSuccess } = useContext(SnackbarContext);
     const navigate = useNavigate();
     const onClickLogin = async () => {
         const email = loginField.email.trim();
@@ -81,9 +82,18 @@ const Page: FC = () => {
         LocalStorage.setLoginToken(res.payload);
         navigate("/");
     };
-    const onClickRegister = () => {
-        pushError("Registering is currently disabled");
-    }
+    const onClickRegister = async () => {
+        const email = loginField.email.trim();
+        if (email.length === 0) return pushError("Email is empty");
+        const password = loginField.password.trim();
+        if (password.length === 0) return pushError("Password is empty");
+        const res = await AuthService.Register(loginField.email, loginField.password);
+        if (!res.success) {
+            pushError(res.message)
+            return;
+        }
+        pushSuccess("You have successfully registered, you can now log in");
+    };
     return (
         <LoginWrapper>
             <LoginTitle>CHAT APP</LoginTitle>
@@ -99,8 +109,8 @@ const Page: FC = () => {
                     value={loginField.password}
                     onChange={val => setLoginField(f => ({ ...f, password: val }))}
                 />
-                <LoginButton onClick={onClickLogin}>Log In</LoginButton>
-                <LoginButton onClick={onClickRegister}>Register</LoginButton>
+                <LoginButton onClick={onClickLogin}>LOGIN</LoginButton>
+                <LoginButton onClick={onClickRegister}>REGISTER</LoginButton>
             </InputFieldGroup>
         </LoginWrapper>
     )

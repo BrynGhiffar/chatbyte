@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { color, commonCss } from "@/components/Palette";
+import styled, { css } from "styled-components";
+import { color, colorConfig, commonCss } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useAvatarImage, useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
@@ -8,8 +8,8 @@ import { avatarImageUrl } from "@/service/api/UserService";
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   ${commonCss.transition}
   height: 80px;
-  background-color: ${props => props.$selected ? color.darkBlue : color.lightBlue};
-  color: white;
+  background-color: ${props => props.$selected ? colorConfig.chatListItemSelectedColor : 'transparent'};
+  color: ${colorConfig.chatListTextColor};
   display: grid;
   grid-template-columns: 60px 1fr;
   align-items: center;
@@ -19,7 +19,7 @@ const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   user-select: none;
 
   :hover {
-    background-color: ${color.darkBlue};
+    background-color: ${colorConfig.chatListItemHoverColor};
   }
 
   > * {

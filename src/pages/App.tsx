@@ -14,24 +14,20 @@ const device = {
 
 const AppWindowStyled = styled.div`
   min-height: 90vh; 
-  height: 80vh;
-  width: 70%;
-  box-shadow: 0px 0px 20px 0px black;
+  height: 100vh;
+  width: 100vw;
+  /* box-shadow: 0px 0px 20px 0px black; */
   background-color: ${color.lightBlue};
-  border-radius: 5px;
+  /* border-radius: 5px; */
   overflow: hidden;
   position: relative;
-
-  @media ${device.laptop} {
-    width: 90%;
-  }
 `;
 
 const ChatWindowStyled = styled.div`
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 30vw auto;
 `;
 
 const ChatWindow: FC = props => {

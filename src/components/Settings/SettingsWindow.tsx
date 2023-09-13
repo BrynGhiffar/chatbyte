@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { color, commonCss } from '../Palette';
 import { InputField } from '../common/InputField';
 import { Button } from '../common/Button';
-import { CameraSVG, CloseSVG } from '../common/Svg';
+import { BackButtonSVG, CameraSVG, CloseSVG } from '../common/Svg';
 import { WindowContext } from '@/contexts/WindowContext';
 import { UserService } from '@/service/api/UserService';
 import { LocalStorage } from '@/utility/LocalStorage';
@@ -30,11 +30,11 @@ const ProfilePictureSectionStyled = styled.div`
 
 const ImageContainerStyled = styled.div<{imageUrl: string}>`
     aspect-ratio: 1 / 1;
-    height: 220px;
+    width: 220px;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    background-size: contain;
+    background-size: 220px auto;
     background-image: url(${props => props.imageUrl});
     background-repeat: no-repeat;
     background-position: center;
@@ -138,7 +138,8 @@ const CloseButton: FC = props => {
     const { pop: popWindow } = useContext(WindowContext);
     return (
             <CloseButtonStyled onClick={popWindow}>
-                <CloseSVG/>
+                {/* <CloseSVG/> */}
+                <BackButtonSVG/>
             </CloseButtonStyled>
     )
 }

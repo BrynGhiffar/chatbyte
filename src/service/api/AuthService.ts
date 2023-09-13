@@ -24,6 +24,19 @@ const Login = async (email: string, password: string): Promise<LoginResponse> =>
     return req.payload;
 };
 
+const Register = async (email: string, password: string): Promise<LoginResponse> => {
+    const req = await request(LoginResponse, {
+        method: "POST",
+        ept: Endpoint.authRegister(),
+        headers: { "Content-Type": "application/json" },
+        body: {
+            email, password
+        }
+    });
+    if (!req.success) return req;
+    return req.payload;
+};
+
 const ValidateTokenResponse = z.object({
     success: z.literal(true),
     payload: z.string(),
@@ -49,5 +62,5 @@ const validateToken = async (token: string): Promise<ValidateTokenResponse> => {
 }
 
 export const AuthService = {
-    Login, validateToken
+    Login, validateToken, Register
 };

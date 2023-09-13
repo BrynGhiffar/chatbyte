@@ -8,20 +8,19 @@
 - [x] implement search in textbar.
 
 ### Features
-- [ ] standardise how components interact with each other
-- [ ] implement registration
+- [-] standardise how components interact with each other
+- [-] separate component logic
+- [x] implement registration
 - [ ] implement change password
 - [ ] implement change email
-- [ ] implement google OAuth
-- [ ] implement facebook OAuth
-- [ ] implement sessions
+- [-] implement sessions
 - [ ] implement chat groups
     - [ ] create chat groups
     - [ ] chat group invitations
     - [ ] leave chat group
     - [ ] send message in group
 - [ ] implement tick mark when a message has been sent.
-- [ ] implement tick mark when a message has been read.
+- [x] implement tick mark when a message has been read.
 - [ ] implement edit sent message
     Need to be able to mark messages that are deleted.
 - [ ] implement delete sent message

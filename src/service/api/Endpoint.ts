@@ -31,8 +31,10 @@ export class Endpoint {
     static contacts = () => "/contacts";
     static contactsRecent = () => "/contacts/recent";
     static authLogin = () => "/auth/login";
+    static authRegister = () => "/auth/register";
     static authVerifyToken = () => "/auth/valid-token";
     static messageWebSocket = (token: string) => `/message/ws?token=${token}`;
+    static webSocket = (token: string) => `/ws?token=${token}`;
     static userAvatar = (uid: number) => `/user/avatar/${uid}`;
     static postUserAvatar = () => `/user/avatar`;
     static userDetails = () => `/user/details`;
@@ -66,7 +68,11 @@ export const request = async <T extends z.ZodTypeAny>(parser: T, request: Reques
             body,
             redirect: 'follow',
         }
-        response = await fetch(`${backendEndpoint}${request.ept}`, requestOptions);
+        try {
+            response = await fetch(`${backendEndpoint}${request.ept}`, requestOptions);
+        } catch (err) {
+            return { success: false, message: String(err) }
+        }
 
     } else if (request.method === "GET" || request.method === "DELETE") {
         const requestOptions: RequestInit = {
@@ -74,11 +80,15 @@ export const request = async <T extends z.ZodTypeAny>(parser: T, request: Reques
             headers,
             redirect: 'follow',
         }
-        response = await fetch(`${backendEndpoint}${request.ept}`, requestOptions);
+        try { 
+            response = await fetch(`${backendEndpoint}${request.ept}`, requestOptions);
+        } catch (err) {
+            return { success: false, message: String(err)}
+        }
     }
     if (!response) return { success: false, message: "UNKNOWN_METHOD" };
     const json = await response.json();
     const safeParse = parser.safeParse(json);
-    if (!safeParse.success) return { success: false, message: "FAILED_PARSING_RESPONSE" };
+    if (!safeParse.success) return { success: false, message: `FAILED_PARSING_RESPONSE: ${JSON.stringify(json)}` };
     return { success: true, payload: safeParse.data };
 }

@@ -1,13 +1,12 @@
 import styled from "styled-components";
-import { color, commonCss } from "@/components/Palette";
+import { color, colorConfig, commonCss } from "@/components/Palette";
 import { FC, useContext, useState } from "react";
-import { SnackbarContext } from "../common/Snackbar";
 import { useChatContext, useSendMessage } from "@/utility/UtilityHooks";
 
 const SendSvg = styled.svg``;
 const ChatInputBarStyled = styled.div`
   width: 100%;
-  background-color: ${color.darkBlue};
+  background-color: ${colorConfig.chatInputBackgroundColor};
   display: grid;
   grid-template-columns: 1fr 5rem;
   justify-content: center;
@@ -33,6 +32,7 @@ const ChatInputText = styled.input`
     padding: 0px 0.5rem;
     border-radius: 4px;
     font-size: 0.9rem;
+    outline: 1px solid ${colorConfig.chatInputBorderColor};
 `;
 
 const SendButton = styled.button`
@@ -40,7 +40,7 @@ const SendButton = styled.button`
     border: none;
     border-radius: 4px;
     background-color: transparent;
-    color: white;
+    color: ${colorConfig.chatInputSendButtonColor};
     text-transform: uppercase;
     cursor: pointer;
     display: flex;
@@ -48,7 +48,7 @@ const SendButton = styled.button`
     align-items: center;
 
     :hover {
-      background-color: rgba(100, 100, 100, 0.3);
+      background-color: ${colorConfig.chatInputSendButtonBackgroundColorHover};
     }
 
     > ${SendSvg} {
@@ -58,7 +58,6 @@ const SendButton = styled.button`
 
 
 const ChatInputBar: FC = () => {
-  const { push } = useContext(SnackbarContext);
   const [ input, setInput ] = useState("");
   const sendMessage = useSendMessage();
   const onClickSend = async () => {

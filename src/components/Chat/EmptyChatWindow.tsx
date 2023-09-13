@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { FC, PropsWithChildren } from "react";
-import { color } from "../Palette";
+import { color, colorConfig } from "../Palette";
 
 
 const StyledEmptyChatWindow = styled.div`
-    background: ${color.darkBlue};
+    background: ${colorConfig.chatEmptyBackgroundColor};
 `;
 
 const EmptyChatWindow: FC<PropsWithChildren> = (props) => {
