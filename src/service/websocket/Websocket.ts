@@ -11,6 +11,11 @@ export const WebSocketIncomingMessage = z.object({
     receiverUid: z.number(),
 });
 
+type GroupMessage = {
+    groupId: number, 
+    content: string
+}
+
 export type WebSocketIncomingMessage = z.infer<typeof WebSocketIncomingMessage>;
 
 export const WebSocketMessageNotification = z.object({
@@ -35,7 +40,15 @@ export const WebSocketOutgoingMessage = z.object({
 })).or(z.object({
     type: z.literal("ERROR_NOTIFICATION"),
     message: z.string()
-}));
+})).or(z.object({
+    type: z.literal("GROUP_MESSAGE_NOTIFICATION"),
+    id: z.number(),
+    senderId: z.number(),
+    groupId: z.number(),
+    content: z.string(),
+    sentAt: z.string()
+}))
+;
 
 export type WebSocketOutgoingMessage = z.infer<typeof WebSocketOutgoingMessage>;
 
@@ -72,5 +85,13 @@ export const useSocket = () => {
             message: message.content
         }));
     };
-    return { sendMessageSocket, lastMessageSocket };
+
+    const sendGroupMessage = (message: GroupMessage) => {
+        sendMessageRaw(JSON.stringify({
+            type: "SEND_GROUP_MESSAGE",
+            groupId: message.groupId,
+            message: message.content
+        }));
+    }
+    return { sendMessageSocket, sendGroupMessage, lastMessageSocket };
 };

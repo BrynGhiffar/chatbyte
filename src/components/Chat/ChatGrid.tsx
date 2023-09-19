@@ -22,10 +22,7 @@ const useMessages = () => {
   const { state } = useChatContext();
   const uid = useCurrentContactUid();
   if (!uid) return [];
-  const map = state.messages;
-  const msgs = map.get(uid);
-  if (!msgs) return [];
-  return msgs;
+  return state.messages;
 };
 
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {

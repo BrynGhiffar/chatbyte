@@ -11,15 +11,15 @@
 - [-] standardise how components interact with each other
 - [-] separate component logic
 - [x] implement registration
-- [ ] implement change password
-- [ ] implement change email
+- [x] implement change password
+- [x] implement change username
 - [-] implement sessions
 - [ ] implement chat groups
     - [ ] create chat groups
     - [ ] chat group invitations
     - [ ] leave chat group
     - [ ] send message in group
-- [ ] implement tick mark when a message has been sent.
+- [x] implement tick mark when a message has been sent (yes but not single tick mark then double tick mark).
 - [x] implement tick mark when a message has been read.
 - [ ] implement edit sent message
     Need to be able to mark messages that are deleted.

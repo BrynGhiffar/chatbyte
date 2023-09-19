@@ -32,12 +32,16 @@ export class Endpoint {
     static contactsRecent = () => "/contacts/recent";
     static authLogin = () => "/auth/login";
     static authRegister = () => "/auth/register";
+    static changePassword = () => `/auth/change-password`;
     static authVerifyToken = () => "/auth/valid-token";
     static messageWebSocket = (token: string) => `/message/ws?token=${token}`;
     static webSocket = (token: string) => `/ws?token=${token}`;
     static userAvatar = (uid: number) => `/user/avatar/${uid}`;
     static postUserAvatar = () => `/user/avatar`;
     static userDetails = () => `/user/details`;
+    static updateUser = () => `/user`;
+    static group = () => "/group";
+    static groupMessage = (groupId: number) => `/group/message/${groupId}`;
 }
 
 

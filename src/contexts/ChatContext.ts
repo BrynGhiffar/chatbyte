@@ -18,11 +18,11 @@ export type ChatContext = {
 type ContactId = number;
 
 export type ChatState = {
-  messages: Map<ContactId, Message[]>,
+  messages: Message[],
 };
 
 export const InitialChatState: ChatState = {
-  messages: new Map()
+  messages: []
 };
 
 

@@ -7,17 +7,30 @@ import { ChatContactMessageItem, ChatListContext, Contact, InitialChatListState 
 import { useToken } from "@/utility/UtilityHooks";
 import { WebSocketOutgoingMessage, useSocket } from "@/service/websocket/Websocket";
 import { UserService } from "@/service/api/UserService";
+import { GroupService } from "@/service/api/GroupService";
 
-const toMessageNotification = (message: WebSocketOutgoingMessage): [Message, number, number] | null => {
-  if (message.type !== "MESSAGE_NOTIFICATION") return null;
-  const messagePayload = message;
-  const result: Message = {
-    id: messagePayload.id, content: messagePayload.content,
-    sender: "", time: messagePayload.sentAt,
-    isUser: messagePayload.isUser,
-    receiverRead: message.receiverRead,
-  };
-  return [result, message.receiverUid, message.senderUid];
+const toMessageNotification = (message: WebSocketOutgoingMessage, uid: number): [Message, number, number] | null => {
+  if (message.type === "MESSAGE_NOTIFICATION") {
+    const messagePayload = message;
+    const result: Message = {
+      id: messagePayload.id, content: messagePayload.content,
+      sender: "", time: messagePayload.sentAt,
+      isUser: messagePayload.senderUid === uid,
+      receiverRead: message.receiverRead,
+    };
+    return [result, message.receiverUid, message.senderUid];
+  } else if (message.type === "GROUP_MESSAGE_NOTIFICATION") {
+    const result: Message = {
+      id: message.id,
+      content: message.content,
+      isUser: message.senderId === uid,
+      receiverRead: false,
+      sender: `${message.senderId}`,
+      time: message.sentAt,
+    }
+    return [result, message.groupId, message.groupId];
+  }
+  return null;
 };
 
 const toReadNotification = (message: WebSocketOutgoingMessage): [number, number] | null => {
@@ -25,25 +38,20 @@ const toReadNotification = (message: WebSocketOutgoingMessage): [number, number]
   return [message.receiverUid, message.senderUid]; 
 }
 
+
+
 type SetChatState = (value: React.SetStateAction<ChatState>) => void
 
-const addMessageToChatState = (setChatState: SetChatState, newMessage: Message, contactId: number) => {
+const addMessageToChatState = (setChatState: SetChatState, newMessage: Message) => {
   setChatState(s => {
-    const ns = structuredClone(s);
-    const msgs = ns.messages.get(contactId) ?? [];
-    ns.messages.set(contactId, [ ...msgs, newMessage ]);
-    return ns;
+    return { messages: [ ...s.messages, newMessage ] };
   });
 };
 
-const setMessageRead = (setChatState: SetChatState, receiverUid: number) => {
+const setMessageRead = (setChatState: SetChatState) => {
   setChatState(s => {
-    const ns = structuredClone(s);
-    const msgs = ns.messages.get(receiverUid);
-    if (!msgs) return s;
-    const nMsgs = msgs.map(m => m.isUser ? ({...m, receiverRead: true}) : m);
-    ns.messages.set(receiverUid, nMsgs);
-    return ns;
+    const nMsgs = s.messages.map(m => m.isUser ? ({...m, receiverRead: true}) : m);
+    return { ...s, messages: nMsgs };
   })
 };
 
@@ -55,18 +63,22 @@ const useOnMessageNotification = () => {
 
   useUpdateEffect(() => {
     // handles message notifications
-    const result = toMessageNotification(lastMessageSocket);
+    const result = toMessageNotification(lastMessageSocket, chatListState.userId);
     if (!result) return;
     const [message, receiverUid, senderUid] = result;
 
     const contactId = message.isUser ?
     receiverUid 
       : senderUid;
-    addMessageToChatState(setChatState, message, contactId);
     const selectedContact = chatListState.selectedContact;
     const run = async () => {
       if (selectedContact === null) return;
-      await MessageService.setMessagesRead(token, selectedContact.uid);
+      if (selectedContact.uid === contactId && selectedContact.type === "DIRECT") {
+        addMessageToChatState(setChatState, message);
+        await MessageService.setMessagesRead(token, selectedContact.uid);
+      } else if (selectedContact.uid === contactId && selectedContact.type === "GROUP") {
+        addMessageToChatState(setChatState, message);
+      }
       const resRecent = await ContactService.getContactsRecent(token);
       if (!resRecent.success) return;
       const contactMessages: ChatContactMessageItem[] = resRecent
@@ -86,8 +98,9 @@ const useOnMessageNotification = () => {
     const result = toReadNotification(lastMessageSocket);
     if (!result) return;
     const [receiverUid, senderUid] = result;
-    setMessageRead(setChatState, receiverUid);
-  }, [lastMessageSocket]);
+    if (receiverUid !== chatListState.selectedContact?.uid) return;
+    setMessageRead(setChatState);
+  }, [lastMessageSocket, chatListState.selectedContact]);
 };
 
 const WebSocketListener: FC<PropsWithChildren> = (props) => {
@@ -103,17 +116,31 @@ const FetchDataOnMount: FC<PropsWithChildren> = (props) => {
       const response = await ContactService.getContacts(token);
       const responseRecent = await ContactService.getContactsRecent(token);
       const userDetailsResponse = await UserService.getUserDetails(token);
+      const getGroupsResponse = await GroupService.getGroups(token);
       if (!responseRecent.success) return;
       if (!response.success) return;
       if (!userDetailsResponse.success) return;
+      if (!getGroupsResponse.success) return;
+
+      const groupContacts: Contact[] = getGroupsResponse.payload
+        .map(c => ({
+          type: "GROUP",
+          name: c.name,
+          uid: c.id,
+          urlProfile: ""
+        }));
+
       const { uid, username } = userDetailsResponse.payload;
 
-      const contacts: Contact[] = response
+      const directContacts: Contact[] = response
         .payload.map(u => ({
+          type: "DIRECT",
           uid: u.id,
           name: u.email,
           urlProfile: ""
         }));
+      
+      const contacts = [...directContacts, ...groupContacts];
       
       const contactMessages: ChatContactMessageItem[] = responseRecent
         .payload.map(u => ({

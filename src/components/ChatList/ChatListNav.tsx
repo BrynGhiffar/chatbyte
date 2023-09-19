@@ -111,7 +111,6 @@ const LogoutButton: FC<ButtonProps> = props => {
             $selected={props.selected}
             onClick={props.onClick}
         >
-            {/* <ExitSVG/> */}
             <PowerSymbolSVG/>
         </PowerButton>
     );

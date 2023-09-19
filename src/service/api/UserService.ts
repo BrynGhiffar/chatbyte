@@ -46,7 +46,29 @@ const uploadUserAvatar = async (token: string, blob: File) => {
 
 };
 
+const ChangeUserNameResponse = z.object({
+    success: z.literal(true),
+    payload: z.string(),
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+const changeUserName = async (token: string, newUsername: string) => {
+    const res = await request(ChangeUserNameResponse, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}`, 'Content-Type': "application/json" },
+        ept: Endpoint.updateUser(),
+        body: {
+            username: newUsername
+        }
+    })
+    if (!res.success) return res;
+    return res.payload;
+};
+
 export const UserService = {
     getUserDetails,
-    uploadUserAvatar
+    uploadUserAvatar,
+    changeUserName
 };

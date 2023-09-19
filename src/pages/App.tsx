@@ -4,13 +4,12 @@ import { ApplicationContext } from "../contexts/ApplicationContext";
 import ChatList from "../components/ChatList/ChatList";
 import Chat from "../components/Chat/Chat";
 import { FC, PropsWithChildren, useCallback, useContext, useState } from "react";
-import { SettingsWindow } from "@/components/Settings/SettingsWindow";
 import { Window, WindowContext } from "@/contexts/WindowContext";
 import { motion, AnimatePresence } from "framer-motion";
-
-const device = {
-  laptop: "(max-width: 1000px)"
-}
+import { PopupLogoutWindow } from "@/components/PopupLogout/PopupWindow";
+import SettingsNewWindow from "@/components/SettingsNewWindow/SettingsNewWindow";
+import { ChangePasswordWindow } from "@/components/ChangePasswordWindow/ChangePasswordWindow";
+import { CreateGroupWindow } from "@/components/CreateGroupWindow/CreateGroupWindow";
 
 const AppWindowStyled = styled.div`
   min-height: 90vh; 
@@ -91,7 +90,28 @@ const AppWindow: FC = () => {
         { 
           top === "SETTINGS_WINDOW" && (
             <AnimateChildWindow key="settings">
-              <SettingsWindow/>
+              <SettingsNewWindow/>
+            </AnimateChildWindow>
+          )
+        }
+        {
+          top === "LOGOUT_CONFIRM" && (
+            <AnimateChildWindow key="popup_logout">
+              <PopupLogoutWindow/>
+            </AnimateChildWindow>
+          )
+        }
+        {
+          top === "CHANGE_PASSWORD" && (
+            <AnimateChildWindow key="change_password">
+              <ChangePasswordWindow/>
+            </AnimateChildWindow>
+          )
+        }
+        {
+          top === "CREATE_GROUP_WINDOW" && (
+            <AnimateChildWindow key="create_group">
+              <CreateGroupWindow/>
             </AnimateChildWindow>
           )
         }

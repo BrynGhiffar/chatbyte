@@ -39,7 +39,12 @@ const ChatListSearch: FC = () => {
 
   return (
     <ChatListSearchStyled>
-        <ChatListSearchInput type="text" placeholder="Search something" onChange={e => setSearch(e.target.value)} value={searchVal}/>
+        <ChatListSearchInput
+          type="text" 
+          placeholder="Search something" 
+          onChange={e => setSearch(e.target.value)} 
+          value={searchVal}
+        />
     </ChatListSearchStyled>
   );
 };

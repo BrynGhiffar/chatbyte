@@ -17,7 +17,7 @@ export const ChatNavigationStyled = styled.div`
 
 const ChatNavigationNameStyled = styled.span`
     font-family: ${font.appleFont};
-    color: ${color.kindaWhite};
+    color: ${color.white};
     font-size: 1rem;
     font-weight: bold;
 `;

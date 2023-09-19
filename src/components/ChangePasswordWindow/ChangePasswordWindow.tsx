@@ -1,0 +1,95 @@
+import { WindowContext } from '@/contexts/WindowContext';
+import { FC, useContext, useCallback, useState } from 'react';
+import styled from 'styled-components';
+import { InputField } from '../common/new/InputField';
+import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
+import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/Popup';
+import { VerticalStackContainer } from '../common/StackContainer';
+import { useToken } from '@/utility/UtilityHooks';
+import { AuthService } from '@/service/api/AuthService';
+import { SnackbarContext } from '../common/Snackbar';
+
+
+const PopupContainer = styled(GenericPopupContainer)`
+    height: 280px;
+    width: 400px;
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+`;
+
+const PopupContainerTopHalfStyled = styled(VerticalStackContainer)`
+    gap: 10px;
+`;
+
+const PopupContainerBottomHalfStyled = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`;
+
+const PopupButton = GenericBottomPopupButton;
+
+const ChangePasswordButton = styled(PopupButton)`
+    :hover {
+        background-color: red;
+        color: white;
+    }
+`;
+
+const PopupContainerTitle = styled.h1`
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+`;
+
+const PopupWindow: FC = () => {
+    const { pushError, pushSuccess } = useContext(SnackbarContext);
+    const { pop } = useContext(WindowContext);
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const token = useToken();
+    const onClickCancel = useCallback(() => {
+        pop();
+    }, [pop]);
+    const onClickChangePassword = useCallback(async () => {
+        const res = await AuthService.changePassword(token, oldPassword, newPassword);
+        if (res.success) {
+            pushSuccess(res.payload);
+            pop();
+        } else {
+            pushError(res.message);
+        }
+    }, [newPassword, oldPassword, token, pushError, pushSuccess, pop]);
+    return (
+        <PopupContainer onClick={e => e.stopPropagation()}>
+            <PopupContainerTopHalfStyled>
+                <PopupContainerTitle>Change Password</PopupContainerTitle>
+                <InputField
+                    label="Old Password"
+                    placeholder="old password"
+                    value={oldPassword}
+                    onValueChange={setOldPassword}
+                />
+                <InputField
+                    label="New Password" 
+                    placeholder="new password"
+                    value={newPassword}
+                    onValueChange={setNewPassword}
+                />
+            </PopupContainerTopHalfStyled>
+            <PopupContainerBottomHalfStyled>
+                <PopupButton onClick={onClickCancel}>Cancel</PopupButton>
+                <ChangePasswordButton onClick={onClickChangePassword}>Change Password</ChangePasswordButton>
+            </PopupContainerBottomHalfStyled>
+        </PopupContainer>
+    )
+};
+
+
+export const ChangePasswordWindow: FC = () => {
+    return (
+        <BlurBackgroundCover dismissOnClick>
+            <PopupWindow/>
+        </BlurBackgroundCover>
+    );
+}

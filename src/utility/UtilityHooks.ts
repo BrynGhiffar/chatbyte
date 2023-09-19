@@ -1,4 +1,4 @@
-import { ChatContext } from "@/contexts/ChatContext";
+import { ChatContext, Message } from "@/contexts/ChatContext";
 import { ChatListContext } from "@/contexts/ChatListContext";
 import { useMemo, useContext, useEffect, useState } from "react";
 import { LocalStorage } from "./LocalStorage";
@@ -7,6 +7,8 @@ import MessageService from "@/service/api/MessageService";
 import { WebSocketIncomingMessage, useSocket } from "@/service/websocket/Websocket";
 import { avatarImageUrl } from "@/service/api/UserService";
 import { AuthService } from "@/service/api/AuthService";
+import { GroupService } from "@/service/api/GroupService";
+import { SnackbarContext } from "@/components/common/Snackbar";
 export const useChatContext = () => {
   return useContext(ChatContext);
 };
@@ -41,17 +43,6 @@ export const useLogout = () => {
   };
 };
 
-
-type ClientMessage = {
-  id: number;
-  receiverId: number;
-  senderId: number;
-  isUser: boolean;
-  content: string;
-  time: string;
-  receiverRead: boolean;
-};
-
 export const useAvatarImage = (uid: number | null): [string, () => void] => {
   const [num, setNum] = useState(Math.floor(Math.random() * 1_000));
   const reload = () => {
@@ -65,17 +56,13 @@ export const useAvatarImage = (uid: number | null): [string, () => void] => {
 
 export const useSelectContact = () => {
   const token = useToken();
+  const { pushError } = useContext(SnackbarContext);
   const { state: chatListState, setState: setChatListState } = useContext(ChatListContext);
   const { setState: setChatState } = useContext(ChatContext);
 
-  const selectContact = async (uid: number) => {
-    const contact = chatListState.contacts.find(c => c.uid === uid);
+  const selectContact = async (type: "DIRECT" | "GROUP", uid: number) => {
+    const contact = chatListState.contacts.find(c => c.uid === uid && c.type === type);
     if (!contact) return;
-
-    await MessageService.setMessagesRead(token, contact.uid);
-    const response = await MessageService.getMessage(token, contact.uid);
-    if (!response.success) return;
-    const messages: ClientMessage[] = response.payload;
 
     setChatListState(s => ({
       ...s,
@@ -85,21 +72,41 @@ export const useSelectContact = () => {
         return { ...m, unread_count: 0 };
       })
     }));
+    
+    if (contact.type === "DIRECT") {
+      await MessageService.setMessagesRead(token, contact.uid);
+      const response = await MessageService.getMessage(token, contact.uid);
+      if (!response.success) return;
+      const messages = response.payload;
+  
+  
+      setChatState(s => {
+        const newMessages = messages.map(m => ({
+          id: m.id,
+          content: m.content,
+          isUser: m.isUser,
+          sender: "",
+          time: m.time,
+          receiverRead: m.receiverRead
+        }));
+        return {...s, messages: newMessages };
+      });
+    } else {
+      const response = await GroupService.getGroupMessages(uid, token);
+      if (!response.success) { return pushError("Failed getting group messages"); }
+      const messages: Message[] = response.payload
+        .map(m => ({
+          id: m.id,
+          receiverRead: false,
+          isUser: m.senderId === chatListState.userId,
+          sender: "",
+          time: m.sentAt,
+          content: m.content
+        }));
+      setChatState(s => ({ ...s, messages }));
+    }
 
-    setChatState(s => {
-      const msgs = s.messages.get(contact.uid);
-      if (msgs) return s;
-      const ns = structuredClone(s);
-      ns.messages.set(contact.uid, messages.map(m => ({
-        id: m.id,
-        content: m.content,
-        isUser: m.isUser,
-        sender: "",
-        time: m.time,
-        receiverRead: m.receiverRead
-      })));
-      return ns;
-    });
+
   };
   return selectContact;
 };
@@ -107,16 +114,25 @@ export const useSelectContact = () => {
 export const useSendMessage = () => {
 
   const { state: chatListState } = useChatListContext();
-  const { sendMessageSocket } = useSocket();
+  const { sendMessageSocket, sendGroupMessage } = useSocket();
   
   const sendMessageWs = (message: string) => {
     if (chatListState.selectedContact === null) return;
-    const receiverUid = chatListState.selectedContact.uid;
-    const req: WebSocketIncomingMessage = {
-      content: message,
-      receiverUid: receiverUid,
-    };
-    sendMessageSocket(req);
+    if (chatListState.selectedContact.type === "DIRECT") {
+      const receiverUid = chatListState.selectedContact.uid;
+      const req: WebSocketIncomingMessage = {
+        content: message,
+        receiverUid: receiverUid,
+      };
+      sendMessageSocket(req);
+    } else if (chatListState.selectedContact.type === "GROUP") {
+      const groupId = chatListState.selectedContact.uid;
+      const req = {
+        content: message,
+        groupId: groupId,
+      };
+      sendGroupMessage(req);
+    }
   };
 
   return sendMessageWs;
@@ -143,4 +159,9 @@ export const useQuery = () => {
   const { search } = useLocation();
 
   return useMemo(() => new URLSearchParams(search), [search]);
-}
+};
+
+export const useChatProfile = (): [number, string]=> {
+  const { state } = useChatListContext();
+  return [state.userId, state.username];
+};

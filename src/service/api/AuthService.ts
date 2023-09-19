@@ -37,6 +37,27 @@ const Register = async (email: string, password: string): Promise<LoginResponse>
     return req.payload;
 };
 
+const ChangePasswordResponse = z.object({
+    success: z.literal(true),
+    payload: z.string()
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+const changePassword = async (token: string, oldPassword: string, newPassword: string) => {
+    const req = await request(ChangePasswordResponse, {
+        method: "PUT",
+        ept: Endpoint.changePassword(),
+        headers: { "Content-Type": "application/json", "Authorization": token },
+        body: {
+            oldPassword, newPassword
+        }
+    });
+    if (!req.success) return req;
+    return req.payload;
+}
+
 const ValidateTokenResponse = z.object({
     success: z.literal(true),
     payload: z.string(),
@@ -62,5 +83,5 @@ const validateToken = async (token: string): Promise<ValidateTokenResponse> => {
 }
 
 export const AuthService = {
-    Login, validateToken, Register
+    Login, validateToken, Register, changePassword
 };

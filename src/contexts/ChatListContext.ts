@@ -2,9 +2,10 @@ import { SetStateAction, createContext, Dispatch } from "react";
 
 
 export type Contact = {
-  uid: number;
-  urlProfile: string;
-  name: string;
+    type: "DIRECT" | "GROUP"
+    uid: number;
+    urlProfile: string;
+    name: string;
 };
 
 export type ChatContactMessageItem = {
@@ -27,7 +28,6 @@ export type ChatContactListState = {
 
 export type ChatListContextType = {
     state: ChatContactListState;
-    // selectContact: (uid: number) => void;
     setList: (list: "message" | "contact") => void;
     setState: Dispatch<SetStateAction<ChatContactListState>>;
 };

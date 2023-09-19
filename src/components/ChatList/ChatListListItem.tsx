@@ -1,9 +1,8 @@
 import styled, { css } from "styled-components";
 import { color, colorConfig, commonCss } from "@/components/Palette";
-import { ProfilePicture } from "@/components/common/ProfilePicture";
+import { ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useAvatarImage, useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
-import { avatarImageUrl } from "@/service/api/UserService";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   ${commonCss.transition}
@@ -66,6 +65,7 @@ const DescriptionNotificationIcon = styled.div`
 
 type ChatListListItemProps = {
     uid: number;
+    type: "DIRECT" | "GROUP";
     name: string;
     time: string;
     message: string;
@@ -75,17 +75,22 @@ type ChatListListItemProps = {
 export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
     const unread_count = props.unread_count > 9 ? "9+" : `${props.unread_count}`
     const uid = useCurrentContactUid();
+    const type = useCurrentContactType();
     const selectContact = useSelectContact();
-    const selected = uid === props.uid;
+    const selected = uid === props.uid && type === props.type;
     const chopLength = 15;
     const message = props.message.length > chopLength ? `${props.message.slice(0, 15)}...` : props.message;
     const onClickListItem = () => {
-        selectContact(props.uid);
+        selectContact(props.type, props.uid);
     };
     const [avatarImage, ] = useAvatarImage(props.uid);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
-            <ProfilePicture width={60} imageUrl={avatarImage}/>
+            <ProfilePictureWithStatus 
+                width={60} 
+                imageUrl={avatarImage} 
+                statusOutlineColor={colorConfig.chatListBackgroundColor}
+            />
             <Description>
                 <DescriptionName>{props.name}</DescriptionName>
                 <DescriptionTime>{props.time}</DescriptionTime>
@@ -112,6 +117,7 @@ const ChatContactName = styled.span`
 
 type ChatContactListItemProps = {
     uid: number;
+    type: "DIRECT" | "GROUP";
     name: string
 };
 
@@ -124,17 +130,29 @@ const useCurrentContactUid = () => {
     return null;
 }
 
+const useCurrentContactType = () => {
+    const { state } = useChatListContext();
+    if (state.selectedContact) {
+        return state.selectedContact.type;
+    }
+    return null;
+};
+
 export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
     const uid = useCurrentContactUid();
     const selectContact = useSelectContact();
-    const selected = uid === props.uid;
+    const selected = false;
     const onClickListItem = () => {
-        selectContact(props.uid);
+        selectContact(props.type, props.uid);
     };
     const [avatarImage, ] = useAvatarImage(props.uid);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
-            <ProfilePicture width={60} imageUrl={avatarImage}/>
+            <ProfilePictureWithStatus
+                width={60} 
+                imageUrl={avatarImage} 
+                statusOutlineColor={colorConfig.chatListBackgroundColor}
+            />
             <ChatContactName>{props.name}</ChatContactName>
         </ChatListListItemStyled>
     )
