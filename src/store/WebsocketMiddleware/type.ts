@@ -25,7 +25,7 @@ export type WebsocketMiddleware = <
 ) => StateCreator<AppState, Mps, [
   ['sendMessage', SendMessage],
   ...Mcs]
->
+  >
 
 export type WebsocketMiddlewareImpl = (
     f: StateCreator<AppState, [], []>,
