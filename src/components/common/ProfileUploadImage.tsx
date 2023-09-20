@@ -1,7 +1,8 @@
 import { useAvatarImage } from "@/utility/UtilityHooks";
-import { useRef, FC, useEffect, ChangeEvent } from 'react';
+import { useRef, FC, useEffect, ChangeEvent, useState } from 'react';
 import styled from "styled-components";
 import { CameraSVG } from "./Svg";
+import { toBase64 } from "@/utility/UtilityFunctions";
 
 const ImageContainerStyled = styled.div<{imageUrl: string, $diameter: number}>`
     aspect-ratio: 1 / 1;
@@ -54,15 +55,17 @@ const InvisibleInput = styled.input`
 type ProfileUploadImageProps = {
     diameter: number;
     uid?: number;
-    onFileChange?: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
+    onFileChange?: (e: File) => Promise<void>;
 }
 
 const ProfileUploadImage: FC<ProfileUploadImageProps> = (props) => {
     const uid = props.uid ?? -1;
     const [imageUrl, reload] = useAvatarImage(uid);
+    const [base64, setBase64] = useState("");
+    
     const inputRef = useRef<HTMLInputElement>(null);
     return (
-        <ImageContainerStyled imageUrl={imageUrl} $diameter={props.diameter}>
+        <ImageContainerStyled imageUrl={props.uid ? imageUrl : base64} $diameter={props.diameter}>
         <AttemptBlur
             onClick={() => inputRef.current?.click()}
         >
@@ -72,8 +75,15 @@ const ProfileUploadImage: FC<ProfileUploadImageProps> = (props) => {
                 type='file'
                 accept='image/*'
                 onChange={async (e) => {
+                    const files = e.target.files;
+                    if (!files) return;
+                    const file = files[0];
+                    if (!file) return;
+                    if (!props.uid) {
+                        setBase64(await toBase64(file) as string);
+                    }
                     if (!props.onFileChange) return;
-                    await props.onFileChange(e);
+                    await props.onFileChange(file);
                     reload();
                 }}
             />

@@ -225,7 +225,21 @@ const CustomPlaceholder: FC<PropsWithChildren<any>> = (props) => {
     // return (<components.Placeholder {...props}/>)
 }
 
-export const InputFieldSearchableDropDown: FC<InputFieldProps> = (props) => {
+type InputFieldSearchableDropDownOption = {
+    id: number;
+    label: string;
+    value: string;
+}
+
+type InputFieldSearchableDropDownProps = {
+    label: string;
+    placeholder: string;
+    options?: InputFieldSearchableDropDownOption[],
+    onChangeSelection?: (selection: number[]) => void;
+}
+
+export const InputFieldSearchableDropDown: FC<InputFieldSearchableDropDownProps> = (props) => {
+    const options = props.options ?? [];
     return (
         <InputFieldContainerStyled>
             <InputFieldLabelStyled>{props.label}</InputFieldLabelStyled>
@@ -243,6 +257,7 @@ export const InputFieldSearchableDropDown: FC<InputFieldProps> = (props) => {
                 }}
                 hideSelectedOptions={false}
                 closeMenuOnSelect={false}
+                onChange={(val) => props.onChangeSelection && props.onChangeSelection((val as InputFieldSearchableDropDownOption[]).map(s => s.id))}
             />
         </InputFieldContainerStyled>
     )

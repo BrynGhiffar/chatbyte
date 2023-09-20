@@ -1,12 +1,11 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { SnackbarContext } from "@/components/common/Snackbar";
 import { color, commonCss, font } from "@/components/Palette";
 import { AuthService } from "@/service/api/AuthService";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { InputField } from "@/components/common/InputField";
-import { useQuery } from "@/utility/UtilityHooks";
+import { useSnackbar } from "@/store/AppStore/hooks";
 
 const LoginWrapper = styled.div`
     height: 50%;
@@ -67,7 +66,7 @@ const LoginFieldEmpty: LoginField = {
 
 const Page: FC = () => {
     const [ loginField, setLoginField ] = useState(LoginFieldEmpty);
-    const { pushError, pushSuccess } = useContext(SnackbarContext);
+    const { pushError, pushSuccess } = useSnackbar();
     const navigate = useNavigate();
     const onClickLogin = async () => {
         const email = loginField.email.trim();

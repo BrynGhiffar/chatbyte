@@ -1,9 +1,10 @@
-import { FC, useContext } from "react";
+import { FC } from "react";
 import styled, { css } from "styled-components";
 import { color, colorConfig, commonCss } from "../Palette";
-import { useChatListContext, useLogout } from "@/utility/UtilityHooks";
+import { useLogout } from "@/utility/UtilityHooks";
 import { WindowContext } from "@/contexts/WindowContext";
 import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, PowerSymbolSVG, SettingsSVG } from "../common/Svg";
+import { useWindow } from "@/store/AppStore/hooks";
 
 const ChatListNavStyled = styled.div`
     background-color: ${color.darkBlue};
@@ -116,20 +117,16 @@ const LogoutButton: FC<ButtonProps> = props => {
     );
 }
 
-const useList = () => {
-    const { state, setList } = useChatListContext();
-    return { list: state.list, setList };
-}
-
 const ChatListNav: FC = () => {
-    const { list, setList } = useList();
-    const { push: pushWindow } = useContext(WindowContext);
+    // const { list, setList } = useList();
+    const list = "message";
+    const { pushWindow } = useWindow();
     const logout = useLogout();
     const onClickMessageButton = () => {
-        setList("message");
+        // setList("message");
     };
     const onClickContactButton = () => {
-        setList("contact");
+        // setList("contact");
     };
     const onClickSettings = () => {
         pushWindow("SETTINGS_WINDOW");
@@ -142,7 +139,7 @@ const ChatListNav: FC = () => {
                     onClick={onClickMessageButton}
                 />
                 <ContactButton
-                    selected={list === "contact"}
+                    selected={false}
                     onClick={onClickContactButton}
                 />
             </ChatListNavDoubleColumnChild>

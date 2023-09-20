@@ -2,7 +2,9 @@ import styled, { css } from "styled-components";
 import { color, colorConfig, commonCss } from "@/components/Palette";
 import { ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useAvatarImage, useChatListContext, useSelectContact } from "@/utility/UtilityHooks";
+import { useAvatarImage } from "@/utility/UtilityHooks";
+import { useAppStore } from "@/store/AppStore/store";
+import { useSelectedContact } from "@/store/AppStore/hooks";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`
   ${commonCss.transition}
@@ -74,16 +76,15 @@ type ChatListListItemProps = {
 
 export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
     const unread_count = props.unread_count > 9 ? "9+" : `${props.unread_count}`
-    const uid = useCurrentContactUid();
-    const type = useCurrentContactType();
-    const selectContact = useSelectContact();
-    const selected = uid === props.uid && type === props.type;
+    const contact = useSelectedContact();
+    const selectContact = useAppStore(s => s.selectContact);
+    const selected = props.uid === contact?.id && props.type === contact?.type;
     const chopLength = 15;
     const message = props.message.length > chopLength ? `${props.message.slice(0, 15)}...` : props.message;
     const onClickListItem = () => {
         selectContact(props.type, props.uid);
     };
-    const [avatarImage, ] = useAvatarImage(props.uid);
+    const [avatarImage, ] = useAvatarImage(props.uid, props.type);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
             <ProfilePictureWithStatus 
@@ -121,26 +122,8 @@ type ChatContactListItemProps = {
     name: string
 };
 
-const useCurrentContactUid = () => {
-    const { state } = useChatListContext();
-    if (state.selectedContact)
-    {
-        return state.selectedContact.uid;
-    }
-    return null;
-}
-
-const useCurrentContactType = () => {
-    const { state } = useChatListContext();
-    if (state.selectedContact) {
-        return state.selectedContact.type;
-    }
-    return null;
-};
-
 export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
-    const uid = useCurrentContactUid();
-    const selectContact = useSelectContact();
+    const selectContact = useAppStore(s => s.selectContact);
     const selected = false;
     const onClickListItem = () => {
         selectContact(props.type, props.uid);

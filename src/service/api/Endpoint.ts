@@ -42,6 +42,7 @@ export class Endpoint {
     static updateUser = () => `/user`;
     static group = () => "/group";
     static groupMessage = (groupId: number) => `/group/message/${groupId}`;
+    static groupAvatar = (groupId: number) => `/group/image/${groupId}`;
 }
 
 
@@ -63,7 +64,7 @@ export const request = async <T extends z.ZodTypeAny>(parser: T, request: Reques
     let response: Response | null = null;
     if (request.method === "POST" || request.method === "PUT") {
         let body = request.body;
-        if (!(body instanceof File)) {
+        if (!(body instanceof File) && !(body instanceof FormData)) {
             body = JSON.stringify(body);
         }
         const requestOptions: RequestInit = {

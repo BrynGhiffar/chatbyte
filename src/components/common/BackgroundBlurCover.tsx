@@ -1,5 +1,6 @@
 import { WindowContext } from '@/contexts/WindowContext';
-import { FC, PropsWithChildren, useContext } from 'react';
+import { useAppStore } from '@/store/AppStore/store';
+import { FC, PropsWithChildren } from 'react';
 import styled from "styled-components";
 
 const BlurBackgroundCoverStyled = styled.div`
@@ -17,7 +18,7 @@ type BlurBackgroundCoverProps = PropsWithChildren<{
 }>;
 
 export const BlurBackgroundCover: FC<BlurBackgroundCoverProps> = (props) => {
-    const { pop } = useContext(WindowContext);
+    const pop = useAppStore(s => s.popWindow);
     return (
         <BlurBackgroundCoverStyled
             onClick={e => {

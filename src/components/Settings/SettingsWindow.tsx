@@ -1,4 +1,4 @@
-import { FC, useRef, useCallback, ChangeEvent, useContext, useState, useEffect } from 'react';
+import { FC, useRef, useCallback, ChangeEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { color, commonCss } from '../Palette';
 import { InputField } from '../common/InputField';
@@ -8,6 +8,7 @@ import { WindowContext } from '@/contexts/WindowContext';
 import { UserService } from '@/service/api/UserService';
 import { LocalStorage } from '@/utility/LocalStorage';
 import { useAvatarImage, useToken } from '@/utility/UtilityHooks';
+import { useWindow } from '@/store/AppStore/hooks';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */
@@ -135,7 +136,7 @@ const CloseButtonStyled = styled(Button)`
 `;
 
 const CloseButton: FC = props => {
-    const { pop: popWindow } = useContext(WindowContext);
+    const { popWindow } = useWindow();
     return (
             <CloseButtonStyled onClick={popWindow}>
                 {/* <CloseSVG/> */}
@@ -146,7 +147,7 @@ const CloseButton: FC = props => {
 
 
 const UserDataSection: FC = props => {
-    const { pop: popWindow } = useContext(WindowContext);
+    const { popWindow } = useWindow();
     return (
         <>
             <UserDataSectionParentStyled>

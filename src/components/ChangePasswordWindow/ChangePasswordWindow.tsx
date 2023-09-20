@@ -1,5 +1,4 @@
-import { WindowContext } from '@/contexts/WindowContext';
-import { FC, useContext, useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { InputField } from '../common/new/InputField';
 import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
@@ -7,7 +6,7 @@ import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/P
 import { VerticalStackContainer } from '../common/StackContainer';
 import { useToken } from '@/utility/UtilityHooks';
 import { AuthService } from '@/service/api/AuthService';
-import { SnackbarContext } from '../common/Snackbar';
+import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
 
 
 const PopupContainer = styled(GenericPopupContainer)`
@@ -43,8 +42,8 @@ const PopupContainerTitle = styled.h1`
 `;
 
 const PopupWindow: FC = () => {
-    const { pushError, pushSuccess } = useContext(SnackbarContext);
-    const { pop } = useContext(WindowContext);
+    const { pushError, pushSuccess } = useSnackbar();
+    const { popWindow: pop } = useWindow();
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const token = useToken();

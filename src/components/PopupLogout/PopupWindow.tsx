@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { commonCss, font } from "../Palette";
-import { FC, useCallback, useContext } from "react";
-import { WindowContext } from "@/contexts/WindowContext";
+import { font } from "../Palette";
+import { FC, useCallback } from "react";
 import { useLogout } from "@/utility/UtilityHooks";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
 import { GenericBottomPopupButton, GenericPopupContainer } from "../common/new/Popup";
@@ -57,10 +56,6 @@ const Popup: FC = () => {
 type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
 export const PopupLogoutWindow: FC = () => {
-    const { pop: popWindow } = useContext(WindowContext);
-    const onClickAnyWhereInWindow = useCallback((e: DivMouseEvent) => {
-        popWindow();
-    }, [popWindow]);
     return(
         <BlurBackgroundCover dismissOnClick>
             <Popup/>

@@ -3,11 +3,11 @@ import ChatWindow from "./ChatWindow";
 import ChatNavigation from "./ChatNavigation";
 import ChatGrid from "./ChatGrid";
 import ChatInputBar from "./ChatInputBar";
-import { useCurrentContactUid } from "@/utility/UtilityHooks";
 import EmptyChatWindow from "./EmptyChatWindow";
+import { useSelectedContact } from "@/store/AppStore/hooks";
 
 const Chat: FC = () => {
-  const uid = useCurrentContactUid();
+  const uid = useSelectedContact();
   if (uid) {
     return (
           <ChatWindow>

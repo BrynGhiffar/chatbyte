@@ -2,6 +2,7 @@ import { BackendEndpoint, Endpoint, request } from "./Endpoint";
 import { z } from "zod";
 
 export const avatarImageUrl = (uid: number) => (randNum: number) => `${BackendEndpoint()}${Endpoint.userAvatar(uid)}?random=${randNum}`;
+export const avatarImageGroupUrl = (groupId: number) => (randNum: number) => `${BackendEndpoint()}${Endpoint.groupAvatar(groupId)}?random=${randNum}`
 
 const GetUserDetailsResponse = z.object({
     success: z.literal(true),

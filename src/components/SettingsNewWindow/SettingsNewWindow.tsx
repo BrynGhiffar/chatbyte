@@ -1,5 +1,5 @@
 import { WindowContext } from "@/contexts/WindowContext";
-import { FC, useCallback, useContext, useRef, useState, PropsWithChildren } from "react";
+import { FC, useCallback, useRef, useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 import { commonCss, font } from "../Palette";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
@@ -8,6 +8,7 @@ import { SidebarContainer, SidebarItemContainer } from "./Sidebar";
 import { ProfileSettings } from "./ProfileSettings";
 import { ThemeSettings } from "./ThemeSettings";
 import { SessionSettings } from "./SessionSettings";
+import { useAppStore } from "@/store/AppStore/store";
 
 const PopupContainer = styled(GenericPopupContainer)`
     height: 80vh;
@@ -44,7 +45,7 @@ type SettingsSection = "PROFILE" | "THEME" | "SESSION";
 
 const Popup: FC = () => {
     const [section, setSection] = useState<SettingsSection>("PROFILE");
-    const { push: pushWindow } = useContext(WindowContext);
+    const pushWindow = useAppStore(s => s.pushWindow);
     const onClickProfileSection = useCallback(() => {
         setSection("PROFILE");
     }, [setSection]);

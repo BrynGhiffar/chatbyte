@@ -8,6 +8,7 @@ import { useToken } from "@/utility/UtilityHooks";
 import { WebSocketOutgoingMessage, useSocket } from "@/service/websocket/Websocket";
 import { UserService } from "@/service/api/UserService";
 import { GroupService } from "@/service/api/GroupService";
+import { useAppStore } from "@/store/AppStore/store";
 
 const toMessageNotification = (message: WebSocketOutgoingMessage, uid: number): [Message, number, number] | null => {
   if (message.type === "MESSAGE_NOTIFICATION") {
@@ -161,6 +162,7 @@ const FetchDataOnMount: FC<PropsWithChildren> = (props) => {
 export const ApplicationContext: FC<PropsWithChildren> = (props) => {
   const [ chatState, setChatState ] = useState(InitialChatState);
   const [ chatListState, setChatListState ] = useState(InitialChatListState);
+  const fetchInitialData = useAppStore(s => s.fetchInitialData);
 
   const setList = (
     list: "message" | "contact"
@@ -168,15 +170,21 @@ export const ApplicationContext: FC<PropsWithChildren> = (props) => {
     setChatListState(s => ({ ...s, list }));
   };
 
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
   return (
-    <ChatListContext.Provider value={{ state: chatListState, setState: setChatListState, setList }}>
-      <ChatContext.Provider value={{ state: chatState, setState: setChatState }}>
-        <FetchDataOnMount>
-          <WebSocketListener>
-            {props.children}
-          </WebSocketListener>
-        </FetchDataOnMount>
-      </ChatContext.Provider>
-    </ChatListContext.Provider>
+    // <ChatListContext.Provider value={{ state: chatListState, setState: setChatListState, setList }}>
+    //   <ChatContext.Provider value={{ state: chatState, setState: setChatState }}>
+    //     <FetchDataOnMount>
+    //       <WebSocketListener>
+            <>
+              {props.children}
+            </>
+    //       </WebSocketListener>
+    //     </FetchDataOnMount>
+    //   </ChatContext.Provider>
+    // </ChatListContext.Provider>
   )
 }

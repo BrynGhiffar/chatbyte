@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
 import styled from 'styled-components';
 import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/Popup';
@@ -7,6 +7,12 @@ import ProfileUploadImage from '../common/ProfileUploadImage';
 import { InputField, InputFieldSearchableDropDown } from '../common/new/InputField';
 import { WindowContext } from '@/contexts/WindowContext';
 import { color } from '../Palette';
+import { ChatListContext } from '@/contexts/ChatListContext';
+import { GroupService } from '@/service/api/GroupService';
+import { useToken } from '@/utility/UtilityHooks';
+import { SnackbarContext } from '../common/Snackbar';
+import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
+import { useAppStore } from '@/store/AppStore/store';
 
 const PopupContainer = styled(GenericPopupContainer)`
     width: 500px;
@@ -43,25 +49,57 @@ const CreateGroupButton = styled(GenericBottomPopupButton)`
     }
 `;
 
+
+
 export const CreateGroupWindow: FC = () => {
-    const { pop } = useContext(WindowContext);
+    const { popWindow: pop } = useWindow();
+    const { pushSuccess, pushError } = useSnackbar();
+    const token = useToken();
+    const [ groupName, setGroupName ] = useState("");
+    const contacts = useAppStore(s => s.contacts);
+    const options = contacts.map(c => ({ id: c.id, label: `${c.name}`, value: `${c.id}`}));
+    const [image, setImage] = useState<File | null>(null);
+    const [ selected, setSelected ] = useState<number[]>([]);
     const onClickCancel = useCallback(() => {
         pop();
     }, [pop]);
+
+    const onClickCreate = useCallback(async () => {
+        const result = await GroupService.createGroup(token, groupName, selected, image);
+        if (result.success) {
+            pushSuccess(result.payload);
+            pop()
+        } else {
+            pushError(result.message);
+        }
+    }, [token, groupName, selected, image, pushError, pushSuccess, pop]);
+
     return (
         <BlurBackgroundCover>
             <PopupContainer onClick={e => e.stopPropagation()}>
                 <VerticalStackContainer $gap={10}>
                     <PopupTitle>Create Group</PopupTitle>
-                    <ProfileUploadImage diameter={100}/>
-                    <InputField label='Group Name' placeholder='Awesome Group...'/>
-                    <InputFieldSearchableDropDown label="Members" placeholder=''/>
+                    <ProfileUploadImage diameter={100} onFileChange={async (f) => setImage(f)}/>
+                    <InputField 
+                        label='Group Name' 
+                        placeholder='Awesome Group...' 
+                        value={groupName}
+                        onValueChange={setGroupName}
+                    />
+                    <InputFieldSearchableDropDown 
+                        label="Members" 
+                        placeholder=''
+                        options={options}
+                        onChangeSelection={setSelected}
+                    />
                 </VerticalStackContainer>
                 <DoubleColumn>
                     <CancelButton
                         onClick={onClickCancel}
                     >Cancel</CancelButton>
-                    <CreateGroupButton>Create</CreateGroupButton>
+                    <CreateGroupButton
+                        onClick={onClickCreate}
+                    >Create</CreateGroupButton>
                 </DoubleColumn>
             </PopupContainer>
         </BlurBackgroundCover>

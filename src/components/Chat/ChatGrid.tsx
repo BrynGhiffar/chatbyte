@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { commonCss } from "@/components/Palette";
-import { useRef, MutableRefObject, useEffect } from "react";
-import { Message } from "@/contexts/ChatContext";
-import { useChatContext, useChatListContext } from "@/utility/UtilityHooks";
+import { useRef, MutableRefObject, useEffect, memo } from "react";
 import ChatBubble from "./ChatBubble";
-import { useSpring } from "framer-motion";
+import { useAppStore } from "@/store/AppStore/store";
+import { useSelectedContactMessages } from "@/store/AppStore/hooks";
+import { Message } from "@/store/AppStore/type";
 
 const ChatGridStyled = styled.div`
     ${commonCss.transition}
@@ -13,37 +13,25 @@ const ChatGridStyled = styled.div`
     overflow-x: hidden;
 `;
 
-const useCurrentContactUid = () => {
-  const { state } = useChatListContext();
-  return state.selectedContact?.uid;
-};
-
-const useMessages = () => {
-  const { state } = useChatContext();
-  const uid = useCurrentContactUid();
-  if (!uid) return [];
-  return state.messages;
-};
-
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {
-    const messages: Message[] = useMessages();
+    const messages: Message[] = useSelectedContactMessages();
     useEffect(() => {
         if (ref.current === null) return;
         const e = ref.current;
-        e.scrollTo({ top: e.scrollHeight, behavior: "smooth" });
-    }, [messages, ref]);
+        e.scrollTop = e.scrollHeight
+    }, [ref, messages]);
 };
 
 const ChatGrid = () => {
     const gridRef = useRef<HTMLDivElement | null>(null);
-    const messages: Message[] = useMessages();
+    const messages: Message[] = useSelectedContactMessages();
     useScrollToBottom(gridRef)
     return (
         <ChatGridStyled ref={gridRef}>
             {
                 messages.map(m => (<ChatBubble
                     key={m.id}
-                    name={m.isUser ? "" : m.sender }
+                    name={m.isUser ? "" : m.senderName }
                     message={m.content}
                     time={m.time}
                     side={m.isUser ? "right" : "left"}

@@ -46,7 +46,34 @@ const getGroupMessages = async (groupId: number, token: string) => {
     return req.payload;
 }
 
+const CreateGroupResponse = z.object({
+    success: z.literal(true),
+    payload: z.string()
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+const createGroup = async (token: string, name: string, members: number[], image: File | null = null) => {
+    const form = new FormData();
+    if (image) {
+        form.append("profilePicture", image);
+    }
+    form.append("groupName", name);
+    form.append("members", ` ${members.join(",")}`);
+    
+    const req = await request(CreateGroupResponse, {
+        method: "POST",
+        ept: Endpoint.group(),
+        headers: { "Authorization": `Bearer ${token}`},
+        body: form
+    });
+    if (!req.success) return req;
+    return req.payload;
+}
+
 export const GroupService = {
     getGroups,
-    getGroupMessages
+    getGroupMessages,
+    createGroup
 };

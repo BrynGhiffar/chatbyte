@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { color, colorConfig, font } from "@/components/Palette";
 import { FC } from "react";
-import { useChatListSearch } from "@/utility/UtilityHooks";
+import { useChatListSearch } from "@/store/AppStore/hooks";
 
 const ChatListSearchStyled = styled.div`
   background-color: ${colorConfig.chatListNavSearchBackgroundColor};

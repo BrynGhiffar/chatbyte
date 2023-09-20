@@ -1,13 +1,11 @@
 import styled from "styled-components";
 import { Button } from "../common/new/Button";
-import { FC, useContext, useCallback, ChangeEvent, useState } from "react";
-import { WindowContext } from "@/contexts/WindowContext";
+import { FC, useCallback, useState } from "react";
 import ProfileUploadImage from "../common/ProfileUploadImage";
 import { InputField } from "../common/new/InputField";
-import { useChatProfile, useToken } from "@/utility/UtilityHooks";
-import { LocalStorage } from "@/utility/LocalStorage";
+import { useToken } from "@/utility/UtilityHooks";
 import { UserService } from "@/service/api/UserService";
-import { SnackbarContext } from "../common/Snackbar";
+import { useAppStore } from "@/store/AppStore/store";
 
 
 const ProfileDetailContainer = styled.div`
@@ -35,18 +33,15 @@ const ChangePasswordButton = styled(ButtonProfile)`
 `;
 
 export const ProfileSettings: FC = () => {
-    const { push } = useContext(WindowContext);
-    const { pushError, pushSuccess } = useContext(SnackbarContext);
+    const push = useAppStore(s => s.pushWindow);
+    const [ pushError, pushSuccess ] = useAppStore(s => [s.pushSnackbarError, s.pushSnackbarSuccess]);
     const token = useToken();
-    const [userId, username] = useChatProfile();
+    const [userId, username] = useAppStore(s => [s.loggedInUserId, s.loggedInUsername]);
     const [newUsername, setNewUsername] = useState("");
     const onClickChangePassword = useCallback(() => {
         push("CHANGE_PASSWORD");
     }, [push]);
-    const onFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files === null) return;
-        const file = e.target.files[0];
-        if (!file) return;
+    const onFileChange = useCallback(async (file: File) => {
         await UserService.uploadUserAvatar(token, file);
     }, [token]);
     const onClickChangeUsername = useCallback(async () => {

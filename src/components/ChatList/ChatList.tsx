@@ -1,31 +1,17 @@
-import { FC, PropsWithChildren, useState, useCallback, useEffect, useContext } from "react"
+import { FC, PropsWithChildren, useState, useCallback, useEffect } from "react"
 import ChatListList from "@/components/ChatList/ChatListList"
 import { ChatContactListItem, ChatListListItem } from "./ChatListListItem"
 import ChatListWindow from "@/components/ChatList/ChatListWindow"
 import ChatListSearch from "@/components/ChatList/ChatListSearch"
-import ChatListNav from "./ChatListNav"
-import { useAvatarImage, useChatListContext, useChatListSearch, useChatProfile, useLogout } from "@/utility/UtilityHooks"
-import { ChatContactMessageItem, Contact } from "@/contexts/ChatListContext"
+import { useAvatarImage } from "@/utility/UtilityHooks"
 import styled from "styled-components"
 import { colorConfig, font, color, commonCss } from "../Palette"
 import { AddSymbolSVG, ChevronDownSVG } from "../common/Svg"
-import { ProfilePicture, ProfilePictureWithStatus } from "../common/ProfilePicture"
+import { ProfilePictureWithStatus } from "../common/ProfilePicture"
 import { WindowContext } from "@/contexts/WindowContext"
-
-const useContacts = () => {
-    const { state } = useChatListContext();
-    return state.contacts;
-};
-
-const useList = () => {
-    const { state } = useChatListContext();
-    return state.list;
-};
-
-const useContactMessage = () => {
-    const { state } = useChatListContext();
-    return state.contactMessages;
-};
+import { useAppStore } from "@/store/AppStore/store"
+import { Contact, Conversation, GroupConversation } from "@/store/AppStore/type"
+import { useChatListSearch, useWindow } from "@/store/AppStore/hooks"
 
 const filterContacts = (searchStr: string, contact: Contact): boolean => {
     if (searchStr === "") {
@@ -34,7 +20,7 @@ const filterContacts = (searchStr: string, contact: Contact): boolean => {
     return contact.name.toLowerCase().includes(searchStr.toLowerCase());
 };
 
-const filterContactMessage = (searchStr: string, contactMessage: ChatContactMessageItem) => {
+const filterContactMessage = (searchStr: string, contactMessage: Conversation | GroupConversation) => {
     if (searchStr === "") return true;
     return contactMessage.name.toLowerCase().includes(searchStr.toLowerCase());
 };
@@ -92,34 +78,16 @@ const MessageStrip: FC<PropsWithChildren<MessageStripProps>> = (props) => {
         </SeparatorBlockStyled>
     )
 }
-const ContactList = () => {
-    const [searchStr] = useChatListSearch();
-    const contacts = useContacts();
-    return (
-        <ChatListList>
-            <MessageStrip>
-                CONTACTS
-            </MessageStrip>
-            {
-                contacts.filter(contact => filterContacts(searchStr, contact)).map(c => (
-                    <ChatContactListItem
-                        type={c.type}
-                        key={c.uid} 
-                        name={c.name} 
-                        uid={c.uid}
-                    />
-                    ))
-                }
-        </ChatListList>
-    );
-
-}
 
 const ContactMessageList = () => {
-    const [searchStr] = useChatListSearch();
-    const contactMessages = useContactMessage();
-    const contacts = useContacts();
-    const { push } = useContext(WindowContext);
+    const [searchStr, _] = useChatListSearch();
+    const groupConversations = useAppStore(s => s.groupConversations);
+    const directConversations = useAppStore(s => s.conversations);
+    const contacts = useAppStore(s => s.contacts.map(c => {
+        if (c.type === "DIRECT") return { ...c };
+        return undefined;
+    }));
+    const { pushWindow: push } = useWindow();
 
     const onClickAddGroup = useCallback(() => {
         push("CREATE_GROUP_WINDOW");
@@ -132,15 +100,15 @@ const ContactMessageList = () => {
                 DIRECT CONVERSATIONS
             </MessageStrip>
             {
-                contactMessages.filter(contactMessage => filterContactMessage(searchStr, contactMessage)).map(c => (
+                directConversations.filter(contactMessage => filterContactMessage(searchStr, contactMessage)).map(c => (
                     <ChatListListItem
                         type={"DIRECT"} 
                         key={c.id}
                         uid={c.id}
                         name={c.name}
-                        time={c.time}
-                        unread_count={c.unread_count}
-                        message={c.message}
+                        time={c.lastMessageTime}
+                        unread_count={c.unreadCount}
+                        message={c.lastMessageContent}
                     />
                 ))
             }
@@ -148,12 +116,12 @@ const ContactMessageList = () => {
                 GROUP CONVERSATIONS
             </MessageStrip>
             {
-                contacts.filter(c => c.type === "GROUP").filter(contact => filterContacts(searchStr, contact)).map(c => (
+                groupConversations.filter(contact => filterContactMessage(searchStr, contact)).map(c => (
                     <ChatListListItem
                         type={c.type} 
-                        key={c.uid} 
+                        key={c.id} 
                         name={c.name} 
-                        uid={c.uid}
+                        uid={c.id}
                         time=""
                         unread_count={0}
                         message=""
@@ -164,12 +132,13 @@ const ContactMessageList = () => {
                 CONTACTS
             </MessageStrip>
             {
-                contacts.filter(c => c.type === "DIRECT").filter(contact => filterContacts(searchStr, contact)).map(c => (
+                contacts.filter(contact => contact && filterContacts(searchStr, contact)).map(c => (
+                    c && 
                     <ChatContactListItem
                         type={c.type} 
-                        key={c.uid} 
+                        key={c.id} 
                         name={c.name} 
-                        uid={c.uid}
+                        uid={c.id}
                     />
                     ))
             }
@@ -253,7 +222,7 @@ const PopupMenuItem = styled.div`
 `;
 
 const PopupWindow: FC = () => {
-    const { push: pushWindow } = useContext(WindowContext);
+    const { pushWindow } = useWindow();
     const onClickProfile = useCallback((e: DivMouseEvent) => {
         pushWindow("SETTINGS_WINDOW");
     }, [pushWindow]);
@@ -273,15 +242,13 @@ const PopupWindow: FC = () => {
 type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
 const ChatListProfile: FC = () => {
-  const [userId, username] = useChatProfile();
+  const [userId, username] = useAppStore(s => [s.loggedInUserId, s.loggedInUsername]);
+  const pushWindow = useAppStore(s => s.pushWindow);
   const [avatarImage] = useAvatarImage(userId);
   const [showPopup, setShowPopup] = useState(false);
-  const { push: pushWindow } = useContext(WindowContext);
-
   useEffect(() => {
     const clickOutside = () => setShowPopup(false);
     window.addEventListener('click', clickOutside);
-
     return () => {
         window.removeEventListener('click', clickOutside);
     }
@@ -311,21 +278,11 @@ const ChatListProfile: FC = () => {
   );
 };
 
-const ChatListInner = () => {
-    const list = useList();
-    if (list === "contact") return (<ContactList/>);
-    if (list === "message") return (<ContactMessageList/>);
-    return (
-        <div></div>
-    );
-};
-
 const ChatList: FC = () => {
     return (
         <ChatListWindow>
             <ChatListProfile/>
-            {/* <ChatListNav/> */}
-            <ChatListInner/>
+            <ContactMessageList/>
         </ChatListWindow>
     )
 }

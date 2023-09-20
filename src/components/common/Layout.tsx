@@ -16,12 +16,10 @@ const PageWrapper = styled.div`
 
 export function Layout({ children }: PropsWithChildren) {
     return (
-    <Blur>
         <PageWrapper>
                 <SnackbarProvider>
                     {children}
                 </SnackbarProvider>
         </PageWrapper>
-    </Blur>
     )
 }

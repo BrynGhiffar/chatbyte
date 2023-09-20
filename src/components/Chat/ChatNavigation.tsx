@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { color, colorConfig, font } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
 import { FC } from "react";
-import { useAvatarImage, useChatListContext, useCurrentContactUid } from "@/utility/UtilityHooks";
-import { avatarImageUrl } from "@/service/api/UserService";
+import { useAvatarImage } from "@/utility/UtilityHooks";
+import { useSelectedContact } from "@/store/AppStore/hooks";
 
 export const ChatNavigationStyled = styled.div`
   width: 100%;
@@ -22,15 +22,12 @@ const ChatNavigationNameStyled = styled.span`
     font-weight: bold;
 `;
 
-const useChatProfileName = ( )=> {
-  const { state } = useChatListContext();
-  return state.selectedContact?.name;
-}
-
 const ChatNavigation: FC = () => {
-  const name = useChatProfileName();
-  const uid = useCurrentContactUid();
-  const [avatarImage] = useAvatarImage(uid);
+  const contact = useSelectedContact();
+  const name = contact?.name;
+  const uid = contact?.id ?? null;
+  const type = contact?.type ?? "DIRECT"
+  const [avatarImage] = useAvatarImage(uid ?? null, type);
   return (
     <ChatNavigationStyled>
       <ProfilePicture imageUrl={avatarImage}/>

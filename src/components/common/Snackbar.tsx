@@ -4,6 +4,7 @@ import { color, commonCss, font } from "../Palette";
 import { useEffectOnce } from "usehooks-ts";
 import { CloseSVG } from "./Svg";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppStore } from "@/store/AppStore/store";
 
 type SnackbarType = "success" | "failure";
 
@@ -24,28 +25,15 @@ export const SnackbarContext = createContext<SnackbarContextType>({
 });
 
 export const SnackbarProvider: FC<PropsWithChildren> = (props) => {
-    const [ data, setData ] = useState<SnackbarMessage[]>([]);
-    const push = (message: string, type: SnackbarType) => {
-        const id = Math.floor(Math.random() * 1_000);
-        const snackbarMessage = { id, message, type } as SnackbarMessage;
-        setData(prev => ([snackbarMessage, ...prev]));
-    };
-
-    const pushError = (message: string) => push(message, "failure");
-    const pushSuccess = (message: string) => push(message, "success");
-
-    const onClose = (id: number) => {
-        return () => {
-            setData(prev => prev.filter(ob => ob.id !== id));
-        }
-    }
+    const [snackbarMessage, removeMessage] = useAppStore(s => [s.snackbarMessage, s.removeSnackbarMessage]);
+    const onClose = (id: number) => () => removeMessage(id);
     return (
-        <SnackbarContext.Provider value={{ pushError, pushSuccess }}>
+        <>
             {props.children}
             <SnackbarContainerStyled>
                 <AnimatePresence mode="popLayout">
                     {
-                        data.map(ob => (
+                        snackbarMessage.map(ob => (
                             <Snackbar 
                                 key={ob.id}
                                 message={ob.message} 
@@ -56,8 +44,8 @@ export const SnackbarProvider: FC<PropsWithChildren> = (props) => {
                     }
                 </AnimatePresence>
             </SnackbarContainerStyled>
-        </SnackbarContext.Provider>
-    )
+        </>
+    );
 }
 
 const AppearAnimation = keyframes`

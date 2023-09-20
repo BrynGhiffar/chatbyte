@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { color, colorConfig, commonCss } from "@/components/Palette";
-import { FC, useContext, useState } from "react";
-import { useChatContext, useSendMessage } from "@/utility/UtilityHooks";
+import { colorConfig, commonCss } from "@/components/Palette";
+import { FC, useState } from "react";
+import { useAppStore } from "@/store/AppStore/store";
 
 const SendSvg = styled.svg``;
 const ChatInputBarStyled = styled.div`
@@ -59,7 +59,7 @@ const SendButton = styled.button`
 
 const ChatInputBar: FC = () => {
   const [ input, setInput ] = useState("");
-  const sendMessage = useSendMessage();
+  const sendMessage = useAppStore(s => s.sendMessage);
   const onClickSend = async () => {
     const message = input.trim();
     if (message.length === 0) return;
