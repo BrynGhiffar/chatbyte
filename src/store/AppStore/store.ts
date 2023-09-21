@@ -4,22 +4,14 @@ import { LocalStorage } from "@/utility/LocalStorage";
 import { ContactService } from "@/service/api/ContactService";
 import { UserService, avatarImageGroupUrl, avatarImageUrl } from "@/service/api/UserService";
 import { GroupService } from "@/service/api/GroupService";
-import { SendMessage } from "../WebsocketMiddleware/type";
+import { SendGroupMessage, SendMessage } from "../WebsocketMiddleware/type";
 import { websocket } from "../WebsocketMiddleware/middleware";
 import MessageService from "@/service/api/MessageService";
 import { AuthService } from "@/service/api/AuthService";
 import { devtools } from "zustand/middleware";
+import { getUserToken, pushSnackbarError, pushSnackbarSuccess } from "./utility";
 
 
-const pushSnackbarError = (set: AppStateSet, message: string) => {
-    const id = Math.floor(Math.random() * 1_000);
-    set(s => ({...s, snackbarMessage: [...s.snackbarMessage, { id, message, type: "failure" }]}));
-};
-
-const pushSnackbarSuccess = (set: AppStateSet, message: string) => {
-    const id = Math.floor(Math.random() * 1_000);
-    set(s => ({...s, snackbarMessage: [...s.snackbarMessage, { id, message, type: "success" }]}));
-};
 
 const setFetchInitialFailed = (set: AppStateSet) => set(s => ({...s, type: "ERROR_FETCHING_INITIAL_USER_DATA" }));
 
@@ -41,25 +33,11 @@ const setInitialData = (
     groupConversations
 }));
 
-const getUserToken = async (set: AppStateSet): Promise<string | null> => {
-    const token = LocalStorage.getLoginToken();
-    if (!token) { 
-        pushSnackbarError(set, "Token is missing");
-        set(s => ({...s, type: "MISSING_TOKEN" }));
-        return null;
-    }
-    const res = await AuthService.validateToken(token);
-    if (!res.success) {
-        pushSnackbarError(set, "Token is invalid");
-        set(s => ({...s, type: "INVALID_TOKEN" }));
-        return null;
-    }
-    return token;
-}
 
 export const useAppStore = create<AppState, [
     ['zustand/devtools', never],
     ['sendMessage', SendMessage],
+    ['sendGroupMessage', SendGroupMessage],
 ]>(devtools(websocket((set, get, api) => ({
     type: "FETCHING_INITIAL_USER_DATA",
     snackbarMessage: [],
@@ -153,7 +131,7 @@ export const useAppStore = create<AppState, [
             return;
         }
         const contact = allContacts[contactIndex];
-        let messages: Message[] = [];
+        const contactKey = `${type}-${id}`;
 
         // fetching latest messages from the database
         // I feel like this is not good enough, better to offload
@@ -164,39 +142,47 @@ export const useAppStore = create<AppState, [
                 pushSnackbarError(set, resRead.message);
                 return;
             }
-            const resGetMessage = await MessageService.getMessage(token, contact.id);
-            if (!resGetMessage.success) {
-                pushSnackbarError(set, resGetMessage.message);
-                return;
+            if (get().message[contactKey] === undefined) {
+                const resGetMessage = await MessageService.getMessage(token, contact.id);
+                if (!resGetMessage.success) {
+                    pushSnackbarError(set, resGetMessage.message);
+                    return;
+                }
+                const messages = resGetMessage.payload.map(m => ({
+                    id: m.id,
+                    content: m.content,
+                    isUser: m.isUser,
+                    senderName: "",
+                    time: m.time,
+                    receiverRead: m.receiverRead
+                }));
+                const messageMapNew = structuredClone(get().message);
+                messageMapNew[contactKey] = messages;
+                set({ message: messageMapNew });
             }
-            messages = messages.concat(resGetMessage.payload.map(m => ({
-                id: m.id,
-                content: m.content,
-                isUser: m.isUser,
-                senderName: "",
-                time: m.time,
-                receiverRead: m.receiverRead
-            })));
         } else {
-            const resGetGroupMessage = await GroupService.getGroupMessages(id, token);
-            if (!resGetGroupMessage.success) {
-                pushSnackbarError(set, resGetGroupMessage.message);
-                return;
+            if (get().message[contactKey] === undefined) {
+                const resGetGroupMessage = await GroupService.getGroupMessages(id, token);
+                if (!resGetGroupMessage.success) {
+                    pushSnackbarError(set, resGetGroupMessage.message);
+                    return;
+                }
+                const messages = resGetGroupMessage.payload.map(m => ({
+                    id: m.id,
+                    receiverRead: false,
+                    isUser: m.senderId === get().loggedInUserId,
+                    senderName: "Other",
+                    time: m.sentAt,
+                    content: m.content
+                }));
+                const messageMapNew = structuredClone(get().message);
+                messageMapNew[contactKey] = messages;
+                set({ message: messageMapNew });
             }
-            messages = messages.concat(resGetGroupMessage.payload.map(m => ({
-                id: m.id,
-                receiverRead: false,
-                isUser: m.senderId === get().loggedInUserId,
-                senderName: "",
-                time: m.sentAt,
-                content: m.content
-            })));
         }
 
         // setting the number of unread messages in conversations to be zero.
-        const messagesOri = structuredClone(get().message);
-        messagesOri[`${type}-${id}`] =  messages;
-        set(s => ({...s, selectedContact: contact, message: messagesOri, conversations: s.conversations.map(c => {
+        set(s => ({...s, selectedContact: contact, conversations: s.conversations.map(c => {
             if (c.type === type && c.id === id) {
                 return { ...c, unreadCount: 0 };
             }
@@ -209,7 +195,7 @@ export const useAppStore = create<AppState, [
         if (!selectedContact) return;
         if (selectedContact.type === "GROUP") {
             // supposed to be two different kinds of send message.
-            api.sendMessage(selectedContact.id, message);
+            api.sendGroupMessage(selectedContact.id, message);
         } else if (selectedContact.type === "DIRECT") {
             api.sendMessage(selectedContact.id, message);
         }

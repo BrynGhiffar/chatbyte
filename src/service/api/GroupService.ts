@@ -44,7 +44,9 @@ const getGroupMessages = async (groupId: number, token: string) => {
     });
     if (!req.success) return req;
     return req.payload;
-}
+};
+
+export type GetGroupMessageResponse = z.infer<typeof GetGroupMessageResponse>;
 
 const CreateGroupResponse = z.object({
     success: z.literal(true),

@@ -4,6 +4,7 @@ import { FC, useCallback } from "react";
 import { useLogout } from "@/utility/UtilityHooks";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
 import { GenericBottomPopupButton, GenericPopupContainer } from "../common/new/Popup";
+import { useWindow } from "@/store/AppStore/hooks";
 
 
 const PopupTopHalf = styled.div`
@@ -39,9 +40,11 @@ const LogoutButton = styled(PopupButton)`
 
 const Popup: FC = () => {
     const logout = useLogout();
+    const { popWindow } = useWindow();
     const onClickLogout = useCallback(() => {
+        popWindow();
         logout();
-    }, [logout]);
+    }, [popWindow, logout]);
     return (
         <PopupContainer>
             <PopupTopHalf>Do you want to logout?</PopupTopHalf>
