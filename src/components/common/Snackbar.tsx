@@ -1,5 +1,5 @@
-import { Dispatch, FC, PropsWithChildren, createContext, useState } from "react";
-import styled, { css, keyframes } from "styled-components";
+import { FC, PropsWithChildren, createContext, useState } from "react";
+import styled, { keyframes } from "styled-components";
 import { color, commonCss, font } from "../Palette";
 import { useEffectOnce } from "usehooks-ts";
 import { CloseSVG } from "./Svg";
@@ -19,7 +19,7 @@ type SnackbarMessage = {
     type: SnackbarType;
 }
 
-export const SnackbarContext = createContext<SnackbarContextType>({ 
+const SnackbarContext = createContext<SnackbarContextType>({ 
     pushError: (message: string) => {},
     pushSuccess: (message: string) => {},
 });

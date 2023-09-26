@@ -14,13 +14,14 @@
 - [x] implement change password
 - [x] implement change username
 - [-] implement sessions
+- [ ] implement collapsable contact list
 - [ ] implement chat groups
-    - [ ] create chat groups
-    - [ ] chat group invitations
+    - [x] create chat groups
+    - [-] chat group invitations
     - [ ] leave chat group
-    - [ ] send message in group
+    - [x] send message in group
 - [x] implement tick mark when a message has been sent (yes but not single tick mark then double tick mark).
-- [x] implement tick mark when a message has been read.
+- [x] implement tick mark when a message has been read (for dms).
 - [ ] implement edit sent message
     Need to be able to mark messages that are deleted.
 - [ ] implement delete sent message
@@ -29,12 +30,13 @@
 - [ ] implement sending voice
 - [ ] implement sending images
 - [ ] implement sending video
-- [ ] implement desktop notification on receive new message
+- [x] implement desktop notification on receive new message.
+- [ ] implement resizable 
 
 ### Fixes
-- [ ] Change up color palette
-- [ ] Fix issue when starting a new conversation, message does not appear in messages tab.
-- [ ] Has read issue, when user is on
+- [x] Change up color palette
+- [x] Fix issue when starting a new conversation, message does not appear in messages tab.
+- [x] Has read issue, when user is on
 
 ## Milestones (MVP Ready)
 - [ ] 

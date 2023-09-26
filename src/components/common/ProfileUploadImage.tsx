@@ -59,9 +59,9 @@ type ProfileUploadImageProps = {
 }
 
 const ProfileUploadImage: FC<ProfileUploadImageProps> = (props) => {
-    const uid = props.uid ?? -1;
+    const uid = props.uid ?? 0;
     const [imageUrl, reload] = useAvatarImage(uid);
-    const [base64, setBase64] = useState("");
+    const [base64, setBase64] = useState(imageUrl);
     
     const inputRef = useRef<HTMLInputElement>(null);
     return (

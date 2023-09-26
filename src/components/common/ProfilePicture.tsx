@@ -49,10 +49,12 @@ type ProfilePictureWithStatus = {
   width?: number;
   imageUrl: string;
   statusOutlineColor: string;
+  online: boolean;
 }
 
 export const ProfilePictureWithStatus: FC<ProfilePictureWithStatus> = props => {
+  const online = props.online;
   return (<ProfilePicContainer $width={props.width} imageUrl={props.imageUrl}>
-    <StatusSymbol $status="online" $outlineColor={props.statusOutlineColor}/>
+    <StatusSymbol $status={online ? "online" : "offline"} $outlineColor={props.statusOutlineColor}/>
   </ProfilePicContainer>)
 }

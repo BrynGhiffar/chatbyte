@@ -10,6 +10,8 @@ import SettingsNewWindow from "@/components/SettingsNewWindow/SettingsNewWindow"
 import { ChangePasswordWindow } from "@/components/ChangePasswordWindow/ChangePasswordWindow";
 import { CreateGroupWindow } from "@/components/CreateGroupWindow/CreateGroupWindow";
 import { useAppStore } from "@/store/AppStore/store";
+import { BlurBackgroundCover } from "@/components/common/BackgroundBlurCover";
+import { CenterContainer } from "@/components/common/StackContainer";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -43,10 +45,10 @@ const AnimateChildWindowStyled = styled(motion.div)`
 const AnimateChildWindow: FC<PropsWithChildren> = props => {
   return (
     <AnimateChildWindowStyled
-      initial={{opacity: 0, scale: 0.8 }}
-      animate={{opacity: 1, scale: 1}}
-      exit={{opacity: 0, scale: 0.8}}
-      transition={{ ease: "easeInOut", }}
+      initial={{opacity: 0, backdropFilter: 'blur(4px)' }}
+      animate={{opacity: 1, backdropFilter: 'blur(4px)'}}
+      exit={{opacity: 0}}
+      transition={{ ease: "linear", }}
     >
       {props.children}
     </AnimateChildWindowStyled>
@@ -63,9 +65,7 @@ const AppWindow: FC = () => {
         </AnimateChildWindowStyled>
         { 
           top === "SETTINGS_WINDOW" && (
-            <AnimateChildWindow key="settings">
-              <SettingsNewWindow/>
-            </AnimateChildWindow>
+            <SettingsNewWindow/>
           )
         }
         {

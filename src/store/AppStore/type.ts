@@ -8,7 +8,7 @@ interface MessageMap {
     [key: string]: Message[]
 }
 
-export type AppState = {
+export type AppStateState = {
     type: AppStateType;
     snackbarMessage: SnackbarMessage[];
     loggedInUserId: number;
@@ -21,9 +21,13 @@ export type AppState = {
     windowStack: Window[],
     message: MessageMap,
     selectedContact: GroupContact | Contact | null,
+}
+
+export type AppStateAction = {
     fetchInitialData: () => Promise<void>,
     selectContact: (type: ContactType, userOrGroupId: number) => Promise<void>,
     sendMessage: (message: string) => void;
+    createChatGroup: (name: string, members: number[], profilePicture: File | null) => Promise<void>;
     
     // snackbar methods
     pushSnackbarSuccess: (message: string) => void;
@@ -36,8 +40,9 @@ export type AppState = {
     top: () => Window;
 
     onChangeChatListSearch: (search: string) => void;
+}
 
-};
+export type AppState = AppStateState & AppStateAction;
 
 export type Window = "CHAT_WINDOW" 
     | "SETTINGS_WINDOW" 
@@ -97,3 +102,4 @@ export type SnackbarMessage = {
 };
 
 export type AppStateSet = (partial: AppState | Partial<AppState> | ((state: AppState) => AppState | Partial<AppState>), replace?: boolean | undefined) => void;
+export type AppStateGet = () => AppState;

@@ -160,31 +160,19 @@ const FetchDataOnMount: FC<PropsWithChildren> = (props) => {
 }
 
 export const ApplicationContext: FC<PropsWithChildren> = (props) => {
-  const [ chatState, setChatState ] = useState(InitialChatState);
-  const [ chatListState, setChatListState ] = useState(InitialChatListState);
   const fetchInitialData = useAppStore(s => s.fetchInitialData);
-
-  const setList = (
-    list: "message" | "contact"
-  ) => {
-    setChatListState(s => ({ ...s, list }));
-  };
 
   useEffect(() => {
     fetchInitialData();
+    Notification.requestPermission();
+    const onFocus = () => {
+      // fetchInitialData();
+    }
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    }
   }, [fetchInitialData]);
 
-  return (
-    // <ChatListContext.Provider value={{ state: chatListState, setState: setChatListState, setList }}>
-    //   <ChatContext.Provider value={{ state: chatState, setState: setChatState }}>
-    //     <FetchDataOnMount>
-    //       <WebSocketListener>
-            <>
-              {props.children}
-            </>
-    //       </WebSocketListener>
-    //     </FetchDataOnMount>
-    //   </ChatContext.Provider>
-    // </ChatListContext.Provider>
-  )
+  return props.children;
 }

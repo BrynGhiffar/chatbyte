@@ -4,7 +4,7 @@ import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
 import { Endpoint, WebSocketEndpoint } from "../api/Endpoint";
-import { SnackbarContext } from "@/components/common/Snackbar";
+import { useSnackbar } from "@/store/AppStore/hooks";
 
 export const WebSocketIncomingMessage = z.object({
     content: z.string(),
@@ -61,7 +61,7 @@ const useRawDataWebSocket = () => {
 
 export const useSocket = () => {
     const { sendMessageRaw, lastMessageRaw } = useRawDataWebSocket();
-    const { pushError } = useContext(SnackbarContext);
+    const { pushError } = useSnackbar();
     const [ lastMessageSocket, setLastMessage ] = useState<WebSocketOutgoingMessage>({ type: "empty" });
 
     useUpdateEffect(() => {

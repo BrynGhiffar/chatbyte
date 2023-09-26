@@ -5,6 +5,7 @@ import { commonCss } from "@/components/Palette";
 import { SingleCheckmarkSVG } from "../Svg";
 import { ProfilePicture } from "../ProfilePicture";
 import { useAvatarImage } from "@/utility/UtilityHooks";
+import { logDebug } from "@/utility/Logger";
 
 const InputFieldStyled = styled.input`
     width: 98%;
@@ -132,7 +133,7 @@ const CustomOptionRightStyled = styled.div`
 `;
 
 const CustomOption: FC<PropsWithChildren<any>> = ({ innerProps, ...props }) => {
-    const [imageUrl, _] = useAvatarImage(2);
+    const [imageUrl, _] = useAvatarImage(props.data.id, "DIRECT");
     return (
         <CustomOptionStyled onClick={innerProps.onClick}>
             <CustomOptionLeftStyled>
@@ -169,7 +170,7 @@ const LabelWrapper = styled.span<{ $color: string }>`
 `;
 
 const CustomMultiValue: FC<PropsWithChildren<any>> = ({ innerProps, ...props}) => {
-    const [imageUrl, _] = useAvatarImage(2);
+    const [imageUrl, _] = useAvatarImage(props.data.id, "DIRECT");
     return (
         <>
             {/* <CircleArtifact $color={props.data.color}/> */}

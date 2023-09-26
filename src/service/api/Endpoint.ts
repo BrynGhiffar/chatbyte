@@ -41,6 +41,8 @@ export class Endpoint {
     static userDetails = () => `/user/details`;
     static updateUser = () => `/user`;
     static group = () => "/group";
+    static groupRecent = () => "/group/recent";
+    static groupRead = (groupId: number) => `/group/read/${groupId}`;
     static groupMessage = (groupId: number) => `/group/message/${groupId}`;
     static groupAvatar = (groupId: number) => `/group/image/${groupId}`;
 }

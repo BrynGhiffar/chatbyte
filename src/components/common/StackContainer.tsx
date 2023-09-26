@@ -12,3 +12,12 @@ export const HorizontalStackContainer = styled.div`
     flex-direction: row;
     justify-content: center;
 `;
+
+export const CenterContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: absolute;
+    height: 100vh;
+    width: 100vw;
+`;

@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { color, colorConfig, commonCss } from "@/components/Palette";
-import { ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
+import { ProfilePicture, ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useAvatarImage } from "@/utility/UtilityHooks";
 import { useAppStore } from "@/store/AppStore/store";
@@ -72,6 +72,7 @@ type ChatListListItemProps = {
     time: string;
     message: string;
     unread_count: number;
+    online?: boolean;
 };
 
 export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
@@ -87,11 +88,21 @@ export const ChatListListItem: FC<ChatListListItemProps> = (props) => {
     const [avatarImage, ] = useAvatarImage(props.uid, props.type);
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
-            <ProfilePictureWithStatus 
-                width={60} 
-                imageUrl={avatarImage} 
-                statusOutlineColor={colorConfig.chatListBackgroundColor}
-            />
+            {
+                props.online !== undefined ? (
+                    <ProfilePictureWithStatus 
+                        width={60} 
+                        imageUrl={avatarImage} 
+                        statusOutlineColor={colorConfig.chatListBackgroundColor}
+                        online={props.online}
+                    />
+                ) : (
+                    <ProfilePicture
+                        width={60}
+                        imageUrl={avatarImage}
+                    />
+                )
+            }
             <Description>
                 <DescriptionName>{props.name}</DescriptionName>
                 <DescriptionTime>{props.time}</DescriptionTime>
@@ -119,7 +130,8 @@ const ChatContactName = styled.span`
 type ChatContactListItemProps = {
     uid: number;
     type: "DIRECT" | "GROUP";
-    name: string
+    name: string;
+    online: boolean;
 };
 
 export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
@@ -132,6 +144,7 @@ export const ChatContactListItem: FC<ChatContactListItemProps> = (props) => {
     return (
         <ChatListListItemStyled $selected={selected} onClick={onClickListItem}>
             <ProfilePictureWithStatus
+                online={props.online}
                 width={60} 
                 imageUrl={avatarImage} 
                 statusOutlineColor={colorConfig.chatListBackgroundColor}

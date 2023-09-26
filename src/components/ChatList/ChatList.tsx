@@ -102,6 +102,7 @@ const ContactMessageList = () => {
             {
                 directConversations.filter(contactMessage => filterContactMessage(searchStr, contactMessage)).map(c => (
                     <ChatListListItem
+                        online={false}
                         type={"DIRECT"} 
                         key={c.id}
                         uid={c.id}
@@ -122,9 +123,9 @@ const ContactMessageList = () => {
                         key={c.id} 
                         name={c.name} 
                         uid={c.id}
-                        time=""
-                        unread_count={0}
-                        message=""
+                        time={c.lastMessageTime}
+                        unread_count={c.unreadCount}
+                        message={c.lastMessageContent}
                     />
                     ))
             }
@@ -135,6 +136,7 @@ const ContactMessageList = () => {
                 contacts.filter(contact => contact && filterContacts(searchStr, contact)).map(c => (
                     c && 
                     <ChatContactListItem
+                        online={false}
                         type={c.type} 
                         key={c.id} 
                         name={c.name} 
@@ -265,6 +267,7 @@ const ChatListProfile: FC = () => {
             <ProfilePictureWithStatus
                 imageUrl={avatarImage} 
                 statusOutlineColor={colorConfig.chatNavBackgroundColor}
+                online
             />
             <ChatListProfileNameStyled>{username}</ChatListProfileNameStyled>
         </ProfileDetailContainer>

@@ -10,7 +10,6 @@ import { color } from '../Palette';
 import { ChatListContext } from '@/contexts/ChatListContext';
 import { GroupService } from '@/service/api/GroupService';
 import { useToken } from '@/utility/UtilityHooks';
-import { SnackbarContext } from '../common/Snackbar';
 import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
 import { useAppStore } from '@/store/AppStore/store';
 
@@ -57,6 +56,7 @@ export const CreateGroupWindow: FC = () => {
     const token = useToken();
     const [ groupName, setGroupName ] = useState("");
     const contacts = useAppStore(s => s.contacts);
+    const createChatGroup = useAppStore(s => s.createChatGroup);
     const options = contacts.map(c => ({ id: c.id, label: `${c.name}`, value: `${c.id}`}));
     const [image, setImage] = useState<File | null>(null);
     const [ selected, setSelected ] = useState<number[]>([]);
@@ -65,14 +65,8 @@ export const CreateGroupWindow: FC = () => {
     }, [pop]);
 
     const onClickCreate = useCallback(async () => {
-        const result = await GroupService.createGroup(token, groupName, selected, image);
-        if (result.success) {
-            pushSuccess(result.payload);
-            pop()
-        } else {
-            pushError(result.message);
-        }
-    }, [token, groupName, selected, image, pushError, pushSuccess, pop]);
+        await createChatGroup(groupName, selected, image);
+    }, [groupName, selected, image, createChatGroup]);
 
     return (
         <BlurBackgroundCover>

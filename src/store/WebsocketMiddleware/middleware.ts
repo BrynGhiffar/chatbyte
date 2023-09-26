@@ -1,12 +1,26 @@
 import { Endpoint, WebSocketEndpoint } from "@/service/api/Endpoint";
-import { SendGroupMessage, SendMessage, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl } from "./type";
-import { Mutate, StoreApi } from 'zustand';
+import { SendGroupMessage, SendMessage, StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl } from "./type";
 import { LocalStorage } from "@/utility/LocalStorage";
-import { getUserToken, pushSnackbarError, pushSnackbarSuccess } from "../AppStore/utility";
-import { AppState, AppStateSet, Conversation } from "../AppStore/type";
+import { fetchSetDirectConversations, fetchSetGroupConversations, fetchSetMessageRead, getUserToken, pushSnackbarError, pushSnackbarSuccess } from "../AppStore/utility";
+import { AppState, AppStateGet, AppStateSet, Conversation } from "../AppStore/type";
 import { GetGroupMessageResponse, GroupService } from "@/service/api/GroupService";
 import MessageService from "@/service/api/MessageService";
 import { ContactService } from "@/service/api/ContactService";
+import { logDebug, logError } from "@/utility/Logger";
+import { isContactSelected, pushDirectMessageNotification, pushGroupMessageNotification } from "./utility";
+
+const showNotification = (title: string, body: string) => {
+    const browserSupportsNotification = 'Notification' in window;
+    if (!browserSupportsNotification) { return; }
+    const notPermissionGranted = Notification.permission !== 'granted';
+    if (notPermissionGranted) {
+        return;
+    } 
+    const notification = new Notification(title , { body, icon:  "/ferris.jpg"});
+    notification.onclick = () => {
+        notification.close();
+    }
+} 
 
 
 const reduceMessage = async (set: AppStateSet, get: () => AppState, message: WebSocketOutgoingMessage) => {
@@ -17,82 +31,41 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
         }
         case "GROUP_MESSAGE_NOTIFICATION": {
             const token = await getUserToken(set);
-            if (!token) {
-                return;
+            if (!token) { break; }
+            const groupContact = get()
+                .groupContacts
+                .find(gc => gc.id === message.groupId && gc.type === "GROUP");
+            if (!groupContact) {
+                logError("Contact not found when websocket GROUP_MESSAGE_NOTIFICATION received");
+                return pushSnackbarError(set, '[Websocket] Contact not found');
             }
-            const messageMap = structuredClone(get().message);
-            const groupMessages = messageMap[`GROUP-${message.groupId}`];
-            if (groupMessages === undefined) {
-                const resGetGroupMessage = await GroupService.getGroupMessages(message.groupId, token);
-                if (!resGetGroupMessage.success) 
-                    return pushSnackbarSuccess(set, resGetGroupMessage.message);
-                messageMap[`GROUP-${message.groupId}`] = resGetGroupMessage.payload.map(m => ({
-                    id: m.id,
-                    receiverRead: false,
-                    isUser: m.senderId === get().loggedInUserId,
-                    senderName: "Other",
-                    time: m.sentAt,
-                    content: m.content
-                }));
-            } else {
-                messageMap[`GROUP-${message.groupId}`].push({
-                    id: message.id,
-                    content: message.content,
-                    isUser: get().loggedInUserId === message.senderId,
-                    receiverRead: false,
-                    senderName: "Other",
-                    time: message.sentAt
-                });
+            if (!isContactSelected(get, groupContact) && get().loggedInUserId !== message.senderId) {
+                showNotification(groupContact.name, `${message.username}: ${message.content}`);
             }
-            set(s => ({...s, message: messageMap }));
+
+            pushGroupMessageNotification(set, get, message, groupContact);
+            if (isContactSelected(get, groupContact)) {
+                logDebug("read message group");
+                await fetchSetMessageRead(set, get, token, groupContact);
+
+            }
+            await fetchSetGroupConversations(set, token);
             break;
         }
         case "MESSAGE_NOTIFICATION": {
             const token = await getUserToken(set);
-            if (!token) {
-                return;
-            }
+            if (!token) { return; }
             const contactId = message.isUser ? message.receiverUid : message.senderUid;
-            const messageMap = structuredClone(get().message);
-            const directMessages = messageMap[`DIRECT-${contactId}`];
-            if (directMessages === undefined) {
-                const resGetMessage = await MessageService.getMessage(token, contactId);
-                if (!resGetMessage.success) 
-                    return pushSnackbarSuccess(set, resGetMessage.message);
-                messageMap[`DIRECT-${contactId}`] = resGetMessage.payload.map(m => ({
-                    id: m.id,
-                    receiverRead: message.receiverRead,
-                    isUser: m.isUser,
-                    senderName: "",
-                    time: m.time,
-                    content: m.content
-                }));
-            } else {
-                messageMap[`DIRECT-${contactId}`].push({
-                    id: message.id,
-                    content: message.content,
-                    isUser: message.isUser,
-                    receiverRead: message.receiverRead,
-                    senderName: "",
-                    time: message.sentAt
-                });
+            const contact = get().contacts.find(c => c.id === contactId && c.type === "DIRECT");
+            if (!contact) { 
+                logError("Contact not found when websocket MESSAGE_NOTIFICATION received");
+                return pushSnackbarError(set, "[Websocket] Contact not found");
             }
-            set(s => ({...s, message: messageMap }));
-            if (get().selectedContact?.id === contactId && get().selectedContact?.type === "DIRECT") {
-                const resRead = await MessageService.setMessagesRead(token, contactId);
-                if (!resRead.success) { return pushSnackbarError(set, resRead.message); }
+            pushDirectMessageNotification(set, get, message, contact);
+            if (isContactSelected(get, contact)) {
+                await fetchSetMessageRead(set, get, token, contact);
             }
-            const resRecent = await ContactService.getContactsRecent(token);
-            if (!resRecent.success) return pushSnackbarError(set, resRecent.message);
-            const conversations: Conversation[] = resRecent.payload.map(c => ({
-                id: c.contact_id,
-                lastMessageContent: c.content,
-                lastMessageTime: c.sent_at,
-                name: c.username,
-                type:"DIRECT",
-                unreadCount: c.unread_count
-            }));
-            set(s => ({...s, conversations}));
+            await fetchSetDirectConversations(set, token);
             break;
         }
         case "READ_NOTIFICATION": {
@@ -102,7 +75,7 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
             const messageMap = structuredClone(get().message);
             const directMessages = messageMap[`DIRECT-${contactId}`];
             if (directMessages === undefined) { break; }
-            messageMap[`DIRECT-${contactId}`] = directMessages.map(m => m.isUser ? ({...m, receiverRead: true}) : m);
+            messageMap[`DIRECT-${contactId}`] = directMessages.map(m => m.isUser ? ({...m, receiverRead: true }) : m);
             set(s => ({...s, message: messageMap}));
             break;
         }
@@ -113,21 +86,7 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
 
 }
 
-const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
-    type T = ReturnType<typeof f>;
-    const token = LocalStorage.getLoginToken();
-    const store = _store as Mutate<StoreApi<T>, [
-        ['sendMessage', SendMessage],
-        ['sendGroupMessage', SendGroupMessage]
-    ]>;
-
-
-    if (!token) {
-        set(s => ({...s, type: "MISSING_TOKEN"}));
-        store.sendMessage = (receiverId: number, message: string) => {};
-        store
-        return f(set, get, _store);
-    }
+const connect = (set: AppStateSet, get: AppStateGet, token: string, store: StoreType) => {
     const wsConn = new WebSocket(`${WebSocketEndpoint()}${Endpoint.webSocket(token)}`);
     store.sendMessage = (receiverId: number, message: string) => {
         wsConn.send(JSON.stringify({
@@ -143,6 +102,8 @@ const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
             message
         }));
     };
+    wsConn.onopen = () => {
+    }
     wsConn.onmessage = async (evt) => {
         const data = JSON.parse(evt.data);
         const resParse = WebSocketOutgoingMessage.safeParse(data);
@@ -151,8 +112,23 @@ const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
             return;
         }
         const message = resParse.data;
-        reduceMessage(set, get, message);
+        await reduceMessage(set, get, message);
     };
+    wsConn.onclose = () => {
+    };
+    store.wsDisconnect = () => {
+        wsConn.close();
+    }
+};
+
+const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
+
+    const store = _store as StoreType;
+    store.sendGroupMessage = (groupId, message) => {};
+    store.sendMessage = (receiverId, message) => {};
+    store.wsConnect = (set, get, token) => {};
+    store.wsDisconnect = () => {};
+    store.wsConnect = (set: AppStateSet, get: AppStateGet, token: string) => connect(set, get, token, store);
     // store.sendMessage = ;
     return f(set, get, _store);
 }

@@ -20,6 +20,61 @@ const getGroups = async (token: string) => {
     });
     if (!req.success) return req;
     return req.payload;
+};
+
+const GroupConversationDetail = z.object({
+    content: z.string(),
+    deleted: z.boolean(),
+    sentAt: z.string(),
+    username: z.string()
+});
+
+export type GroupConversationDetail = z.infer<typeof GroupConversationDetail>;
+
+const GroupConversation = z.object({
+    groupId: z.number(),
+    groupName: z.string(),
+    unreadMessage: z.number(),
+    detail: z.null().or(GroupConversationDetail),
+});
+
+export type GroupConversation = z.infer<typeof GroupConversation>;
+
+const GetGroupsRecentResponse = z.object({
+    success: z.literal(true),
+    payload: z.array(GroupConversation)
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string(),
+}));
+
+const getGroupsRecent = async (token: string) => {
+    const req = await request(GetGroupsRecentResponse, {
+        method: "GET",
+        ept: Endpoint.groupRecent(),
+        headers: { "Authorization": `Bearer ${token}`}
+    });
+    if (!req.success) return req;
+    return req.payload;
+};
+
+const UpdateGroupReadMessageResponse = z.object({
+    success: z.literal(true),
+    payload: z.string(),
+}).or(z.object({
+    success: z.literal(false),
+    message: z.string()
+}));
+
+const updateReadMessage = async (token: string, groupId: number) => {
+    const req = await request(UpdateGroupReadMessageResponse, {
+        method: "PUT", 
+        ept: Endpoint.groupRead(groupId),
+        headers: { "Authorization": `Bearer ${token}` },
+        body: undefined,
+    });
+    if (!req.success) return req;
+    return req.payload;
 }
 
 const GetGroupMessageResponse = z.object({
@@ -27,6 +82,7 @@ const GetGroupMessageResponse = z.object({
     payload: z.array(z.object({
         content: z.string(),
         groupId: z.number(),
+        username: z.string(),
         id: z.number(),
         senderId: z.number(),
         sentAt: z.string()
@@ -77,5 +133,7 @@ const createGroup = async (token: string, name: string, members: number[], image
 export const GroupService = {
     getGroups,
     getGroupMessages,
-    createGroup
+    createGroup,
+    getGroupsRecent,
+    updateReadMessage
 };
