@@ -18,15 +18,17 @@ const BlurBackgroundCoverStyled = styled(motion.div)`
 
 type BlurBackgroundCoverProps = PropsWithChildren<{
     dismissOnClick?: boolean;
+    key?: string;
 }>;
 
 export const BlurBackgroundCover: FC<BlurBackgroundCoverProps> = (props) => {
     const pop = useAppStore(s => s.popWindow);
     return (
         <BlurBackgroundCoverStyled
+            key={props.key}
             initial={{opacity: 0, scale: 0.8, backdropFilter: 'blur(0px)'}}
             animate={{opacity: 1, scale: 1, backdropFilter: 'blur(4px)'}}
-            exit={{opacity: 0}}
+            exit={{opacity: 0, scale: 0.8 }}
             transition={{ ease: "easeInOut", }}
             onClick={e => {
                 e.stopPropagation();

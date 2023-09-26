@@ -65,28 +65,30 @@ const AppWindow: FC = () => {
         </AnimateChildWindowStyled>
         { 
           top === "SETTINGS_WINDOW" && (
-            <SettingsNewWindow/>
+            <SettingsNewWindow
+              key="settings_new"
+            />
           )
         }
         {
           top === "LOGOUT_CONFIRM" && (
-            <AnimateChildWindow key="popup_logout">
-              <PopupLogoutWindow/>
-            </AnimateChildWindow>
+              <PopupLogoutWindow
+
+              />
           )
         }
         {
           top === "CHANGE_PASSWORD" && (
-            <AnimateChildWindow key="change_password">
-              <ChangePasswordWindow/>
-            </AnimateChildWindow>
+            <ChangePasswordWindow
+              key="change_password"
+            />
           )
         }
         {
           top === "CREATE_GROUP_WINDOW" && (
-            <AnimateChildWindow key="create_group">
-              <CreateGroupWindow/>
-            </AnimateChildWindow>
+            <CreateGroupWindow
+              key="create_group_window"
+            />
           )
         }
       </AnimatePresence>
