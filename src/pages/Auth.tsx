@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color, commonCss, font } from "@/components/Palette";
-import { AuthService } from "@/service/api/AuthService";
+import { AuthService } from "@/api/http/AuthService";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { InputField } from "@/components/common/InputField";
 import { useSnackbar } from "@/store/AppStore/hooks";

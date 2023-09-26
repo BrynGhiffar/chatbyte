@@ -3,7 +3,7 @@ import { color, colorConfig, commonCss } from "@/components/Palette";
 import { ProfilePicture, ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { FC } from "react";
 import { useAvatarImage } from "@/utility/UtilityHooks";
-import { useAppStore } from "@/store/AppStore/store";
+import useAppStore from "@/store/AppStore";
 import { useSelectedContact } from "@/store/AppStore/hooks";
 
 const ChatListListItemStyled = styled.div<{ $selected: boolean }>`

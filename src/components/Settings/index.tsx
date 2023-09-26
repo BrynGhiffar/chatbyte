@@ -4,11 +4,10 @@ import { color, commonCss } from '../Palette';
 import { InputField } from '../common/InputField';
 import { Button } from '../common/Button';
 import { BackButtonSVG, CameraSVG, CloseSVG } from '../common/Svg';
-import { WindowContext } from '@/contexts/WindowContext';
-import { UserService } from '@/service/api/UserService';
 import { LocalStorage } from '@/utility/LocalStorage';
 import { useAvatarImage, useToken } from '@/utility/UtilityHooks';
 import { useWindow } from '@/store/AppStore/hooks';
+import { UserService } from '@/api/http/UserService';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */

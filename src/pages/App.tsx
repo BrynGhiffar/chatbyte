@@ -1,17 +1,15 @@
 import styled from "styled-components";
-import { color } from "../components/Palette";
-import { ApplicationContext } from "../contexts/ApplicationContext";
-import ChatList from "../components/ChatList/ChatList";
-import Chat from "../components/Chat/Chat";
-import { FC, PropsWithChildren } from "react";
+import { color } from "@/components/Palette";
+import ChatList from "@/components/ChatList/ChatList";
+import Chat from "@/components/Chat/Chat";
+import { FC, PropsWithChildren, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PopupLogoutWindow } from "@/components/PopupLogout/PopupWindow";
-import SettingsNewWindow from "@/components/SettingsNewWindow/SettingsNewWindow";
-import { ChangePasswordWindow } from "@/components/ChangePasswordWindow/ChangePasswordWindow";
-import { CreateGroupWindow } from "@/components/CreateGroupWindow/CreateGroupWindow";
-import { useAppStore } from "@/store/AppStore/store";
-import { BlurBackgroundCover } from "@/components/common/BackgroundBlurCover";
-import { CenterContainer } from "@/components/common/StackContainer";
+import { PopupLogoutWindow } from "@/components/PopupLogout";
+import SettingsNewWindow from "@/components/SettingsNewWindow";
+import ChangePasswordWindow from "@/components/ChangePasswordWindow";
+import { CreateGroupWindow } from "@/components/CreateGroupWindow";
+import useAppStore from "@/store/AppStore";
+import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -97,9 +95,20 @@ const AppWindow: FC = () => {
 }
 
 export default function App() {
+  const fetchInitialData = useAppStore(s => s.fetchInitialData);
+
+  useEffect(() => {
+    fetchInitialData();
+    askShowNotificationPermission();
+    const onFocus = () => {
+      // fetchInitialData();
+    }
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    }
+  }, [fetchInitialData]);
   return (
-    <ApplicationContext>
         <AppWindow/>
-    </ApplicationContext>
   )
 }

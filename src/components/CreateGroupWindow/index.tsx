@@ -5,13 +5,10 @@ import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/P
 import { VerticalStackContainer } from '../common/StackContainer';
 import ProfileUploadImage from '../common/ProfileUploadImage';
 import { InputField, InputFieldSearchableDropDown } from '../common/new/InputField';
-import { WindowContext } from '@/contexts/WindowContext';
 import { color } from '../Palette';
-import { ChatListContext } from '@/contexts/ChatListContext';
-import { GroupService } from '@/service/api/GroupService';
 import { useToken } from '@/utility/UtilityHooks';
 import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
-import { useAppStore } from '@/store/AppStore/store';
+import useAppStore from '@/store/AppStore';
 
 const PopupContainer = styled(GenericPopupContainer)`
     width: 500px;

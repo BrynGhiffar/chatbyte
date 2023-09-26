@@ -4,8 +4,8 @@ import { FC, useCallback, useState } from "react";
 import ProfileUploadImage from "../common/ProfileUploadImage";
 import { InputField } from "../common/new/InputField";
 import { useToken } from "@/utility/UtilityHooks";
-import { UserService } from "@/service/api/UserService";
-import { useAppStore } from "@/store/AppStore/store";
+import useAppStore from "@/store/AppStore";
+import { UserService } from "@/api/http/UserService";
 
 
 const ProfileDetailContainer = styled.div`

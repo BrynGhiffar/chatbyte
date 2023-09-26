@@ -1,4 +1,3 @@
-'use client';
 import styled, { css } from "styled-components";
 import { color, colorConfig, font } from "@/components/Palette";
 import { FC } from "react";

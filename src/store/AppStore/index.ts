@@ -1,12 +1,10 @@
 import { create } from "zustand";
 import { AppState, AppStateSet, AppStateState, Contact, ContactType, Conversation, GroupContact, GroupConversation, Message, Window } from "./type";
-import { SendGroupMessage, SendMessage, WebSocketMiddlewareMethods } from "../WebsocketMiddleware/type";
+import { WebSocketMiddlewareMethods } from "../WebsocketMiddleware/type";
 import { websocket } from "../WebsocketMiddleware/middleware";
 import { devtools } from "zustand/middleware";
 import { fetchSetDirectContacts, fetchSetDirectConversations, fetchSetDirectMessage, fetchSetGroupContact, fetchSetGroupConversations, fetchSetGroupMessage, fetchSetMessageRead, fetchSetUserDetails, getUserToken, popWindow, pushSnackbarError, pushSnackbarSuccess } from "./utility";
-import { GroupService } from "@/service/api/GroupService";
-
-
+import { GroupService } from "@/api/http/GroupService";
 
 const setInitialData = (
     set: AppStateSet, 
@@ -41,7 +39,7 @@ const initialState: AppStateState = {
     selectedContact: null,
 }
 
-export const useAppStore = create<AppState, [
+const useAppStore = create<AppState, [
     ['zustand/devtools', never],
     ...WebSocketMiddlewareMethods
 ]>(devtools(websocket((set, get, api) => ({
@@ -124,3 +122,5 @@ export const useAppStore = create<AppState, [
     onChangeChatListSearch: (search) => set(s => ({...s, chatlistSearch: search})),
 
 }))));
+
+export default useAppStore;

@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
-import { Endpoint, WebSocketEndpoint } from "../api/Endpoint";
 import { useSnackbar } from "@/store/AppStore/hooks";
+import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
 
 export const WebSocketIncomingMessage = z.object({
     content: z.string(),

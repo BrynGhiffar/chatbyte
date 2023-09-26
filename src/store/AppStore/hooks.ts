@@ -1,4 +1,4 @@
-import { useAppStore } from "./store"
+import useAppStore from "."
 
 export const useWindow = () => useAppStore(s => ({ 
     top: s.windowStack[s.windowStack.length - 1],

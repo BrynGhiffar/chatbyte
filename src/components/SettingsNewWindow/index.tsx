@@ -1,4 +1,3 @@
-import { WindowContext } from "@/contexts/WindowContext";
 import { FC, useCallback, useRef, useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 import { commonCss, font } from "../Palette";
@@ -8,7 +7,7 @@ import { SidebarContainer, SidebarItemContainer } from "./Sidebar";
 import { ProfileSettings } from "./ProfileSettings";
 import { ThemeSettings } from "./ThemeSettings";
 import { SessionSettings } from "./SessionSettings";
-import { useAppStore } from "@/store/AppStore/store";
+import useAppStore from "@/store/AppStore";
 
 const PopupContainer = styled(GenericPopupContainer)`
     height: 80vh;

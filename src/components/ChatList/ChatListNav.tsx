@@ -2,7 +2,6 @@ import { FC } from "react";
 import styled, { css } from "styled-components";
 import { color, colorConfig, commonCss } from "../Palette";
 import { useLogout } from "@/utility/UtilityHooks";
-import { WindowContext } from "@/contexts/WindowContext";
 import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, PowerSymbolSVG, SettingsSVG } from "../common/Svg";
 import { useWindow } from "@/store/AppStore/hooks";
 

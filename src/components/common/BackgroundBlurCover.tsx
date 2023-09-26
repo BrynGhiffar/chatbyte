@@ -1,5 +1,4 @@
-import { WindowContext } from '@/contexts/WindowContext';
-import { useAppStore } from '@/store/AppStore/store';
+import useAppStore from '@/store/AppStore';
 import { motion } from 'framer-motion';
 import { FC, PropsWithChildren } from 'react';
 import styled from "styled-components";

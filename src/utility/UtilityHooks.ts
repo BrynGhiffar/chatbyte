@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { LocalStorage } from "./LocalStorage";
 import { useNavigate } from "react-router-dom";
-import { avatarImageGroupUrl, avatarImageUrl } from "@/service/api/UserService";
-import { AuthService } from "@/service/api/AuthService";
+import { AuthService } from "@/api/http/AuthService";
 import { logDebug } from "./Logger";
+import { avatarImageGroupUrl, avatarImageUrl } from "@/api/http/UserService";
 
 export const useToken = () => {
     const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { colorConfig, commonCss } from "@/components/Palette";
 import { FC, useState } from "react";
-import { useAppStore } from "@/store/AppStore/store";
+import useAppStore from "@/store/AppStore";
 
 const SendSvg = styled.svg``;
 const ChatInputBarStyled = styled.div`

@@ -3,15 +3,14 @@ import ChatListList from "@/components/ChatList/ChatListList"
 import { ChatContactListItem, ChatListListItem } from "./ChatListListItem"
 import ChatListWindow from "@/components/ChatList/ChatListWindow"
 import ChatListSearch from "@/components/ChatList/ChatListSearch"
-import { useAvatarImage } from "@/utility/UtilityHooks"
 import styled from "styled-components"
 import { colorConfig, font, color, commonCss } from "../Palette"
 import { AddSymbolSVG, ChevronDownSVG } from "../common/Svg"
-import { ProfilePictureWithStatus } from "../common/ProfilePicture"
-import { WindowContext } from "@/contexts/WindowContext"
-import { useAppStore } from "@/store/AppStore/store"
+import useAppStore from "@/store/AppStore"
 import { Contact, Conversation, GroupConversation } from "@/store/AppStore/type"
 import { useChatListSearch, useWindow } from "@/store/AppStore/hooks"
+import { DivMouseEvent } from "@/misc/types"
+import ChatListProfile from "./ChatListProfile"
 
 const filterContacts = (searchStr: string, contact: Contact): boolean => {
     if (searchStr === "") {
@@ -70,7 +69,7 @@ const MessageStrip: FC<PropsWithChildren<MessageStripProps>> = (props) => {
             {
                 !hideAdd ? (
                     <SeparatorBlockAddContainer onClick={props.onClickAdd}>
-                        <AddSymbolSVG/>
+                        <AddSymbolSVG />
                     </SeparatorBlockAddContainer>
 
                 ) : (<></>)
@@ -80,7 +79,7 @@ const MessageStrip: FC<PropsWithChildren<MessageStripProps>> = (props) => {
 }
 
 const ContactMessageList = () => {
-    const [searchStr, _] = useChatListSearch();
+    const [ searchStr, _ ] = useChatListSearch();
     const groupConversations = useAppStore(s => s.groupConversations);
     const directConversations = useAppStore(s => s.conversations);
     const contacts = useAppStore(s => s.contacts.map(c => {
@@ -91,9 +90,9 @@ const ContactMessageList = () => {
 
     const onClickAddGroup = useCallback(() => {
         push("CREATE_GROUP_WINDOW");
-    }, [push]);
+    }, [ push ]);
 
-    return  (
+    return (
         <ChatListList>
             <ChatListSearch />
             <MessageStrip hideAdd>
@@ -103,7 +102,7 @@ const ContactMessageList = () => {
                 directConversations.filter(contactMessage => filterContactMessage(searchStr, contactMessage)).map(c => (
                     <ChatListListItem
                         online={false}
-                        type={"DIRECT"} 
+                        type={"DIRECT"}
                         key={c.id}
                         uid={c.id}
                         name={c.name}
@@ -119,81 +118,34 @@ const ContactMessageList = () => {
             {
                 groupConversations.filter(contact => filterContactMessage(searchStr, contact)).map(c => (
                     <ChatListListItem
-                        type={c.type} 
-                        key={c.id} 
-                        name={c.name} 
+                        type={c.type}
+                        key={c.id}
+                        name={c.name}
                         uid={c.id}
                         time={c.lastMessageTime}
                         unread_count={c.unreadCount}
                         message={c.lastMessageContent}
                     />
-                    ))
+                ))
             }
             <MessageStrip>
                 CONTACTS
             </MessageStrip>
             {
                 contacts.filter(contact => contact && filterContacts(searchStr, contact)).map(c => (
-                    c && 
+                    c &&
                     <ChatContactListItem
                         online={false}
-                        type={c.type} 
-                        key={c.id} 
-                        name={c.name} 
+                        type={c.type}
+                        key={c.id}
+                        name={c.name}
                         uid={c.id}
                     />
-                    ))
+                ))
             }
         </ChatListList>
     );
 }
-
-export const ChatListProfileStyled = styled.div`
-  width: 100%;
-  background-color: ${colorConfig.chatNavBackgroundColor};
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-`;
-
-const ProfileDetailContainer = styled.div`
-    height: 100%;
-    display: grid;
-    grid-template-columns: 50px 1fr;
-    align-items: center;
-    padding-left: 1rem;
-    gap: 1rem;
-`;
-
-const ProfileDetailControlsContainer = styled.div`
-    height: 100%;
-    display: grid;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 15px;
-`;
-
-const ChatListProfileNameStyled = styled.span`
-    font-family: ${font.appleFont};
-    color: ${color.white};
-    font-size: 1rem;
-    font-weight: bold;
-`;
-
-const ChatListProfileMoreButton = styled.div<{$clicked: boolean}>`
-    position: relative;
-    ${commonCss.transition}
-    height: 25px;
-    aspect-ratio: 1 / 1;
-    cursor: pointer;
-    border-radius: 5px;
-    background-color: ${props => props.$clicked ? '#2a4fb2' : 'transparent'};
-    :hover {
-        background-color: #2a4fb2;
-    }
-    > svg {
-        color: white;
-    }
-`
 
 const PopUpWindowStyled = styled.div`
     cursor: default;
@@ -227,10 +179,10 @@ const PopupWindow: FC = () => {
     const { pushWindow } = useWindow();
     const onClickProfile = useCallback((e: DivMouseEvent) => {
         pushWindow("SETTINGS_WINDOW");
-    }, [pushWindow]);
+    }, [ pushWindow ]);
     const onClickLogout = useCallback((e: DivMouseEvent) => {
         pushWindow("LOGOUT_CONFIRM");
-    }, [pushWindow]);
+    }, [ pushWindow ]);
     return (
         <PopUpWindowStyled
         >
@@ -240,52 +192,11 @@ const PopupWindow: FC = () => {
     )
 }
 
-
-type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
-
-const ChatListProfile: FC = () => {
-  const [userId, username] = useAppStore(s => [s.loggedInUserId, s.loggedInUsername]);
-  const pushWindow = useAppStore(s => s.pushWindow);
-  const [avatarImage] = useAvatarImage(userId);
-  const [showPopup, setShowPopup] = useState(false);
-  useEffect(() => {
-    const clickOutside = () => setShowPopup(false);
-    window.addEventListener('click', clickOutside);
-    return () => {
-        window.removeEventListener('click', clickOutside);
-    }
-  }, []);
-
-  const onProfileMoreButton = useCallback((e: DivMouseEvent) => {
-    e.stopPropagation();
-    pushWindow("SETTINGS_WINDOW");
-  }, [pushWindow]);
-
-  return (
-    <ChatListProfileStyled>
-        <ProfileDetailContainer>
-            <ProfilePictureWithStatus
-                imageUrl={avatarImage} 
-                statusOutlineColor={colorConfig.chatNavBackgroundColor}
-                online
-            />
-            <ChatListProfileNameStyled>{username}</ChatListProfileNameStyled>
-        </ProfileDetailContainer>
-        <ProfileDetailControlsContainer>
-            <ChatListProfileMoreButton $clicked={showPopup} onClick={onProfileMoreButton}>
-                <ChevronDownSVG/>
-                {/* {showPopup && <PopupWindow/>} */}
-            </ChatListProfileMoreButton>
-        </ProfileDetailControlsContainer>
-    </ChatListProfileStyled>
-  );
-};
-
 const ChatList: FC = () => {
     return (
         <ChatListWindow>
-            <ChatListProfile/>
-            <ContactMessageList/>
+            <ChatListProfile />
+            <ContactMessageList />
         </ChatListWindow>
     )
 }

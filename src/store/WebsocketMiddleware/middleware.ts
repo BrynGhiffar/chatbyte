@@ -1,27 +1,11 @@
-import { Endpoint, WebSocketEndpoint } from "@/service/api/Endpoint";
 import { SendGroupMessage, SendMessage, StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl } from "./type";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { fetchSetDirectConversations, fetchSetGroupConversations, fetchSetMessageRead, getUserToken, pushSnackbarError, pushSnackbarSuccess } from "../AppStore/utility";
 import { AppState, AppStateGet, AppStateSet, Conversation } from "../AppStore/type";
-import { GetGroupMessageResponse, GroupService } from "@/service/api/GroupService";
-import MessageService from "@/service/api/MessageService";
-import { ContactService } from "@/service/api/ContactService";
 import { logDebug, logError } from "@/utility/Logger";
 import { isContactSelected, pushDirectMessageNotification, pushGroupMessageNotification } from "./utility";
-
-const showNotification = (title: string, body: string) => {
-    const browserSupportsNotification = 'Notification' in window;
-    if (!browserSupportsNotification) { return; }
-    const notPermissionGranted = Notification.permission !== 'granted';
-    if (notPermissionGranted) {
-        return;
-    } 
-    const notification = new Notification(title , { body, icon:  "/ferris.jpg"});
-    notification.onclick = () => {
-        notification.close();
-    }
-} 
-
+import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
+import { showBrowserNotification } from "@/api/browser/BrowserNotification";
 
 const reduceMessage = async (set: AppStateSet, get: () => AppState, message: WebSocketOutgoingMessage) => {
     switch (message.type) {
@@ -40,7 +24,7 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
                 return pushSnackbarError(set, '[Websocket] Contact not found');
             }
             if (!isContactSelected(get, groupContact) && get().loggedInUserId !== message.senderId) {
-                showNotification(groupContact.name, `${message.username}: ${message.content}`);
+                showBrowserNotification(groupContact.name, `${message.username}: ${message.content}`);
             }
 
             pushGroupMessageNotification(set, get, message, groupContact);
@@ -62,6 +46,9 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
                 return pushSnackbarError(set, "[Websocket] Contact not found");
             }
             pushDirectMessageNotification(set, get, message, contact);
+            if (!isContactSelected(get, contact) && get().loggedInUserId !== message.senderUid) {
+                showBrowserNotification(contact.name, message.content);
+            }
             if (isContactSelected(get, contact)) {
                 await fetchSetMessageRead(set, get, token, contact);
             }

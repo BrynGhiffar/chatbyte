@@ -5,9 +5,8 @@ import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
 import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/Popup';
 import { VerticalStackContainer } from '../common/StackContainer';
 import { useToken } from '@/utility/UtilityHooks';
-import { AuthService } from '@/service/api/AuthService';
+import { AuthService } from '@/api/http/AuthService';
 import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
-
 
 const PopupContainer = styled(GenericPopupContainer)`
     height: 280px;
@@ -85,10 +84,12 @@ const PopupWindow: FC = () => {
 };
 
 
-export const ChangePasswordWindow: FC = () => {
+const ChangePasswordWindow: FC = () => {
     return (
         <BlurBackgroundCover dismissOnClick>
             <PopupWindow/>
         </BlurBackgroundCover>
     );
 }
+
+export default ChangePasswordWindow;

@@ -7,8 +7,8 @@ import EmptyChatWindow from "./EmptyChatWindow";
 import { useSelectedContact } from "@/store/AppStore/hooks";
 
 const Chat: FC = () => {
-  const uid = useSelectedContact();
-  if (uid) {
+  const contact = useSelectedContact();
+  if (contact) {
     return (
           <ChatWindow>
             <ChatNavigation />

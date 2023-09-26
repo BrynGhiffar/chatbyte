@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
 import { color } from "../Palette";
-import { SnackbarProvider } from "./Snackbar";
+import { SnackbarProvider } from "../Snackbar";
 import Blur from "./Blur";
 
 const PageWrapper = styled.div`
