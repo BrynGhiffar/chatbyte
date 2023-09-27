@@ -3,8 +3,11 @@ import { AppState, AppStateSet, AppStateState, Contact, ContactType, Conversatio
 import { WebSocketMiddlewareMethods } from "../WebsocketMiddleware/type";
 import { websocket } from "../WebsocketMiddleware/middleware";
 import { devtools } from "zustand/middleware";
-import { fetchSetDirectContacts, fetchSetDirectConversations, fetchSetDirectMessage, fetchSetGroupContact, fetchSetGroupConversations, fetchSetGroupMessage, fetchSetMessageRead, fetchSetUserDetails, getUserToken, popWindow, pushSnackbarError, pushSnackbarSuccess } from "./utility";
+import { fetchSetDirectContacts, fetchSetDirectConversations, fetchSetDirectMessage, fetchSetGroupContact, fetchSetGroupConversations, fetchSetGroupMessage, fetchSetMessageRead, fetchSetUserDetails, getUserToken, initializeTheme, popWindow, pushSnackbarError, pushSnackbarSuccess } from "./utility";
 import { GroupService } from "@/api/http/GroupService";
+import AllThemes, { LightTheme } from "@/theme";
+import { ThemeId } from "@/theme/type";
+import { LocalStorage } from "@/utility/LocalStorage";
 
 const setInitialData = (
     set: AppStateSet, 
@@ -37,6 +40,7 @@ const initialState: AppStateState = {
     windowStack: ["CHAT_WINDOW"],
     message: {},
     selectedContact: null,
+    theme: LightTheme
 }
 
 const useAppStore = create<AppState, [
@@ -46,6 +50,7 @@ const useAppStore = create<AppState, [
     ...initialState,
     fetchInitialData: async () => {
         set({ ...initialState });
+        initializeTheme(set);
         const token = await getUserToken(set);
         if (!token) {
             return;
@@ -120,6 +125,14 @@ const useAppStore = create<AppState, [
     top: () => get().windowStack[get().windowStack.length - 1],
 
     onChangeChatListSearch: (search) => set(s => ({...s, chatlistSearch: search})),
+
+    // Themes
+    setTheme: (themeId: ThemeId) => {
+        const theme = AllThemes.find(th => th.id === themeId);
+        if (!theme) return;
+        LocalStorage.setTheme(themeId);
+        set({ theme });
+    }
 
 }))));
 

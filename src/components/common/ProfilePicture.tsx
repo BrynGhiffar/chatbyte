@@ -1,5 +1,6 @@
 import { FC } from "react";
 import styled from "styled-components";
+import { commonCss } from "../Palette";
 
 const ProfilePicContainer = styled.div<{ $width?: number, imageUrl: string }>`
   width: ${props => props.$width ?? 50}px;
@@ -29,7 +30,13 @@ type ProfilePictureProps = {
 
 type Status = "online" | "offline"
 
-const StatusSymbol = styled.div<{$status: Status, $outlineColor: string}>`
+type StatusSymbolProps = {
+  $status: Status,
+  $outlineColor: string,
+}
+
+const StatusSymbol = styled.div<StatusSymbolProps>`
+  ${commonCss.transition}
   position: absolute;
   bottom: 0px;
   right: 0px;

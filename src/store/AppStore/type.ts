@@ -1,3 +1,5 @@
+import { ColorConfig, Theme, ThemeId } from "@/theme/type";
+
 export type AppStateType = "FETCHING_INITIAL_USER_DATA" 
     | "NORMAL" 
     | "ERROR_FETCHING_INITIAL_USER_DATA" 
@@ -21,6 +23,7 @@ export type AppStateState = {
     windowStack: Window[],
     message: MessageMap,
     selectedContact: GroupContact | Contact | null,
+    theme: Theme
 }
 
 export type AppStateAction = {
@@ -40,6 +43,8 @@ export type AppStateAction = {
     top: () => Window;
 
     onChangeChatListSearch: (search: string) => void;
+
+    setTheme: (themeId: ThemeId) => void;
 }
 
 export type AppState = AppStateState & AppStateAction;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { color } from "@/components/Palette";
-import ChatList from "@/components/ChatList/ChatList";
+import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat/Chat";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";

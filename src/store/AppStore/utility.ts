@@ -6,6 +6,7 @@ import { GroupService } from "@/api/http/GroupService";
 import { UserService, avatarImageGroupUrl, avatarImageUrl } from "@/api/http/UserService";
 import { ContactService } from "@/api/http/ContactService";
 import MessageService from "@/api/http/MessageService";
+import AllThemes, { LightTheme } from "@/theme";
 
 const setFetchInitialFailed = (set: AppStateSet) => set(s => ({...s, type: "ERROR_FETCHING_INITIAL_USER_DATA" }));
 
@@ -220,4 +221,21 @@ export const fetchSetGroupMessage = async (
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;
     set({ message: messageMapNew });
+}
+
+export const initializeTheme = (set: AppStateSet) => {
+    const themeId = LocalStorage.getTheme();
+    if (themeId === null) {
+        set({ theme: LightTheme })
+        LocalStorage.setTheme(LightTheme.id);
+        return;
+    }
+    const theme = AllThemes.find(th => th.id === themeId);
+    if (!theme) {
+        set({ theme: LightTheme })
+        LocalStorage.setTheme(LightTheme.id);
+        return;    
+    }
+    set({ theme });
+    return;
 }

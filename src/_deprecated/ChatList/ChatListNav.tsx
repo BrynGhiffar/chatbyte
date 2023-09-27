@@ -1,8 +1,8 @@
 import { FC } from "react";
 import styled, { css } from "styled-components";
-import { color, colorConfig, commonCss } from "../Palette";
+import { color, colorConfig, commonCss } from "../../components/Palette";
 import { useLogout } from "@/utility/UtilityHooks";
-import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, PowerSymbolSVG, SettingsSVG } from "../common/Svg";
+import { ContactSVG, ExitSVG, Message2SVG, MessageSVG, PowerSymbolSVG, SettingsSVG } from "../../components/common/Svg";
 import { useWindow } from "@/store/AppStore/hooks";
 
 const ChatListNavStyled = styled.div`

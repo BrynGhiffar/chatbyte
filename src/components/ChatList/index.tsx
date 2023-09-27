@@ -1,16 +1,16 @@
-import { FC, PropsWithChildren, useState, useCallback, useEffect } from "react"
-import ChatListList from "@/components/ChatList/ChatListList"
-import { ChatContactListItem, ChatListListItem } from "./ChatListListItem"
-import ChatListWindow from "@/components/ChatList/ChatListWindow"
-import ChatListSearch from "@/components/ChatList/ChatListSearch"
+import { FC, useCallback } from "react"
 import styled from "styled-components"
-import { colorConfig, font, color, commonCss } from "../Palette"
-import { AddSymbolSVG, ChevronDownSVG } from "../common/Svg"
+import { font, commonCss } from "../Palette"
 import useAppStore from "@/store/AppStore"
 import { Contact, Conversation, GroupConversation } from "@/store/AppStore/type"
 import { useChatListSearch, useWindow } from "@/store/AppStore/hooks"
 import { DivMouseEvent } from "@/misc/types"
+import ListSeparator from "./ListSeparator"
+import ConversationItem from "./ChatListItem/ConversationItem"
+import ContactItem from "./ChatListItem/ContactItem"
+import Search from "./Search"
 import ChatListProfile from "./ChatListProfile"
+import { SC__ChatListWindow, TH__ChatListContainer } from "./styled"
 
 const filterContacts = (searchStr: string, contact: Contact): boolean => {
     if (searchStr === "") {
@@ -25,67 +25,17 @@ const filterContactMessage = (searchStr: string, contactMessage: Conversation | 
 };
 
 
-const SeparatorBlockStyled = styled.div`
-    min-height: 40px;
-    display: grid;
-    grid-template-columns: 5fr 1fr;
-    border-top: 1px solid ${colorConfig.chatListSeparatorBorderColor};
-`;
-
-const SeparatorBlockTitle = styled.div`
-    padding-left: 20px;
-    font-weight: 600;
-    color: ${colorConfig.chatListSeparatorTextColor};
-    display: flex;
-    align-items: center;
-    height: 100%;
-`;
-
-const SeparatorBlockAddContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 40px;
-    > svg {
-        cursor: pointer;
-        height: 80%;
-        color: ${colorConfig.chatListSeparatorTextColor};
-    }
-    /* height: 100%; */
-`;
-
-type MessageStripProps = {
-    hideAdd?: boolean;
-    onClickAdd?: () => void;
-}
-
-const MessageStrip: FC<PropsWithChildren<MessageStripProps>> = (props) => {
-    const hideAdd = props.hideAdd ?? false;
-    return (
-        <SeparatorBlockStyled>
-            <SeparatorBlockTitle>
-                {props.children}
-            </SeparatorBlockTitle>
-            {
-                !hideAdd ? (
-                    <SeparatorBlockAddContainer onClick={props.onClickAdd}>
-                        <AddSymbolSVG />
-                    </SeparatorBlockAddContainer>
-
-                ) : (<></>)
-            }
-        </SeparatorBlockStyled>
-    )
-}
-
 const ContactMessageList = () => {
     const [ searchStr, _ ] = useChatListSearch();
-    const groupConversations = useAppStore(s => s.groupConversations);
-    const directConversations = useAppStore(s => s.conversations);
+    const groupConversations = useAppStore(s => s.groupConversations)
+        .filter(contact => filterContactMessage(searchStr, contact));
+    const directConversations = useAppStore(s => s.conversations)
+        .filter(contactMessage => filterContactMessage(searchStr, contactMessage));
     const contacts = useAppStore(s => s.contacts.map(c => {
         if (c.type === "DIRECT") return { ...c };
         return undefined;
-    }));
+    }))
+    .filter(contact => contact && filterContacts(searchStr, contact));
     const { pushWindow: push } = useWindow();
 
     const onClickAddGroup = useCallback(() => {
@@ -93,14 +43,14 @@ const ContactMessageList = () => {
     }, [ push ]);
 
     return (
-        <ChatListList>
-            <ChatListSearch />
-            <MessageStrip hideAdd>
+        <TH__ChatListContainer>
+            <Search />
+            <ListSeparator hideAdd>
                 DIRECT CONVERSATIONS
-            </MessageStrip>
+            </ListSeparator>
             {
-                directConversations.filter(contactMessage => filterContactMessage(searchStr, contactMessage)).map(c => (
-                    <ChatListListItem
+                directConversations.map(c => (
+                    <ConversationItem
                         online={false}
                         type={"DIRECT"}
                         key={c.id}
@@ -112,12 +62,12 @@ const ContactMessageList = () => {
                     />
                 ))
             }
-            <MessageStrip onClickAdd={onClickAddGroup}>
+            <ListSeparator onClickAdd={onClickAddGroup}>
                 GROUP CONVERSATIONS
-            </MessageStrip>
+            </ListSeparator>
             {
-                groupConversations.filter(contact => filterContactMessage(searchStr, contact)).map(c => (
-                    <ChatListListItem
+                groupConversations.map(c => (
+                    <ConversationItem
                         type={c.type}
                         key={c.id}
                         name={c.name}
@@ -128,13 +78,13 @@ const ContactMessageList = () => {
                     />
                 ))
             }
-            <MessageStrip>
+            <ListSeparator>
                 CONTACTS
-            </MessageStrip>
+            </ListSeparator>
             {
-                contacts.filter(contact => contact && filterContacts(searchStr, contact)).map(c => (
+                contacts.map(c => (
                     c &&
-                    <ChatContactListItem
+                    <ContactItem
                         online={false}
                         type={c.type}
                         key={c.id}
@@ -143,7 +93,7 @@ const ContactMessageList = () => {
                     />
                 ))
             }
-        </ChatListList>
+        </TH__ChatListContainer>
     );
 }
 
@@ -194,10 +144,10 @@ const PopupWindow: FC = () => {
 
 const ChatList: FC = () => {
     return (
-        <ChatListWindow>
+        <SC__ChatListWindow>
             <ChatListProfile />
             <ContactMessageList />
-        </ChatListWindow>
+        </SC__ChatListWindow>
     )
 }
 

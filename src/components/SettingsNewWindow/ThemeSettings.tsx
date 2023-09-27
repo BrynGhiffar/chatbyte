@@ -1,3 +1,5 @@
+import { useTheme } from "@/store/AppStore/hooks";
+import AllThemes from "@/theme";
 import { useState, FC } from "react";
 import styled, { css } from "styled-components";
 
@@ -88,7 +90,7 @@ const ThemeGridItem: FC<ThemeGridItemProps> = (props) => {
 
 
 export const ThemeSettings: FC = () => {
-    const [theme, setTheme] = useState<ThemeType>(ThemeColor[0]);
+    const [theme, setTheme] = useTheme();
     return (
         <>
             <ThemeTitle>
@@ -96,13 +98,13 @@ export const ThemeSettings: FC = () => {
             </ThemeTitle>
             <ThemeGridStyled>
                 {
-                    ThemeColor.map(th => (
+                    AllThemes.map(th => (
                         <ThemeGridItem
-                            key={th.theme}
-                            selected={th.theme === theme.theme}
+                            key={th.id}
+                            selected={th.id === theme.id}
                             color={th.color}
                             onClick={() => {
-                                setTheme(th);
+                                setTheme(th.id);
                             }}
                         />
                     ))

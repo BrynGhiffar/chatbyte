@@ -1,3 +1,4 @@
+import { Theme, ThemeId } from "@/theme/type";
 import useAppStore from "."
 
 export const useWindow = () => useAppStore(s => ({ 
@@ -22,3 +23,7 @@ export const useSelectedContactMessages = () => useAppStore(s => {
 });
 
 export const useChatListSearch = (): [string, (search: string) => void] => useAppStore(s => [s.chatlistSearch, s.onChangeChatListSearch]);
+
+export const useTheme = (): [Theme, (themeId: ThemeId) => void] => useAppStore(s => [s.theme, s.setTheme]);
+
+export const useColorConfig = () => useAppStore(s => s.theme.config);
