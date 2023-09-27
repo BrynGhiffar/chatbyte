@@ -131,7 +131,7 @@ export const SC__CheckmarkContainer = styled.div<{ $backgroundColor: string }>`
     justify-content: flex-end;
     > svg {
         color: ${props => props.$backgroundColor};
-}
+    }
 `;
 
 export const SC__CheckmarkTimeContainer = styled.div<{$side: Side }>`
@@ -143,7 +143,7 @@ export const SC__CheckmarkTimeContainer = styled.div<{$side: Side }>`
             order: 1;
         }
         }
-`}
+    `}
 `;
 
 

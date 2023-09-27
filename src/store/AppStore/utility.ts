@@ -212,7 +212,7 @@ export const fetchSetGroupMessage = async (
     const contactKey = `${contact.type}-${contact.id}`;
     const messages = resGetGroupMessage.payload.map(m => ({
         id: m.id,
-        receiverRead: false,
+        receiverRead: true,
         isUser: m.senderId === get().loggedInUserId,
         senderName: m.username,
         time: m.sentAt,

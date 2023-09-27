@@ -18,7 +18,7 @@ const ReadReceipt: FC<ReadReceiptProps> = (props: ReadReceiptProps) => {
   const checkmarkNotRead = useColorConfig().chatBubbleCheckmarkNotRead;
   const backgroundColor = read ? checkmarkRead : checkmarkNotRead;
   return (
-    props.side === "left" ? (
+    props.side === "left" || !props.receiverRead ? (
       <div></div>
     ) : (
     <SC__CheckmarkContainer $backgroundColor={backgroundColor}>

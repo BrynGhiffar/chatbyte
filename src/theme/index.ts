@@ -78,7 +78,7 @@ export const DarkTheme: Theme = {
         chatBubbleTextColor: 'white',
         chatBubbleTextColorUserSent: 'white',
         chatBubbleCheckmarkNotRead: 'white',
-        chatBubbleCheckmarkRead: '#f95959',
+        chatBubbleCheckmarkRead: 'white',
         chatInputBackgroundColor: '#151515',
         chatInputInnerBackgroundColor: '#0f0f0f',
         chatInputTextColor: 'white',
