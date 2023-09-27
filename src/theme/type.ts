@@ -23,10 +23,17 @@ export type ColorConfig = {
     chatListNavButtonHoverBackgroundColor: string,
     chatListNavButtonHoverColor: string,
     chatNavBackgroundColor: string,
+    chatNavTextColor: string,
     chatGridBackgroundColor: string,
     chatBubbleBackgroundColor: string,
     chatBubbleBackgroundColorUserSent: string,
+    chatBubbleTextColor: string;
+    chatBubbleTextColorUserSent: string;
+    chatBubbleCheckmarkRead: string;
+    chatBubbleCheckmarkNotRead: string;
     chatInputBackgroundColor: string,
+    chatInputInnerBackgroundColor: string,
+    chatInputTextColor: string,
     chatEmptyBackgroundColor: string,
     chatInputBorderColor: string,
     chatInputSendButtonColor: string,

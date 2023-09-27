@@ -1,16 +1,10 @@
 import styled from "styled-components";
 import { commonCss } from "@/components/Palette";
 import { useRef, MutableRefObject, useEffect, memo } from "react";
-import ChatBubble from "./ChatBubble";
+import ChatBubble from "../ChatBubble";
 import { useSelectedContactMessages } from "@/store/AppStore/hooks";
 import { Message } from "@/store/AppStore/type";
-
-const ChatGridStyled = styled.div`
-    ${commonCss.transition}
-    ${commonCss.scrollableCss}
-    /* overflow-y: hidden; */
-    overflow-x: hidden;
-`;
+import { SC__ChatGrid } from "./styled";
 
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {
     const messages: Message[] = useSelectedContactMessages();
@@ -26,7 +20,7 @@ const ChatGrid = () => {
     const messages: Message[] = useSelectedContactMessages();
     useScrollToBottom(gridRef)
     return (
-        <ChatGridStyled ref={gridRef}>
+        <SC__ChatGrid ref={gridRef}>
             {
                 messages.map(m => (<ChatBubble
                     key={m.id}
@@ -37,7 +31,7 @@ const ChatGrid = () => {
                     receiverRead={m.receiverRead}
                 />))
             }
-        </ChatGridStyled>
+        </SC__ChatGrid>
     );
 };
 

@@ -1,20 +1,20 @@
 import { FC, useRef } from "react";
-import ChatWindow from "./ChatWindow";
 import ChatNavigation from "./ChatNavigation";
 import ChatGrid from "./ChatGrid";
 import ChatInputBar from "./ChatInputBar";
 import EmptyChatWindow from "./EmptyChatWindow";
 import { useSelectedContact } from "@/store/AppStore/hooks";
+import { TH__ChatWindow } from "./styled";
 
 const Chat: FC = () => {
   const contact = useSelectedContact();
   if (contact) {
     return (
-          <ChatWindow>
+          <TH__ChatWindow>
             <ChatNavigation />
             <ChatGrid/>
             <ChatInputBar />
-          </ChatWindow>
+          </TH__ChatWindow>
     )
   }
   return (

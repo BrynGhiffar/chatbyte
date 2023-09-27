@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { color } from "@/components/Palette";
 import ChatList from "@/components/ChatList";
-import Chat from "@/components/Chat/Chat";
+import Chat from "@/components/Chat";
 import { FC, PropsWithChildren, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PopupLogoutWindow } from "@/components/PopupLogout";
@@ -71,7 +71,7 @@ const AppWindow: FC = () => {
         {
           top === "LOGOUT_CONFIRM" && (
               <PopupLogoutWindow
-
+                key="logout"
               />
           )
         }

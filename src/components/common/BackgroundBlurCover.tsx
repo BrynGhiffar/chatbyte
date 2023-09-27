@@ -9,7 +9,7 @@ const BlurBackgroundCoverStyled = styled(motion.div)`
     /* background-color: transparent; */
     /* border: 1px solid red; */
     /* backdrop-filter: blur(4px); */
-    
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
