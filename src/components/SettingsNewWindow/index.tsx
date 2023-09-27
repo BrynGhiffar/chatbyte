@@ -2,14 +2,14 @@ import { FC, useCallback, useRef, useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 import { commonCss, font } from "../Palette";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
-import { GenericPopupContainer } from "../common/new/Popup";
-import { SidebarContainer, SidebarItemContainer } from "./Sidebar";
 import { ProfileSettings } from "./ProfileSettings";
 import { ThemeSettings } from "./ThemeSettings";
 import { SessionSettings } from "./SessionSettings";
 import useAppStore from "@/store/AppStore";
+import { TH__SidebarContainer, TH__SidebarItemContainer } from "./styled";
+import { TH__GenericPopupContainer } from "../common/new/Popup";
 
-const PopupContainer = styled(GenericPopupContainer)`
+const PopupContainer = styled(TH__GenericPopupContainer)`
     height: 80vh;
     width: 600px;
     display: grid;
@@ -30,13 +30,13 @@ type SidebarItemNormalContainerProps = PropsWithChildren<{
 
 const SidebarItemNormalContainer: FC<SidebarItemNormalContainerProps> = (props) => {
     return (
-        <SidebarItemContainer
+        <TH__SidebarItemContainer
             $focusBgColor="rgba(200,200,200,0.2)"
             $selected={props.selected}
             onClick={props.onClick}
         >
             {props.children}
-        </SidebarItemContainer> 
+        </TH__SidebarItemContainer> 
     );
 }
 
@@ -59,8 +59,8 @@ const Popup: FC = () => {
     }, [pushWindow]);
     return (
         <PopupContainer onClick={e => e.stopPropagation()}>
-            <SidebarContainer>
-                <SidebarItemContainer>Settings</SidebarItemContainer>
+            <TH__SidebarContainer>
+                <TH__SidebarItemContainer>Settings</TH__SidebarItemContainer>
                 <SidebarItemNormalContainer
                     selected={section === "PROFILE"}
                     onClick={onClickProfileSection}
@@ -79,14 +79,14 @@ const Popup: FC = () => {
                 >
                     Session
                 </SidebarItemNormalContainer>
-                <SidebarItemContainer
+                <TH__SidebarItemContainer
                     $focusBgColor="rgba(255,0,0,0.9)"
                     $selected={false}
                     onClick={onClickLogout}
                 >
                     Log Out
-                </SidebarItemContainer>
-            </SidebarContainer>
+                </TH__SidebarItemContainer>
+            </TH__SidebarContainer>
             <MenuListContentContainer>
                 {section === "PROFILE" && <ProfileSettings/>}
                 {section === "THEME" && <ThemeSettings/>}

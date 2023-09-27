@@ -38,6 +38,17 @@ export type ColorConfig = {
     chatInputBorderColor: string,
     chatInputSendButtonColor: string,
     chatInputSendButtonBackgroundColorHover: string,
+
+    popup: {
+        borderColor: string,
+        backgroundColor: string,
+    }
+
+    // settings
+    settings: {
+        sidebarItemColor: string,
+        sidebarBackgroundColor: string,
+    }
 };
 
 export const ThemeId = z.literal('dark')

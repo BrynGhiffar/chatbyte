@@ -42,6 +42,16 @@ export const LightTheme: Theme = {
         chatInputBorderColor: 'rgb(200,200,200)',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
+
+        popup: {
+            borderColor: '#ededed',
+            backgroundColor: "white",
+        },
+
+        settings: {
+            sidebarBackgroundColor: color.chatBlue,
+            sidebarItemColor: 'white'
+        }
     }
 };
 
@@ -86,6 +96,17 @@ export const DarkTheme: Theme = {
         chatInputBorderColor: '#1f1f1f',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
+
+        popup: {
+            borderColor: '#1e1d1d',
+            // borderColor: 'red',
+            backgroundColor: 'white'
+        },
+
+        settings: {
+            sidebarBackgroundColor: '#1e1d1d',
+            sidebarItemColor: 'white'
+        }
     }
 };
 

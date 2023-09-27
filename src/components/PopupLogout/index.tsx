@@ -3,7 +3,7 @@ import { font } from "../Palette";
 import { FC, useCallback } from "react";
 import { useLogout } from "@/utility/UtilityHooks";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
-import { GenericBottomPopupButton, GenericPopupContainer } from "../common/new/Popup";
+import { GenericBottomPopupButton, TH__GenericPopupContainer } from "../common/new/Popup";
 import { useWindow } from "@/store/AppStore/hooks";
 
 
@@ -24,7 +24,7 @@ const PopupBottomHalf = styled.div`
 
 const PopupButton = GenericBottomPopupButton;
 
-const PopupContainer = styled(GenericPopupContainer)`
+const PopupContainer = styled(TH__GenericPopupContainer)`
     height: 18vh;
     width: 300px;
     display: grid;

@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from 'react';
 import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
 import styled from 'styled-components';
-import { GenericBottomPopupButton, GenericPopupContainer } from '../common/new/Popup';
+import { GenericBottomPopupButton, TH__GenericPopupContainer } from '../common/new/Popup';
 import { VerticalStackContainer } from '../common/StackContainer';
 import ProfileUploadImage from '../common/ProfileUploadImage';
 import { InputField, InputFieldSearchableDropDown } from '../common/new/InputField';
@@ -10,7 +10,7 @@ import { useToken } from '@/utility/UtilityHooks';
 import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
 import useAppStore from '@/store/AppStore';
 
-const PopupContainer = styled(GenericPopupContainer)`
+const PopupContainer = styled(TH__GenericPopupContainer)`
     width: 500px;
     height: 600px;
     overflow: visible;
