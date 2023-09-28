@@ -1,8 +1,35 @@
 import styled from "styled-components";
-import { colorConfig, commonCss } from "@/components/Palette";
-import { FC, useState } from "react";
+import { colorConfig, commonCss, font } from "@/components/Palette";
+import { FC, KeyboardEvent, useEffect, useRef, useState, useCallback, MouseEvent } from "react";
 import useAppStore from "@/store/AppStore";
-import { SC__SendSvg, TH__ChatInputBar, TH__ChatInputText, TH__SendButton } from "./styled";
+import { SC__SendSvg, TH__ChatEditMessageCloseButton, TH__ChatEditMessageContainer, TH__ChatInputBar, TH__ChatInputText, TH__SendButton } from "./styled";
+import { CloseSVG } from "@/components/common/Svg";
+
+const ChatEditMessageDetail = () => {
+  const cancelEdit = useAppStore(s => s.cancelEditMessage);
+  const editMessage = useAppStore(s => s.editMessage);
+  const onClick = useCallback(() => {
+    if (!editMessage) return;
+    editMessage.scrollIntoView();
+  }, []);
+  const onClickClose = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+    cancelEdit();
+  }, []);
+  return (
+    <>
+      <TH__ChatEditMessageContainer
+        onClick={onClick}
+      >
+        <TH__ChatEditMessageCloseButton onClick={onClickClose}>
+          <CloseSVG/>
+        </TH__ChatEditMessageCloseButton>
+        Edit Message
+      </TH__ChatEditMessageContainer>
+      <div/>
+    </>
+  )
+}
 
 
 const ChatInputBar: FC = () => {
@@ -14,14 +41,39 @@ const ChatInputBar: FC = () => {
     setInput("");
     sendMessage(message);
   }
+  const inputRef = useRef(null);
+  const editMessage = useAppStore(s => s.editMessage);
+  const cancelEditMessage = useAppStore(s => s.cancelEditMessage);
+  useEffect(() => {
+    if (editMessage !== null) {
+      setInput(editMessage.message.content);
+      if (inputRef.current !== null) {
+        const element = inputRef.current as HTMLInputElement;
+        element.focus();
+      }
+    } else {
+      setInput("");
+    }
+  }, [editMessage]);
+
+  const onKeyPressInInput = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') { 
+      onClickSend();
+      return ;
+    } else if (e.key === 'Escape') {
+      return cancelEditMessage();
+    }
+  } 
   return (
     <TH__ChatInputBar>
-      <TH__ChatInputText 
-        placeholder="Type something" 
+      { editMessage && <ChatEditMessageDetail/> }
+      <TH__ChatInputText
+        ref={inputRef}
+        placeholder="Type something"
         type="text"
         value={input}
         onChange={e => setInput(e.target.value)}
-        onKeyDown={e => (e.key === 'Enter') && onClickSend()}
+        onKeyDown={onKeyPressInInput}
       />
       <TH__SendButton onClick={onClickSend}>
         <SendSymbol />

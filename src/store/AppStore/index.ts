@@ -29,6 +29,7 @@ const setInitialData = (
 
 const initialState: AppStateState = {
     type: "FETCHING_INITIAL_USER_DATA",
+    editMessage: null,
     snackbarMessage: [],
     loggedInUserId: 0,
     loggedInUsername: ""  ,
@@ -83,14 +84,23 @@ const useAppStore = create<AppState, [
             return;
         }
         const contact = allContacts[contactIndex];
-        fetchSetMessageRead(set, get, token, contact);
-        set({ selectedContact: contact });
+        await fetchSetMessageRead(set, get, token, contact);
+        set({ selectedContact: contact, editMessage: null });
     },
     sendMessage: (message: string) => {
         const selectedContact = get().selectedContact;
         if (!selectedContact) return;
+        const editMessage = get().editMessage;
+        if (editMessage) {
+            if (selectedContact.type === "DIRECT") {
+                api.websocket.editDirectMessage(editMessage.message.id, message);
+            } else if (selectedContact.type === "GROUP") {
+                api.websocket.editGroupMessage(editMessage.message.id, message);
+            }
+            set({ editMessage: null });
+            return;
+        }
         if (selectedContact.type === "GROUP") {
-            // supposed to be two different kinds of send message.
             api.websocket.sendGroupMessage(selectedContact.id, message);
         } else if (selectedContact.type === "DIRECT") {
             api.websocket.sendMessage(selectedContact.id, message);
@@ -103,6 +113,18 @@ const useAppStore = create<AppState, [
         } else {
             api.websocket.deleteGroupMessage(messageId);
         }
+    },
+    setEditMessage: (messageId: number, scrollIntoView: () => void) => {
+        const selectedContact = get().selectedContact;
+        if (selectedContact === null) return;
+        const messages = get().message[`${selectedContact.type}-${selectedContact.id}`];
+        const message = messages.find(m => m.id === messageId);
+        if (!message) return;
+
+        set({ editMessage: { message, scrollIntoView} });
+    },
+    cancelEditMessage: () => {
+        set({ editMessage: null });
     },
     createChatGroup: async (name: string, members: number[], profilePicture: File | null) => {
         const token = await getUserToken(set);

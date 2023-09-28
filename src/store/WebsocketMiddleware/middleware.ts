@@ -56,8 +56,6 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
             break;
         }
         case "READ_NOTIFICATION": {
-            const token = await getUserToken(set);
-            if (!token) { return }
             const contactId = get().loggedInUserId === message.senderUid ? message.receiverUid : message.senderUid;
             const messageMap = structuredClone(get().message);
             const directMessages = messageMap[`DIRECT-${contactId}`];
@@ -82,11 +80,39 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
         }
         case "DELETE_GROUP_MESSAGE_NOTIFICATION": {
             const messageMap = structuredClone(get().message);
-            const directMessages = messageMap[`GROUP-${message.groupId}`];
-            if (!directMessages) { break; };
-            messageMap[`GROUP-${message.groupId}`] = directMessages.map(m => {
+            const messages = messageMap[`GROUP-${message.groupId}`];
+            if (!messages) { break; };
+            messageMap[`GROUP-${message.groupId}`] = messages.map(m => {
                 if (m.id === message.messageId) {
                     return ({...m, deleted: true, content: "" })
+                }
+                return m;
+            });
+            set({ message: messageMap });
+            await fetchSetGroupConversations(set, token);
+            break;
+        }
+        case "UPDATE_DIRECT_MESSAGE_NOTIFICATION": {
+            const messageMap = structuredClone(get().message);
+            const messages = messageMap[`DIRECT-${message.contactId}`]
+            if (!messages) { break; }
+            messageMap[`DIRECT-${message.contactId}`] = messages.map(m => {
+                if (m.id === message.messageId) {
+                    return ({ ...m, content: message.content, edited: true });
+                }
+                return m;
+            });
+            set({ message: messageMap });
+            await fetchSetDirectConversations(set, token);
+            break;
+        }
+        case "UPDATE_GROUP_MESSAGE_NOTIFICATION": {
+            const messageMap = structuredClone(get().message);
+            const messages = messageMap[`GROUP-${message.groupId}`];
+            if (!messages) { break; }
+            messageMap[`GROUP-${message.groupId}`] = messages.map(m => {
+                if (m.id === message.messageId) {
+                    return ({ ...m, content: message.content, edited: true });
                 }
                 return m;
             });
@@ -116,6 +142,20 @@ const connect = (set: AppStateSet, get: AppStateGet, token: string, store: Store
             groupId,
             message
         }));
+    };
+    store.websocket.editDirectMessage = (messageId: number, editedMessage: string) => {
+        wsConn.send(JSON.stringify({
+            type: "EDIT_DIRECT_MESSAGE",
+            messageId,
+            editedContent: editedMessage
+        }))
+    };
+    store.websocket.editGroupMessage = (messageId, editedMessage) => {
+        wsConn.send(JSON.stringify({
+            type: "EDIT_GROUP_MESSAGE",
+            messageId,
+            editedContent: editedMessage
+        }))
     };
     store.websocket.deleteMessage = (messageId: number) => {
         wsConn.send(JSON.stringify({
@@ -156,6 +196,8 @@ const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
         sendMessage: (receiverId, message) => {},
         wsDisconnect: () => {},
         wsConnect: (set, get, token) => {},
+        editDirectMessage: (messageId, editedMessage) => {},
+        editGroupMessage: (messageId, editedMessage) => {},
         deleteMessage: (messageId) => {},
         deleteGroupMessage: (messageId) => {}
     };

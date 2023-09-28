@@ -148,15 +148,15 @@ export const SC__CheckmarkTimeContainer = styled.div<{$side: Side }>`
     `}
 `;
 
-type SC__DeleteButtonProps = {
+type SC__ButtonProps = {
     $color: string,
     $backgroundColor: string,
     $borderColor: string,
+    $iconHeight: number;
 }
 
-export const SC__DeleteButton = styled(motion.div)<SC__DeleteButtonProps>`
-    height: 22px;
-    padding: 3px;
+export const SC__Button = styled(motion.div)<SC__ButtonProps>`
+    height: 30px;
     aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
@@ -165,19 +165,25 @@ export const SC__DeleteButton = styled(motion.div)<SC__DeleteButtonProps>`
     border: 1px solid ${props => props.$borderColor};
     background-color: ${props => props.$backgroundColor};
     > svg {
+        height: ${props => props.$iconHeight}px;
         cursor: pointer;
         color: ${props => props.$color};
     }
 `;
 
-export const TH__DeleteButton: DivWrapper = ({ children, ...props }) => {
+type TH__ButtonProps = {
+    iconHeight?: number;
+}
+
+export const TH__Button: DivWrapper<TH__ButtonProps> = ({ children, ...props }) => {
     const backgroundColor = useColorConfig().chatBubble.trashIconBackgroundColor;
     const color = useColorConfig().chatBubble.trashIconColor;
     const borderColor = useColorConfig().chatBubble.trashIconBorderColor;
     return (
-        <SC__DeleteButton
+        <SC__Button
             onClick={props.onClick}
             $backgroundColor={backgroundColor}
+            $iconHeight={props.iconHeight ?? 22}
             $color={color}
             $borderColor={borderColor}
             initial={{ opacity: 0, x: 10 }}
@@ -185,7 +191,7 @@ export const TH__DeleteButton: DivWrapper = ({ children, ...props }) => {
             exit={{ opacity: 0, x: 10 }}
         >
             {children}
-        </SC__DeleteButton>
+        </SC__Button>
     )
 }
 

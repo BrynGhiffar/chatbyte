@@ -17,14 +17,14 @@
 - [ ] implement collapsable contact list
 - [ ] implement chat groups
     - [x] create chat groups
-    - [-] chat group invitations
+    - [ ] chat group invitations
     - [ ] leave chat group
     - [x] send message in group
 - [x] implement tick mark when a message has been sent (yes but not single tick mark then double tick mark).
 - [x] implement tick mark when a message has been read (for dms).
-- [ ] implement edit sent message
+- [x] implement edit sent message
     Need to be able to mark messages that are deleted.
-- [ ] implement delete sent message
+- [x] implement delete sent message
     In the backend, messages won't actually be deleted they will be marked as deleted.
 - [ ] implement message search
 - [ ] implement sending voice

@@ -195,7 +195,8 @@ export const fetchSetDirectMessage = async (
         senderName: "",
         time: m.time,
         receiverRead: m.receiverRead,
-        deleted: m.deleted
+        deleted: m.deleted,
+        edited: m.edited,
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;
@@ -222,6 +223,7 @@ export const fetchSetGroupMessage = async (
         time: m.sentAt,
         content: m.content,
         deleted: m.deleted,
+        edited: m.edited,
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;

@@ -14,7 +14,9 @@ export const pushDirectMessageNotification = (
         isUser: message.isUser,
         receiverRead: message.receiverRead,
         senderName: "",
-        time: message.sentAt
+        time: message.sentAt,
+        deleted: false,
+        edited: false,
     });
     set(s => ({...s, message: messageMap }));
 };
@@ -32,9 +34,10 @@ export const pushGroupMessageNotification = (
         isUser: get().loggedInUserId === message.senderId,
         receiverRead: false,
         senderName: message.username,
-        time: message.sentAt
+        time: message.sentAt,
+        deleted: false,
+        edited: false,
     });
-
     set({ message: messageMap });
 }
 

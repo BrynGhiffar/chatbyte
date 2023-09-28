@@ -11,6 +11,7 @@ interface MessageMap {
 }
 
 export type AppStateState = {
+    editMessage: { message: Message, scrollIntoView: () => void } | null;
     type: AppStateType;
     snackbarMessage: SnackbarMessage[];
     loggedInUserId: number;
@@ -32,6 +33,8 @@ export type AppStateAction = {
     sendMessage: (message: string) => void;
     deleteMessage: (messageId: number) => void;
     createChatGroup: (name: string, members: number[], profilePicture: File | null) => Promise<void>;
+    setEditMessage: (messageId: number, scrollIntoView: () => void) => void;
+    cancelEditMessage: () => void;
     
     // snackbar methods
     pushSnackbarSuccess: (message: string) => void;
@@ -108,6 +111,7 @@ export type Message = {
     isUser: boolean;
     receiverRead: boolean;
     deleted: boolean;
+    edited: boolean;
 };
 
 export type SnackbarType = "success" | "failure";

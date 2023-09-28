@@ -9,7 +9,7 @@ type SC__ChatWindowProps = {
 
 export const SC__ChatWindow = styled.div<SC__ChatWindowProps>`
     display: grid;
-    grid-template-rows: 4rem 1fr 3.5rem;
+    grid-template-rows: 4rem 1fr auto;
     overflow: hidden;
     background-color: ${props => props.$backgroundColor};
     /* visibility: hidden; */

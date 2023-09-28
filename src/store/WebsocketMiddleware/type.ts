@@ -11,6 +11,7 @@ export type SendMessage = (receiverId: number, message: string) => void;
 export type SendGroupMessage = (groupId: number, message: string) => void;
 export type WsConnect = (set: AppStateSet, get: AppStateGet, token: string) => void;
 export type DeleteMessage = (messageId: number) => void;
+export type EditMessage = (messageId: number, editedMessage: string) => void;
 export type WsDisconnect = () => void;
 
 export type WebsocketMiddlewareType = {
@@ -18,6 +19,8 @@ export type WebsocketMiddlewareType = {
   sendGroupMessage: SendGroupMessage,
   deleteMessage: DeleteMessage,
   deleteGroupMessage: DeleteMessage,
+  editDirectMessage: EditMessage,
+  editGroupMessage: EditMessage,
   wsConnect: WsConnect,
   wsDisconnect: WsDisconnect
 }
@@ -88,7 +91,21 @@ export const DeleteGroupMessageNotification = z.object({
   type: z.literal("DELETE_GROUP_MESSAGE_NOTIFICATION"),
   groupId: z.number(),
   messageId: z.number()
-})
+});
+
+export const EditDirectMessageNotification = z.object({
+  type: z.literal("UPDATE_DIRECT_MESSAGE_NOTIFICATION"),
+  contactId: z.number(),
+  messageId: z.number(),
+  content: z.string()
+});
+
+export const EditGroupMessageNotification = z.object({
+  type: z.literal("UPDATE_GROUP_MESSAGE_NOTIFICATION"),
+  groupId: z.number(),
+  messageId: z.number(),
+  content: z.string()
+});
 
 export const WebSocketOutgoingMessage = z
   .object({ type: z.literal("empty") })
@@ -98,6 +115,8 @@ export const WebSocketOutgoingMessage = z
   .or(WebSocketGroupMessageNotification)
   .or(DeleteDirectMessageNotification)
   .or(DeleteGroupMessageNotification)
+  .or(EditDirectMessageNotification)
+  .or(EditGroupMessageNotification)
 ;
 
 

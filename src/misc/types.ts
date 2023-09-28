@@ -2,11 +2,13 @@ import { FC, HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "reac
 
 export type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
-export type DivWrapper = FC<PropsWithChildren<HTMLAttributes<HTMLDivElement>>>;
+export type DivWrapper<T = {}> = FC<PropsWithChildren<HTMLAttributes<HTMLDivElement> & T>>;
 
 export type DivProps = HTMLAttributes<HTMLDivElement>;
 
 export type InputWrapper = FC<PropsWithChildren<InputHTMLAttributes<HTMLInputElement>>>;
+
+export type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
 export type SpanWrapper = FC<PropsWithChildren<HTMLAttributes<HTMLSpanElement>>>;
 
