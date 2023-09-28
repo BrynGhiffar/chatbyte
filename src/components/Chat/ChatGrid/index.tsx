@@ -24,11 +24,13 @@ const ChatGrid = () => {
             {
                 messages.map(m => (<ChatBubble
                     key={m.id}
+                    messageId={m.id}
                     name={m.isUser ? "" : m.senderName }
                     message={m.content}
                     time={m.time}
                     side={m.isUser ? "right" : "left"}
                     receiverRead={m.receiverRead}
+                    deleted={m.deleted}
                 />))
             }
         </SC__ChatGrid>

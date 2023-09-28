@@ -17,7 +17,7 @@ const ChatListProfile: FC = () => {
     const backgroundColor = useColorConfig().chatNavBackgroundColor;
     const onProfileMoreButton = useCallback((e: DivMouseEvent) => {
       e.stopPropagation();
-      pushWindow("SETTINGS_WINDOW");
+      pushWindow({ type: "SETTINGS_WINDOW" });
     }, [pushWindow]);
   
     return (

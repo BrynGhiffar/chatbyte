@@ -37,7 +37,7 @@ const initialState: AppStateState = {
     contacts: [],
     groupConversations: [],
     conversations: [],
-    windowStack: ["CHAT_WINDOW"],
+    windowStack: [ { type: "CHAT_WINDOW" } ],
     message: {},
     selectedContact: null,
     theme: LightTheme
@@ -55,8 +55,8 @@ const useAppStore = create<AppState, [
         if (!token) {
             return;
         }
-        api.wsDisconnect();
-        api.wsConnect(set, get, token);
+        api.websocket.wsDisconnect();
+        api.websocket.wsConnect(set, get, token);
         // Error handling needs to be added here.
         await Promise.all([
             fetchSetGroupContact(set, token),
@@ -91,11 +91,18 @@ const useAppStore = create<AppState, [
         if (!selectedContact) return;
         if (selectedContact.type === "GROUP") {
             // supposed to be two different kinds of send message.
-            api.sendGroupMessage(selectedContact.id, message);
+            api.websocket.sendGroupMessage(selectedContact.id, message);
         } else if (selectedContact.type === "DIRECT") {
-            api.sendMessage(selectedContact.id, message);
+            api.websocket.sendMessage(selectedContact.id, message);
         }
         return;
+    },
+    deleteMessage: (messageId: number) => {
+        if (get().selectedContact?.type === "DIRECT") {
+            api.websocket.deleteMessage(messageId);
+        } else {
+            api.websocket.deleteGroupMessage(messageId);
+        }
     },
     createChatGroup: async (name: string, members: number[], profilePicture: File | null) => {
         const token = await getUserToken(set);

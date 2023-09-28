@@ -25,7 +25,8 @@ const GetContactRecentResponse = z.object({
             content: z.string(),
             sent_at: z.string(),
             unread_count: z.number(),
-            username: z.string()
+            username: z.string(),
+            deleted: z.boolean(),
         })
     )
 }).or(z.object({

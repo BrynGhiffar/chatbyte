@@ -55,7 +55,7 @@ const Popup: FC = () => {
         setSection("SESSION");
     }, [setSection]);
     const onClickLogout = useCallback(() => {
-        pushWindow("LOGOUT_CONFIRM");
+        pushWindow({ type: "LOGOUT_CONFIRM" });
     }, [pushWindow]);
     return (
         <PopupContainer onClick={e => e.stopPropagation()}>

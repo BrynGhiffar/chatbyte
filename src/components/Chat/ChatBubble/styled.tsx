@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { PropsWithChildren, FC } from "react";
 import { useColorConfig } from "@/store/AppStore/hooks";
 import { Side } from "./type";
+import { motion } from "framer-motion";
 
 const debugOutline = () => {
     const cond = true;
@@ -94,6 +95,7 @@ export const SC__ChatRow = styled.div<SC__ChatRowProps>`
     padding: 0.5rem 1rem;
     justify-content: ${props => props.$side === "left" ? "flex-start" : "flex-end"};
     /* outline: 1px solid red; */
+    gap: 10px;
 
     > ${SC__ChatBubbleContainer} {
         ${props => {
@@ -145,6 +147,49 @@ export const SC__CheckmarkTimeContainer = styled.div<{$side: Side }>`
         }
     `}
 `;
+
+type SC__DeleteButtonProps = {
+    $color: string,
+    $backgroundColor: string,
+    $borderColor: string,
+}
+
+export const SC__DeleteButton = styled(motion.div)<SC__DeleteButtonProps>`
+    height: 22px;
+    padding: 3px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid ${props => props.$borderColor};
+    background-color: ${props => props.$backgroundColor};
+    > svg {
+        cursor: pointer;
+        color: ${props => props.$color};
+    }
+`;
+
+export const TH__DeleteButton: DivWrapper = ({ children, ...props }) => {
+    const backgroundColor = useColorConfig().chatBubble.trashIconBackgroundColor;
+    const color = useColorConfig().chatBubble.trashIconColor;
+    const borderColor = useColorConfig().chatBubble.trashIconBorderColor;
+    return (
+        <SC__DeleteButton
+            onClick={props.onClick}
+            $backgroundColor={backgroundColor}
+            $color={color}
+            $borderColor={borderColor}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+        >
+            {children}
+        </SC__DeleteButton>
+    )
+}
+
+
 
 
 type TH__ChatBubbleContainerProps = PropsWithChildren<DivProps &  {

@@ -43,6 +43,12 @@ export const LightTheme: Theme = {
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
 
+        chatBubble: {
+            trashIconBackgroundColor: color.kindaWhite,
+            trashIconColor: 'black',
+            trashIconBorderColor: 'transparent'
+        },
+
         popup: {
             borderColor: '#ededed',
             backgroundColor: "white",
@@ -96,6 +102,12 @@ export const DarkTheme: Theme = {
         chatInputBorderColor: '#1f1f1f',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
+
+        chatBubble: {
+            trashIconBackgroundColor: '#0f0f0f',
+            trashIconColor: 'white',
+            trashIconBorderColor: 'transparent'
+        },
 
         popup: {
             borderColor: '#1e1d1d',

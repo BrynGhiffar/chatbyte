@@ -10,6 +10,7 @@ import ChangePasswordWindow from "@/components/ChangePasswordWindow";
 import { CreateGroupWindow } from "@/components/CreateGroupWindow";
 import useAppStore from "@/store/AppStore";
 import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
+import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -54,7 +55,7 @@ const AnimateChildWindow: FC<PropsWithChildren> = props => {
 };
 
 const AppWindow: FC = () => {
-  const top = useAppStore(s => s.windowStack[s.windowStack.length - 1]);
+  const window = useAppStore(s => s.windowStack[s.windowStack.length - 1]);
   return (
     <AppWindowStyled>
       <AnimatePresence initial={false}>
@@ -62,30 +63,38 @@ const AppWindow: FC = () => {
             <ChatWindow/>
         </AnimateChildWindowStyled>
         { 
-          top === "SETTINGS_WINDOW" && (
+          window.type === "SETTINGS_WINDOW" && (
             <SettingsNewWindow
               key="settings_new"
             />
           )
         }
         {
-          top === "LOGOUT_CONFIRM" && (
+          window.type === "LOGOUT_CONFIRM" && (
               <PopupLogoutWindow
                 key="logout"
               />
           )
         }
         {
-          top === "CHANGE_PASSWORD" && (
+          window.type === "CHANGE_PASSWORD" && (
             <ChangePasswordWindow
               key="change_password"
             />
           )
         }
         {
-          top === "CREATE_GROUP_WINDOW" && (
+          window.type === "CREATE_GROUP_WINDOW" && (
             <CreateGroupWindow
               key="create_group_window"
+            />
+          )
+        }
+        {
+          window.type === "CONFIRM_POPUP_DELETE_MESSAGE" && (
+            <ConfirmDeleteMessagePopup
+              messageId={window.messageId}
+              key="confirm_delete_message"
             />
           )
         }

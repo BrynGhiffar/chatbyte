@@ -14,6 +14,7 @@ type ConversationItemProps = {
     message: string;
     unread_count: number;
     online?: boolean;
+    deleted: boolean;
 };
 
 
@@ -24,7 +25,7 @@ const ConversationItem: FC<ConversationItemProps> = (props) => {
     const selectContact = useAppStore(s => s.selectContact);
     const selected = props.uid === contact?.id && props.type === contact?.type;
     const chopLength = 15;
-    const message = props.message.length > chopLength ? `${props.message.slice(0, 15)}...` : props.message;
+    const message = props.message.length > chopLength ? `${props.message.slice(0, chopLength)}...` : props.message;
     const onClickListItem = () => {
         selectContact(props.type, props.uid);
     };
@@ -35,6 +36,7 @@ const ConversationItem: FC<ConversationItemProps> = (props) => {
     let statusOutlineColor = backgroundColor;
     if (hover) statusOutlineColor = hoverBackgroundColor;
     if (selected) statusOutlineColor = selectedBackgroundColor;
+    let descriptionMessage = message;
     return (
         <TH__ChatListItemContainer
             $selected={selected} 
@@ -60,7 +62,7 @@ const ConversationItem: FC<ConversationItemProps> = (props) => {
             <SC__Description>
                 <SC__DescriptionName>{props.name}</SC__DescriptionName>
                 <SC__DescriptionTime>{props.time}</SC__DescriptionTime>
-                <SC__DescriptionMessage>{message}</SC__DescriptionMessage>
+                <SC__DescriptionMessage>{ props.deleted ? <p>{message} <em>Message has been deleted</em></p> : message}</SC__DescriptionMessage>
                 <SC__DescriptionNotification>
                     { props.unread_count > 0 ? 
                         (

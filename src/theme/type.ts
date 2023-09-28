@@ -39,6 +39,12 @@ export type ColorConfig = {
     chatInputSendButtonColor: string,
     chatInputSendButtonBackgroundColorHover: string,
 
+    chatBubble: {
+        trashIconColor: string,
+        trashIconBackgroundColor: string,
+        trashIconBorderColor: string,
+    }
+
     popup: {
         borderColor: string,
         backgroundColor: string,

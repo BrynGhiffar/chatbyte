@@ -15,6 +15,7 @@ const GetMessageResponse = z.object({
             content: z.string(),
             time: z.string(),
             receiverRead: z.boolean(),
+            deleted: z.boolean(),
         })
     )
 })

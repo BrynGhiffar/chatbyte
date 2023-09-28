@@ -128,7 +128,7 @@ const ChatListNav: FC = () => {
         // setList("contact");
     };
     const onClickSettings = () => {
-        pushWindow("SETTINGS_WINDOW");
+        pushWindow({ type: "SETTINGS_WINDOW" });
     };
     return (
         <ChatListNavDoubleColumnParent>

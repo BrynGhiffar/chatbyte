@@ -8,14 +8,15 @@ import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
 import { showBrowserNotification } from "@/api/browser/BrowserNotification";
 
 const reduceMessage = async (set: AppStateSet, get: () => AppState, message: WebSocketOutgoingMessage) => {
+    const token = await getUserToken(set);
+    if (!token) { return; }
     switch (message.type) {
         case "ERROR_NOTIFICATION": {
             pushSnackbarError(set, message.message);
             break;
         }
         case "GROUP_MESSAGE_NOTIFICATION": {
-            const token = await getUserToken(set);
-            if (!token) { break; }
+
             const groupContact = get()
                 .groupContacts
                 .find(gc => gc.id === message.groupId && gc.type === "GROUP");
@@ -26,7 +27,6 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
             if (!isContactSelected(get, groupContact) && get().loggedInUserId !== message.senderId) {
                 showBrowserNotification(groupContact.name, `${message.username}: ${message.content}`);
             }
-
             pushGroupMessageNotification(set, get, message, groupContact);
             if (isContactSelected(get, groupContact)) {
                 logDebug("read message group");
@@ -66,6 +66,34 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
             set(s => ({...s, message: messageMap}));
             break;
         }
+        case "DELETE_DIRECT_MESSAGE_NOTIFICATION": {
+            const messageMap = structuredClone(get().message);
+            const directMessages = messageMap[`DIRECT-${message.contactId}`];
+            if (!directMessages) { break; };
+            messageMap[`DIRECT-${message.contactId}`] = directMessages.map(m => {
+                if (m.id === message.messageId) {
+                    return ({...m, deleted: true, content: "" })
+                }
+                return m;
+            });
+            set({ message: messageMap });
+            await fetchSetDirectConversations(set, token);
+            break;
+        }
+        case "DELETE_GROUP_MESSAGE_NOTIFICATION": {
+            const messageMap = structuredClone(get().message);
+            const directMessages = messageMap[`GROUP-${message.groupId}`];
+            if (!directMessages) { break; };
+            messageMap[`GROUP-${message.groupId}`] = directMessages.map(m => {
+                if (m.id === message.messageId) {
+                    return ({...m, deleted: true, content: "" })
+                }
+                return m;
+            });
+            set({ message: messageMap });
+            await fetchSetGroupConversations(set, token);
+            break;
+        }
         default:
             break
     }
@@ -75,20 +103,32 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
 
 const connect = (set: AppStateSet, get: AppStateGet, token: string, store: StoreType) => {
     const wsConn = new WebSocket(`${WebSocketEndpoint()}${Endpoint.webSocket(token)}`);
-    store.sendMessage = (receiverId: number, message: string) => {
+    store.websocket.sendMessage = (receiverId: number, message: string) => {
         wsConn.send(JSON.stringify({
             type: "SEND_MESSAGE",
             receiverUid: receiverId,
             message
         }));
     };
-    store.sendGroupMessage = (groupId: number, message: string) => {
+    store.websocket.sendGroupMessage = (groupId: number, message: string) => {
         wsConn.send(JSON.stringify({
             type: "SEND_GROUP_MESSAGE",
             groupId,
             message
         }));
     };
+    store.websocket.deleteMessage = (messageId: number) => {
+        wsConn.send(JSON.stringify({
+            type: "DELETE_DIRECT_MESSAGE",
+            messageId
+        }));
+    }
+    store.websocket.deleteGroupMessage = (messageId) => {
+        wsConn.send(JSON.stringify({
+            type: "DELETE_GROUP_MESSAGE",
+            messageId
+        }))
+    }
     wsConn.onopen = () => {
     }
     wsConn.onmessage = async (evt) => {
@@ -103,7 +143,7 @@ const connect = (set: AppStateSet, get: AppStateGet, token: string, store: Store
     };
     wsConn.onclose = () => {
     };
-    store.wsDisconnect = () => {
+    store.websocket.wsDisconnect = () => {
         wsConn.close();
     }
 };
@@ -111,11 +151,15 @@ const connect = (set: AppStateSet, get: AppStateGet, token: string, store: Store
 const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
 
     const store = _store as StoreType;
-    store.sendGroupMessage = (groupId, message) => {};
-    store.sendMessage = (receiverId, message) => {};
-    store.wsConnect = (set, get, token) => {};
-    store.wsDisconnect = () => {};
-    store.wsConnect = (set: AppStateSet, get: AppStateGet, token: string) => connect(set, get, token, store);
+    store.websocket = {
+        sendGroupMessage: (groupId, message) => {},
+        sendMessage: (receiverId, message) => {},
+        wsDisconnect: () => {},
+        wsConnect: (set, get, token) => {},
+        deleteMessage: (messageId) => {},
+        deleteGroupMessage: (messageId) => {}
+    };
+    store.websocket.wsConnect = (set: AppStateSet, get: AppStateGet, token: string) => connect(set, get, token, store);
     // store.sendMessage = ;
     return f(set, get, _store);
 }

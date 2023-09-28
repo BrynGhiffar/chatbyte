@@ -85,7 +85,8 @@ const GetGroupMessageResponse = z.object({
         username: z.string(),
         id: z.number(),
         senderId: z.number(),
-        sentAt: z.string()
+        sentAt: z.string(),
+        deleted: z.boolean()
     }))
 }).or(z.object({
     success: z.literal(false),

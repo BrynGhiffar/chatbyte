@@ -30,6 +30,7 @@ export type AppStateAction = {
     fetchInitialData: () => Promise<void>,
     selectContact: (type: ContactType, userOrGroupId: number) => Promise<void>,
     sendMessage: (message: string) => void;
+    deleteMessage: (messageId: number) => void;
     createChatGroup: (name: string, members: number[], profilePicture: File | null) => Promise<void>;
     
     // snackbar methods
@@ -49,11 +50,19 @@ export type AppStateAction = {
 
 export type AppState = AppStateState & AppStateAction;
 
-export type Window = "CHAT_WINDOW" 
-    | "SETTINGS_WINDOW" 
-    | "LOGOUT_CONFIRM"
-    | "CHANGE_PASSWORD"
-    | "CREATE_GROUP_WINDOW";
+export type ChatWindow = { type: "CHAT_WINDOW" }
+export type SettingsWindow = { type: "SETTINGS_WINDOW" }
+export type LogoutConfirmWindow = { type: "LOGOUT_CONFIRM" }
+export type ChangePasswordWindow = { type: "CHANGE_PASSWORD" }
+export type CreateGroupWindow = { type: "CREATE_GROUP_WINDOW" }
+export type ConfirmPopupDeleteMessageWindow = { type: "CONFIRM_POPUP_DELETE_MESSAGE", messageId: number }
+
+export type Window = ChatWindow 
+    | SettingsWindow 
+    | LogoutConfirmWindow
+    | ChangePasswordWindow
+    | CreateGroupWindow
+    | ConfirmPopupDeleteMessageWindow;
 
 export type ContactType = "DIRECT" | "GROUP";
 
@@ -78,6 +87,7 @@ export type GroupConversation = {
     lastMessageTime: string;
     lastMessageContent: string;
     unreadCount: number;
+    deleted: boolean;
 };
 
 export type Conversation = {
@@ -87,6 +97,7 @@ export type Conversation = {
     lastMessageTime: string;
     lastMessageContent: string;
     unreadCount: number;
+    deleted: boolean;
 };
 
 export type Message = {
@@ -96,6 +107,7 @@ export type Message = {
     time: string;
     isUser: boolean;
     receiverRead: boolean;
+    deleted: boolean;
 };
 
 export type SnackbarType = "success" | "failure";

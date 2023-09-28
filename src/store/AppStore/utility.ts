@@ -78,7 +78,8 @@ export const fetchSetGroupConversations = async (set: AppStateSet, token: string
                 urlProfile: avatarImageGroupUrl(c.groupId)(0), 
                 lastMessageContent: `${c.detail.username}: ${c.detail.content}`,
                 lastMessageTime: c.detail.sentAt,
-                unreadCount: c.unreadMessage
+                unreadCount: c.unreadMessage,
+                deleted: c.detail.deleted
             }
         }
         return {
@@ -88,7 +89,8 @@ export const fetchSetGroupConversations = async (set: AppStateSet, token: string
             urlProfile: avatarImageGroupUrl(c.groupId)(0),
             lastMessageContent: "No messages.",
             lastMessageTime: "",
-            unreadCount: c.unreadMessage
+            unreadCount: c.unreadMessage,
+            deleted: false
         }
     });
 
@@ -134,6 +136,7 @@ export const fetchSetDirectConversations = async (set: AppStateSet, token: strin
         lastMessageTime: c.sent_at,
         lastMessageContent: c.content,
         unreadCount: c.unread_count,
+        deleted: c.deleted
     }));
     set({ conversations });
 }
@@ -191,7 +194,8 @@ export const fetchSetDirectMessage = async (
         isUser: m.isUser,
         senderName: "",
         time: m.time,
-        receiverRead: m.receiverRead
+        receiverRead: m.receiverRead,
+        deleted: m.deleted
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;
@@ -216,7 +220,8 @@ export const fetchSetGroupMessage = async (
         isUser: m.senderId === get().loggedInUserId,
         senderName: m.username,
         time: m.sentAt,
-        content: m.content
+        content: m.content,
+        deleted: m.deleted,
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;

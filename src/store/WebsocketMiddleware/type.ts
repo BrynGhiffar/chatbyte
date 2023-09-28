@@ -10,23 +10,26 @@ type Cast<T, U> = T extends U ? T : U
 export type SendMessage = (receiverId: number, message: string) => void;
 export type SendGroupMessage = (groupId: number, message: string) => void;
 export type WsConnect = (set: AppStateSet, get: AppStateGet, token: string) => void;
+export type DeleteMessage = (messageId: number) => void;
 export type WsDisconnect = () => void;
 
+export type WebsocketMiddlewareType = {
+  sendMessage: SendMessage,
+  sendGroupMessage: SendGroupMessage,
+  deleteMessage: DeleteMessage,
+  deleteGroupMessage: DeleteMessage,
+  wsConnect: WsConnect,
+  wsDisconnect: WsDisconnect
+}
 
 declare module 'zustand' {
     interface StoreMutators<S, A> {
-        sendMessage: Write<Cast<S, object>, { sendMessage: A }>,
-        sendGroupMessage: Write<Cast<S, object>, { sendGroupMessage: A }>,
-        wsConnect: Write<Cast<S, object>, { wsConnect: A }>,
-        wsDisconnect: Write<Cast<S, object>, { wsDisconnect: A }>,
+        websocket: Write<Cast<S, object>, { websocket: A }>,
     }
 }
 
 export type WebSocketMiddlewareMethods = [
-  ['sendMessage', SendMessage],
-  ['sendGroupMessage', SendGroupMessage],
-  ['wsConnect', WsConnect],
-  ['wsDisconnect', WsDisconnect],
+  ['websocket', WebsocketMiddlewareType],
 ];
 
 export type WebsocketMiddleware = <
@@ -74,6 +77,18 @@ export const WebSocketGroupMessageNotification = z.object({
   sentAt: z.string()
 });
 
+export const DeleteDirectMessageNotification = z.object({
+  type: z.literal("DELETE_DIRECT_MESSAGE_NOTIFICATION"),
+  contactId: z.number(),
+  messageId: z.number()
+});
+
+
+export const DeleteGroupMessageNotification = z.object({
+  type: z.literal("DELETE_GROUP_MESSAGE_NOTIFICATION"),
+  groupId: z.number(),
+  messageId: z.number()
+})
 
 export const WebSocketOutgoingMessage = z
   .object({ type: z.literal("empty") })
@@ -81,6 +96,8 @@ export const WebSocketOutgoingMessage = z
   .or(WebSocketReadNotification)
   .or(WebSocketErrorNotification)
   .or(WebSocketGroupMessageNotification)
+  .or(DeleteDirectMessageNotification)
+  .or(DeleteGroupMessageNotification)
 ;
 
 

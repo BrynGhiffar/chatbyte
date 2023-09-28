@@ -39,7 +39,7 @@ const ContactMessageList = () => {
     const { pushWindow: push } = useWindow();
 
     const onClickAddGroup = useCallback(() => {
-        push("CREATE_GROUP_WINDOW");
+        push({ type: "CREATE_GROUP_WINDOW" });
     }, [ push ]);
 
     return (
@@ -59,6 +59,7 @@ const ContactMessageList = () => {
                         time={c.lastMessageTime}
                         unread_count={c.unreadCount}
                         message={c.lastMessageContent}
+                        deleted={c.deleted}
                     />
                 ))
             }
@@ -75,6 +76,7 @@ const ContactMessageList = () => {
                         time={c.lastMessageTime}
                         unread_count={c.unreadCount}
                         message={c.lastMessageContent}
+                        deleted={c.deleted}
                     />
                 ))
             }
@@ -128,10 +130,10 @@ const PopupMenuItem = styled.div`
 const PopupWindow: FC = () => {
     const { pushWindow } = useWindow();
     const onClickProfile = useCallback((e: DivMouseEvent) => {
-        pushWindow("SETTINGS_WINDOW");
+        pushWindow({ type: "SETTINGS_WINDOW" });
     }, [ pushWindow ]);
     const onClickLogout = useCallback((e: DivMouseEvent) => {
-        pushWindow("LOGOUT_CONFIRM");
+        pushWindow({ type: "LOGOUT_CONFIRM" });
     }, [ pushWindow ]);
     return (
         <PopUpWindowStyled
