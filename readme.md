@@ -28,7 +28,7 @@
     In the backend, messages won't actually be deleted they will be marked as deleted.
 - [ ] implement message search
 - [ ] implement sending voice
-- [ ] implement sending images
+- [x] implement sending images
 - [ ] implement sending video
 - [x] implement desktop notification on receive new message.
 - [ ] implement resizable 
