@@ -22,16 +22,26 @@ const ChatGrid = () => {
     return (
         <SC__ChatGrid ref={gridRef}>
             {
-                messages.map(m => (<ChatBubble
-                    key={m.id}
-                    messageId={m.id}
-                    name={m.isUser ? "" : m.senderName }
-                    message={m.content}
-                    time={m.time}
-                    side={m.isUser ? "right" : "left"}
-                    receiverRead={m.receiverRead}
-                    deleted={m.deleted}
-                />))
+                messages.map((m, i, arr) => {
+                    const showProfile = (() => {
+                        if (i === 0) return true;
+                        if (arr[i].senderId !== arr[i - 1].senderId) return true;
+                        return false;
+                    })()
+                    return (<ChatBubble
+                        key={m.id}
+                        messageId={m.id}
+                        senderId={m.senderId}
+                        name={m.isUser ? "" : m.senderName }
+                        message={m.content}
+                        time={m.time}
+                        side={m.isUser ? "right" : "left"}
+                        receiverRead={m.receiverRead}
+                        deleted={m.deleted}
+                        showProfilePicture={showProfile}
+                        attachmentIds={m.attachmentIds}
+                    />
+                )})
             }
         </SC__ChatGrid>
     );

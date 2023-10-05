@@ -10,6 +10,7 @@ export const pushDirectMessageNotification = (
     const messageMap = structuredClone(get().message);
     messageMap[`DIRECT-${contact.id}`].push({
         id: message.id,
+        senderId: message.senderUid,
         content: message.content,
         isUser: message.isUser,
         receiverRead: message.receiverRead,
@@ -17,6 +18,7 @@ export const pushDirectMessageNotification = (
         time: message.sentAt,
         deleted: false,
         edited: false,
+        attachmentIds: message.attachments.map(at => at.id)
     });
     set(s => ({...s, message: messageMap }));
 };
@@ -30,6 +32,7 @@ export const pushGroupMessageNotification = (
     const messageMap = structuredClone(get().message);
     messageMap[`GROUP-${message.groupId}`].push({
         id: message.id,
+        senderId: message.senderId,
         content: message.content,
         isUser: get().loggedInUserId === message.senderId,
         receiverRead: false,
@@ -37,6 +40,7 @@ export const pushGroupMessageNotification = (
         time: message.sentAt,
         deleted: false,
         edited: false,
+        attachmentIds: message.attachments.map(at => at.id)
     });
     set({ message: messageMap });
 }

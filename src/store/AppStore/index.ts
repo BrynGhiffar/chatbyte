@@ -8,6 +8,7 @@ import { GroupService } from "@/api/http/GroupService";
 import AllThemes, { LightTheme } from "@/theme";
 import { ThemeId } from "@/theme/type";
 import { LocalStorage } from "@/utility/LocalStorage";
+import { toBase64 } from "@/utility/UtilityFunctions";
 
 const setInitialData = (
     set: AppStateSet, 
@@ -29,6 +30,7 @@ const setInitialData = (
 
 const initialState: AppStateState = {
     type: "FETCHING_INITIAL_USER_DATA",
+    uploadAttachments: [],
     editMessage: null,
     snackbarMessage: [],
     loggedInUserId: 0,
@@ -41,7 +43,7 @@ const initialState: AppStateState = {
     windowStack: [ { type: "CHAT_WINDOW" } ],
     message: {},
     selectedContact: null,
-    theme: LightTheme
+    theme: LightTheme,
 }
 
 const useAppStore = create<AppState, [
@@ -84,8 +86,24 @@ const useAppStore = create<AppState, [
             return;
         }
         const contact = allContacts[contactIndex];
-        await fetchSetMessageRead(set, get, token, contact);
-        set({ selectedContact: contact, editMessage: null });
+        await fetchSetMessageRead(set, get, api.websocket, token, contact);
+        set({ selectedContact: contact, editMessage: null, uploadAttachments: [] });
+    },
+    addUploadAttachments: async (files) => {
+        const newAttachments = files.map(async file => {
+            const id = Math.floor(Math.random() * 1000);
+            const fileB64 = await toBase64(file)
+            return ({
+                id,
+                file: fileB64,
+            })
+        });
+        const att = await Promise.all(newAttachments);
+        set({ uploadAttachments: get().uploadAttachments.concat(att) })
+    },
+    removeAttachmentById: (id: number) => {
+        const newAttachments = get().uploadAttachments.filter(f => f.id !== id);
+        set({ uploadAttachments: newAttachments });
     },
     sendMessage: (message: string) => {
         const selectedContact = get().selectedContact;
@@ -101,10 +119,11 @@ const useAppStore = create<AppState, [
             return;
         }
         if (selectedContact.type === "GROUP") {
-            api.websocket.sendGroupMessage(selectedContact.id, message);
+            api.websocket.sendGroupMessage(selectedContact.id, message, get().uploadAttachments);
         } else if (selectedContact.type === "DIRECT") {
-            api.websocket.sendMessage(selectedContact.id, message);
+            api.websocket.sendMessage(selectedContact.id, message, get().uploadAttachments);
         }
+        set({ uploadAttachments: [] });
         return;
     },
     deleteMessage: (messageId: number) => {
@@ -131,7 +150,7 @@ const useAppStore = create<AppState, [
         if (!token) { return; }
         const resCreateGroup = await GroupService.createGroup(token, name, members, profilePicture);
         if (resCreateGroup.success) {
-            pushSnackbarSuccess(set, resCreateGroup.payload);
+            pushSnackbarSuccess(set, "Successfully created group");
             await fetchSetGroupContact(set, token);
             await fetchSetGroupConversations(set, token);
             await Promise.all(get().groupContacts

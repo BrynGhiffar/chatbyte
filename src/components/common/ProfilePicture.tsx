@@ -48,8 +48,12 @@ const StatusSymbol = styled.div<StatusSymbolProps>`
 `
 
 export const ProfilePicture: FC<ProfilePictureProps> = (props) => {
-  return (<ProfilePicContainer $width={props.width} imageUrl={props.imageUrl}>
-  </ProfilePicContainer>)
+  return (
+    <ProfilePicContainer
+      $width={props.width} 
+      imageUrl={props.imageUrl}
+    />
+  )
 };
 
 type ProfilePictureWithStatus = {

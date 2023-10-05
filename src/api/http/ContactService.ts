@@ -21,10 +21,10 @@ const GetContactRecentResponse = z.object({
     success: z.literal(true),
     payload: z.array(
         z.object({
-            contact_id: z.number(),
-            content: z.string(),
-            sent_at: z.string(),
-            unread_count: z.number(),
+            contactId: z.number(),
+            lastMessage: z.string(),
+            sentAt: z.string(),
+            unreadCount: z.number(),
             username: z.string(),
             deleted: z.boolean(),
         })

@@ -11,6 +11,7 @@ import { CreateGroupWindow } from "@/components/CreateGroupWindow";
 import useAppStore from "@/store/AppStore";
 import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
 import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
+import { useToken } from "@/utility/UtilityHooks";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -104,8 +105,9 @@ const AppWindow: FC = () => {
 }
 
 export default function App() {
+  useToken();
   const fetchInitialData = useAppStore(s => s.fetchInitialData);
-
+  
   useEffect(() => {
     fetchInitialData();
     askShowNotificationPermission();

@@ -27,9 +27,9 @@ export const WebSocketEndpoint = (): string | null => {
 
 export class Endpoint {
     static getMessage = (receiverUid: number) => `/message?receiverUid=${receiverUid}`;
-    static readMessage = (receiverUid: number) => `/message/read?receiverUid=${receiverUid}`;
-    static contacts = () => "/contacts";
-    static contactsRecent = () => "/contacts/recent";
+    // static readMessage = (receiverUid: number) => `/message/read?receiverUid=${receiverUid}`;
+    static contacts = () => "/contact/direct";
+    static contactsRecent = () => "/contact/direct/recent";
     static authLogin = () => "/auth/login";
     static authRegister = () => "/auth/register";
     static changePassword = () => `/auth/change-password`;
@@ -39,14 +39,20 @@ export class Endpoint {
     static userAvatar = (uid: number) => `/user/avatar/${uid}`;
     static postUserAvatar = () => `/user/avatar`;
     static userDetails = () => `/user/details`;
-    static updateUser = () => `/user`;
-    static group = () => "/group";
-    static groupRecent = () => "/group/recent";
-    static groupRead = (groupId: number) => `/group/read/${groupId}`;
-    static groupMessage = (groupId: number) => `/group/message/${groupId}`;
+    static updateUser = () => `/user/details`;
+    static createGroup = () => `/group`;
+    // static group = () => "/group";
+    static group = () => "/contact/group";
+    // static groupRecent = () => "/group/recent";
+    static groupRecent = () => "/contact/group/recent";
+    // static groupRead = (groupId: number) => `/group/read/${groupId}`;
+    // static groupMessage = (groupId: number) => `/group/message/${groupId}`;
+    static groupMessage = (groupId: number) => `/message/group?groupId=${groupId}`;
     static groupAvatar = (groupId: number) => `/group/image/${groupId}`;
+    static attachmentImgSrc = (attId: number) => `/attachment/${attId}`
 }
 
+export const AttachmentSrc = (attId: number) => `${BackendEndpoint()}${Endpoint.attachmentImgSrc(attId)}`;
 
 type KeyStringValueString = { [key: string ]: string; };
 

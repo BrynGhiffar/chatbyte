@@ -1,4 +1,4 @@
-import { SendGroupMessage, SendMessage, StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl } from "./type";
+import { SendGroupMessage, SendMessage, StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl, WebsocketMiddlewareType } from "./type";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { fetchSetDirectConversations, fetchSetGroupConversations, fetchSetMessageRead, getUserToken, pushSnackbarError, pushSnackbarSuccess } from "../AppStore/utility";
 import { AppState, AppStateGet, AppStateSet, Conversation } from "../AppStore/type";
@@ -7,7 +7,12 @@ import { isContactSelected, pushDirectMessageNotification, pushGroupMessageNotif
 import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
 import { showBrowserNotification } from "@/api/browser/BrowserNotification";
 
-const reduceMessage = async (set: AppStateSet, get: () => AppState, message: WebSocketOutgoingMessage) => {
+const reduceMessage = async (
+    set: AppStateSet, 
+    get: () => AppState, 
+    websocket: WebsocketMiddlewareType,
+    message: WebSocketOutgoingMessage,
+) => {
     const token = await getUserToken(set);
     if (!token) { return; }
     switch (message.type) {
@@ -30,7 +35,7 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
             pushGroupMessageNotification(set, get, message, groupContact);
             if (isContactSelected(get, groupContact)) {
                 logDebug("read message group");
-                await fetchSetMessageRead(set, get, token, groupContact);
+                await fetchSetMessageRead(set, get, websocket, token, groupContact);
 
             }
             await fetchSetGroupConversations(set, token);
@@ -50,7 +55,7 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
                 showBrowserNotification(contact.name, message.content);
             }
             if (isContactSelected(get, contact)) {
-                await fetchSetMessageRead(set, get, token, contact);
+                await fetchSetMessageRead(set, get, websocket, token, contact);
             }
             await fetchSetDirectConversations(set, token);
             break;
@@ -129,18 +134,34 @@ const reduceMessage = async (set: AppStateSet, get: () => AppState, message: Web
 
 const connect = (set: AppStateSet, get: AppStateGet, token: string, store: StoreType) => {
     const wsConn = new WebSocket(`${WebSocketEndpoint()}${Endpoint.webSocket(token)}`);
-    store.websocket.sendMessage = (receiverId: number, message: string) => {
+    store.websocket.readDirectMessage = (receiverId) => {
+        wsConn.send(JSON.stringify({
+            type: "READ_DIRECT_MESSAGE",
+            receiverUid: receiverId
+        }));
+    }
+    store.websocket.readGroupMessage = (groupId) => {
+        wsConn.send(JSON.stringify({
+            type: "READ_GROUP_MESSAGE",
+            groupId
+        }));
+    }
+    store.websocket.sendMessage = (receiverId: number, message: string, attachments) => {
+        const attReq = attachments.map(at => ({ name: `f-${at.id}`, contentBase64: at.file.split(",")[1] }));
         wsConn.send(JSON.stringify({
             type: "SEND_MESSAGE",
             receiverUid: receiverId,
-            message
+            message,
+            attachments: attReq
         }));
     };
-    store.websocket.sendGroupMessage = (groupId: number, message: string) => {
+    store.websocket.sendGroupMessage = (groupId: number, message: string, attachments) => {
+        const attReq = attachments.map(at => ({ name: `f-${at.id}`, contentBase64: at.file.split(",")[1] }));
         wsConn.send(JSON.stringify({
             type: "SEND_GROUP_MESSAGE",
             groupId,
-            message
+            message,
+            attachments: attReq
         }));
     };
     store.websocket.editDirectMessage = (messageId: number, editedMessage: string) => {
@@ -179,7 +200,7 @@ const connect = (set: AppStateSet, get: AppStateGet, token: string, store: Store
             return;
         }
         const message = resParse.data;
-        await reduceMessage(set, get, message);
+        await reduceMessage(set, get, store.websocket, message);
     };
     wsConn.onclose = () => {
     };
@@ -192,6 +213,8 @@ const websocketImpl: WebsocketMiddlewareImpl = (f) => (set, get, _store) => {
 
     const store = _store as StoreType;
     store.websocket = {
+        readDirectMessage: (receiverId) => {},
+        readGroupMessage: (groupId) => {},
         sendGroupMessage: (groupId, message) => {},
         sendMessage: (receiverId, message) => {},
         wsDisconnect: () => {},

@@ -8,6 +8,7 @@ import { LocalStorage } from '@/utility/LocalStorage';
 import { useAvatarImage, useToken } from '@/utility/UtilityHooks';
 import { useWindow } from '@/store/AppStore/hooks';
 import { UserService } from '@/api/http/UserService';
+import useAppStore from '@/store/AppStore';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */
@@ -174,17 +175,7 @@ type UserDetail = {
 }
 
 export const SettingsWindow: FC = props => {
-    const [userDetail, setUserDetail] = useState<UserDetail | null>(null);
-    const token = useToken();
-    useEffect(() => {
-        const run = async () => {
-            const res = await UserService.getUserDetails(token);
-            if (!res.success) return;
-            setUserDetail(_ => res.payload);
-        };
-        run();
-    }, [setUserDetail, token]);
-    const uid = userDetail !== null ? userDetail.uid : null;
+    const uid = useAppStore(s => s.loggedInUserId);
     const [imageUrl, reload] = useAvatarImage(uid);
     return (<SettingsWindowStyled>
         <CloseButton/>

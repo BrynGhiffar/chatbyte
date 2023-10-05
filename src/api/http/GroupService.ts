@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { Endpoint, request } from "./Endpoint";
+import { logDebug } from "@/utility/Logger";
 
 const GetGroupsResponse = z.object({
     success: z.literal(true),
@@ -69,12 +70,13 @@ const UpdateGroupReadMessageResponse = z.object({
 const updateReadMessage = async (token: string, groupId: number) => {
     const req = await request(UpdateGroupReadMessageResponse, {
         method: "PUT", 
-        ept: Endpoint.groupRead(groupId),
+        ept: "DEPRECATED",// Endpoint.groupRead(groupId),
         headers: { "Authorization": `Bearer ${token}` },
         body: undefined,
     });
-    if (!req.success) return req;
-    return req.payload;
+    // if (!req.success) return req;
+    // return req.payload;
+    return { success: false, message: "API IS DEPRECATED" };
 }
 
 const GetGroupMessageResponse = z.object({
@@ -88,6 +90,9 @@ const GetGroupMessageResponse = z.object({
         sentAt: z.string(),
         deleted: z.boolean(),
         edited: z.boolean(),
+        attachments: z.array(z.object({
+            id: z.number(),
+        }))
     }))
 }).or(z.object({
     success: z.literal(false),
@@ -108,7 +113,10 @@ export type GetGroupMessageResponse = z.infer<typeof GetGroupMessageResponse>;
 
 const CreateGroupResponse = z.object({
     success: z.literal(true),
-    payload: z.string()
+    payload: z.object({
+        id: z.number(),
+        name: z.string()
+    })
 }).or(z.object({
     success: z.literal(false),
     message: z.string()
@@ -120,11 +128,11 @@ const createGroup = async (token: string, name: string, members: number[], image
         form.append("profilePicture", image);
     }
     form.append("groupName", name);
-    form.append("members", ` ${members.join(",")}`);
+    form.append("members", `${members.join(",")}`);
     
     const req = await request(CreateGroupResponse, {
         method: "POST",
-        ept: Endpoint.group(),
+        ept: Endpoint.createGroup(),
         headers: { "Authorization": `Bearer ${token}`},
         body: form
     });

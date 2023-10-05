@@ -7,6 +7,7 @@ import { UserService, avatarImageGroupUrl, avatarImageUrl } from "@/api/http/Use
 import { ContactService } from "@/api/http/ContactService";
 import MessageService from "@/api/http/MessageService";
 import AllThemes, { LightTheme } from "@/theme";
+import { WebsocketMiddlewareType } from "../WebsocketMiddleware/type";
 
 const setFetchInitialFailed = (set: AppStateSet) => set(s => ({...s, type: "ERROR_FETCHING_INITIAL_USER_DATA" }));
 
@@ -104,8 +105,8 @@ export const fetchSetUserDetails = async (set: AppStateSet, token: string) => {
         pushSnackbarError(set, resUserDetails.message);
         return;
     }
-    const { uid, username } = resUserDetails.payload;
-    set({ loggedInUserId: uid, loggedInUsername: username });
+    const { user_id, username } = resUserDetails.payload;
+    set({ loggedInUserId: user_id, loggedInUsername: username });
 };
 
 export const fetchSetDirectContacts = async (set: AppStateSet, token: string) => {
@@ -131,11 +132,11 @@ export const fetchSetDirectConversations = async (set: AppStateSet, token: strin
     }
     const conversations: Conversation[] = resConversations.payload.map(c => ({
         type: "DIRECT",
-        id: c.contact_id,
+        id: c.contactId,
         name: c.username,
-        lastMessageTime: c.sent_at,
-        lastMessageContent: c.content,
-        unreadCount: c.unread_count,
+        lastMessageTime: c.sentAt,
+        lastMessageContent: c.lastMessage,
+        unreadCount: c.unreadCount,
         deleted: c.deleted
     }));
     set({ conversations });
@@ -144,22 +145,14 @@ export const fetchSetDirectConversations = async (set: AppStateSet, token: strin
 export const fetchSetMessageRead = async (
     set: AppStateSet, 
     get: AppStateGet,
+    websocket: WebsocketMiddlewareType,
     token: string, 
     contact: Contact | GroupContact
 ) => {
     if (contact.type === "DIRECT") {
-        const resRead = await MessageService.setMessagesRead(token, contact.id);
-        if (!resRead.success) {
-            pushSnackbarError(set, resRead.message);
-            return;
-        }
+        websocket.readDirectMessage(contact.id);
     } else if (contact.type === "GROUP") {
-        const resGroupRead = await GroupService.updateReadMessage(token, contact.id);
-        if (!resGroupRead.success) {
-            logError(`There is an issue, when reading group messages: ${resGroupRead.message}`);
-            pushSnackbarError(set, resGroupRead.message);
-            return;
-        }
+        websocket.readGroupMessage(contact.id);
     }
     const newConversations = get().conversations.map(c => {
         if (c.type === contact.type && c.id === contact.id) {
@@ -190,13 +183,15 @@ export const fetchSetDirectMessage = async (
     const contactKey = `${contact.type}-${contact.id}`;
     const messages = resGetMessage.payload.map(m => ({
         id: m.id,
+        senderId: m.senderId,
         content: m.content,
-        isUser: m.isUser,
+        isUser: m.senderId === get().loggedInUserId,
         senderName: "",
-        time: m.time,
-        receiverRead: m.receiverRead,
+        time: m.sentAt,
+        receiverRead: m.read,
         deleted: m.deleted,
         edited: m.edited,
+        attachmentIds: m.attachments.map(at => at.id)
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;
@@ -219,11 +214,13 @@ export const fetchSetGroupMessage = async (
         id: m.id,
         receiverRead: true,
         isUser: m.senderId === get().loggedInUserId,
+        senderId: m.senderId,
         senderName: m.username,
         time: m.sentAt,
         content: m.content,
         deleted: m.deleted,
         edited: m.edited,
+        attachmentIds: m.attachments.map(at => at.id)
     }));
     const messageMapNew = structuredClone(get().message);
     messageMapNew[contactKey] = messages;

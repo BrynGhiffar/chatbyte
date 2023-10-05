@@ -1,20 +1,23 @@
 import { devtools } from "zustand/middleware";
-import { AppState, AppStateGet, AppStateSet } from '../AppStore/type';
+import { AppState, AppStateGet, AppStateSet, Attachment, Write } from '../AppStore/type';
 import { StoreMutatorIdentifier, StateCreator, Mutate, StoreApi } from 'zustand';
 import { z } from "zod";
 
-type Write<T extends object, U extends object> = Omit<T, keyof U> & U
 
 type Cast<T, U> = T extends U ? T : U
 
-export type SendMessage = (receiverId: number, message: string) => void;
-export type SendGroupMessage = (groupId: number, message: string) => void;
+export type ReadDirectMessage = (receiverId: number) => void;
+export type ReadGroupMessage = (groupId: number) => void;
+export type SendMessage = (receiverId: number, message: string, attachments: Attachment[]) => void;
+export type SendGroupMessage = (groupId: number, message: string, attachments: Attachment[]) => void;
 export type WsConnect = (set: AppStateSet, get: AppStateGet, token: string) => void;
 export type DeleteMessage = (messageId: number) => void;
 export type EditMessage = (messageId: number, editedMessage: string) => void;
 export type WsDisconnect = () => void;
 
 export type WebsocketMiddlewareType = {
+  readDirectMessage: ReadDirectMessage,
+  readGroupMessage: ReadGroupMessage,
   sendMessage: SendMessage,
   sendGroupMessage: SendGroupMessage,
   deleteMessage: DeleteMessage,
@@ -68,6 +71,9 @@ export const WebSocketMessageNotification = z.object({
   sentAt: z.string(),
   isUser: z.boolean(),
   receiverRead: z.boolean(),
+  attachments: z.array(z.object({
+    id: z.number()
+  }))
 });
 
 export const WebSocketGroupMessageNotification = z.object({
@@ -77,7 +83,10 @@ export const WebSocketGroupMessageNotification = z.object({
   username: z.string(),
   groupId: z.number(),
   content: z.string(),
-  sentAt: z.string()
+  sentAt: z.string(),
+  attachments: z.array(z.object({
+    id: z.number()
+  }))
 });
 
 export const DeleteDirectMessageNotification = z.object({

@@ -13,6 +13,7 @@
     "framer-motion": "^10.15.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-router-dom": "^6.11.2",
     "react-select": "^5.7.4",
     "react-use-websocket": "^3.0.0",

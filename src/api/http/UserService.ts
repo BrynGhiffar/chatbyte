@@ -7,7 +7,7 @@ export const avatarImageGroupUrl = (groupId: number) => (randNum: number) => `${
 const GetUserDetailsResponse = z.object({
     success: z.literal(true),
     payload: z.object({
-        uid: z.number(),
+        user_id: z.number(),
         username: z.string(),
     })
 }).or(z.object({
@@ -20,7 +20,7 @@ type GetUserDetailsResponse = z.infer<typeof GetUserDetailsResponse>;
 const getUserDetails = async (token: string) => {
     const res = await request(GetUserDetailsResponse, {
         method: "GET",
-        headers: { "Authorization": `Bearer ${token}`},
+        headers: { "Authorization": `Bearer ${token}` },
         ept: Endpoint.userDetails(),
     });
 

@@ -11,12 +11,15 @@ const GetMessageResponse = z.object({
             id: z.number(),
             receiverId: z.number(),
             senderId: z.number(),
-            isUser: z.boolean(),
+            // isUser: z.boolean(),
             content: z.string(),
-            time: z.string(),
-            receiverRead: z.boolean(),
+            sentAt: z.string(),
+            read: z.boolean(),
             deleted: z.boolean(),
             edited: z.boolean(),
+            attachments: z.array(z.object({
+                id: z.number(),
+            }))
         })
     )
 })
@@ -59,13 +62,14 @@ const setMessagesRead = async (token: string, contactId: number): Promise<SetMes
 
     const res = await request(SetMessageReadResponse, {
         method: "PUT",
-        ept: Endpoint.readMessage(contactId),
+        ept: "DEPRECATED", // Endpoint.readMessage(contactId),
         headers,
         body: {}
     });
 
-    if (!res.success) return res;
-    return res.payload;
+    // if (!res.success) return res;
+    // return res.payload;
+    return { success: false, message: "API IS DEPRECATED" };
 }
 
 

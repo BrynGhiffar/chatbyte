@@ -47,7 +47,7 @@ type SC__ChatBubbleContainerProps = {
 }
 
 const SC__ChatBubbleContainer = styled.div<SC__ChatBubbleContainerProps>`
-    max-width: 60ch;
+    max-width: 30ch;
     min-width: 10ch;
     min-height: 2rem;
     border-radius: 15px;
@@ -62,6 +62,7 @@ const SC__ChatBubbleContainer = styled.div<SC__ChatBubbleContainerProps>`
   
 export const SC__ChatBubbleName = styled.span`
     font-weight: bold;
+    ${debugOutline()}
 `;
 
 type SC__ChatBubbleTimeProps = {
@@ -85,20 +86,23 @@ export const SC__ChatBubbleMessage = styled.p<SC__ChatBubbleMessageProps>`
 
 type SC__ChatRowProps = {
     $side: "left" | "right";
+    $sharpenEdge?: boolean;
 }
 
 export const SC__ChatRow = styled.div<SC__ChatRowProps>`
     min-height: 2.7rem;
-    margin-bottom: 0px;
     display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
+    align-items: ${props => props.$side === "left" ? "start" : "center"};;
+    padding: 0.25rem 1rem;
     justify-content: ${props => props.$side === "left" ? "flex-start" : "flex-end"};
-    /* outline: 1px solid red; */
     gap: 10px;
+    ${debugOutline()}
 
     > ${SC__ChatBubbleContainer} {
         ${props => {
+        if (!(props.$sharpenEdge ?? false)) {
+            return "";
+        }
         if (props.$side === "left") {
             return css`
             border-top-left-radius: 0px;

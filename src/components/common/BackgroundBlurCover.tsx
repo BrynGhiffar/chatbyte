@@ -1,6 +1,7 @@
+import { DivProps } from '@/misc/types';
 import useAppStore from '@/store/AppStore';
-import { motion } from 'framer-motion';
-import { FC, PropsWithChildren } from 'react';
+import { HTMLMotionProps, motion } from 'framer-motion';
+import { FC, PropsWithChildren, forwardRef } from 'react';
 import styled from "styled-components";
 
 const BlurBackgroundCoverStyled = styled(motion.div)`
@@ -18,25 +19,26 @@ const BlurBackgroundCoverStyled = styled(motion.div)`
 type BlurBackgroundCoverProps = PropsWithChildren<{
     dismissOnClick?: boolean;
     key?: string;
-}>;
+} & DivProps>;
 
-export const BlurBackgroundCover: FC<BlurBackgroundCoverProps> = (props) => {
+export const BlurBackgroundCover: FC<BlurBackgroundCoverProps> = ({ key, children, dismissOnClick, ...props}) => {
     const pop = useAppStore(s => s.popWindow);
     return (
         <BlurBackgroundCoverStyled
-            key={props.key}
+            key={key}
             initial={{opacity: 0, scale: 0.8, backdropFilter: 'blur(0px)'}}
             animate={{opacity: 1, scale: 1, backdropFilter: 'blur(4px)'}}
             exit={{opacity: 0, scale: 0.8 }}
             transition={{ ease: "easeInOut", }}
             onClick={e => {
                 e.stopPropagation();
-                if (props.dismissOnClick) {
+                if (dismissOnClick) {
                     pop();
                 }
             }}
+            {...props as HTMLMotionProps<"div">}
         >
-            {props.children}
+            {children}
         </BlurBackgroundCoverStyled>
     )
 };
