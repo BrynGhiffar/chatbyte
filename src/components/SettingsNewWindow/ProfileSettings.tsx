@@ -39,7 +39,7 @@ export const ProfileSettings: FC = () => {
     const [userId, username] = useAppStore(s => [s.loggedInUserId, s.loggedInUsername]);
     const [newUsername, setNewUsername] = useState("");
     const onClickChangePassword = useCallback(() => {
-        push("CHANGE_PASSWORD");
+        push({ type: "CHANGE_PASSWORD" });
     }, [push]);
     const onFileChange = useCallback(async (file: File) => {
         await UserService.uploadUserAvatar(token, file);

@@ -14,7 +14,7 @@ export const askShowNotificationPermission = () => {
 
 export const showBrowserNotification = (title: string, body: string) => {
     if (!canShowNotification()) return;
-    const notification = new Notification(title , { body, icon:  "/ferris.jpg"});
+    const notification = new Notification(title , { body, icon:  "/logo.svg"});
     notification.onclick = () => {
         notification.close();
     }

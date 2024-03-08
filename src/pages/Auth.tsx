@@ -6,6 +6,7 @@ import { AuthService } from "@/api/http/AuthService";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { InputField } from "@/components/common/InputField";
 import { useSnackbar } from "@/store/AppStore/hooks";
+import { DarkTheme } from "@/theme";
 
 const LoginWrapper = styled.div`
     height: 50%;
@@ -26,8 +27,12 @@ const LoginTitle = styled.div`
     
     font-size: 3rem;
     font-weight: bold;
-    letter-spacing: 0.2ch;
+    /* letter-spacing: 0.2ch; */
     color: white;
+    > * {
+        padding-right: 1rem;
+        height: 3rem;
+    }
 `;
 
 const InputFieldGroup = styled.div`
@@ -42,15 +47,15 @@ const LoginButton = styled.button`
     font-size: 1.5rem;
     padding: 0.5rem 0px;
     font-weight: 600;
-    color: ${color.lightBlue};
-    background-color: ${color.darkBlue};
+    color: ${color.white};
+    background-color: ${DarkTheme.config.chatListNavSearchBackgroundColor};
     cursor: pointer;
     border-radius: 4px;
 
-    :hover {
+    /* :hover {
         color: ${color.darkBlue};
         background-color: ${color.lightBlue};
-    }
+    } */
 `;
 
 interface LoginField {
@@ -95,7 +100,10 @@ const Page: FC = () => {
     };
     return (
         <LoginWrapper>
-            <LoginTitle>CHAT APP</LoginTitle>
+            <LoginTitle>
+                <img src="/logo.svg" alt="" />
+                Chatbyte
+            </LoginTitle>
             <InputFieldGroup>
                 <InputField 
                     label="Email *"

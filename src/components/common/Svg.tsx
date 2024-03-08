@@ -141,3 +141,19 @@ export const EyeCloseSVG: FC = () => {
         </svg>
     );
 };
+
+export const ChevronLeftSVG: FC = () => (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g>
+        <path d="M15 19L8 12L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </g>
+    </svg>
+);
+
+export const ChevronRightSVG: FC = () => (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g>
+            <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </g>
+    </svg>
+);

@@ -25,7 +25,7 @@ const filterContactMessage = (searchStr: string, contactMessage: Conversation | 
 };
 
 
-const ContactMessageList = () => {
+const ContactMessageList: FC = () => {
     const [ searchStr, _ ] = useChatListSearch();
     const groupConversations = useAppStore(s => s.groupConversations)
         .filter(contact => filterContactMessage(searchStr, contact));

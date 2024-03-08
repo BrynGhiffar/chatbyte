@@ -23,13 +23,24 @@ type BlurBackgroundCoverProps = PropsWithChildren<{
 
 export const BlurBackgroundCover: FC<BlurBackgroundCoverProps> = ({ key, children, dismissOnClick, ...props}) => {
     const pop = useAppStore(s => s.popWindow);
+    const variants = {
+        initial: { opacity: 0, scale: 0.8, backdropFilter: 'blur(0px)' },
+        animate: { opacity: 1, scale: 1, backdropFilter: 'blur(4px)' },
+        exit: {opacity: 0, scale: 0.8 },
+        transition: { type: "easeInOut" }
+    };
     return (
         <BlurBackgroundCoverStyled
             key={key}
-            initial={{opacity: 0, scale: 0.8, backdropFilter: 'blur(0px)'}}
-            animate={{opacity: 1, scale: 1, backdropFilter: 'blur(4px)'}}
-            exit={{opacity: 0, scale: 0.8 }}
-            transition={{ ease: "easeInOut", }}
+            variants={variants}
+            // initial={{opacity: 0, scale: 0.8, backdropFilter: 'blur(0px)' }}
+            // animate={{opacity: 1, scale: 1, backdropFilter: 'blur(4px)' }}
+            // exit={{opacity: 0, scale: 0.8 }}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            // transition={{ ease: "easeInOut" }}
+            // transition={variants.transition}
             onClick={e => {
                 e.stopPropagation();
                 if (dismissOnClick) {

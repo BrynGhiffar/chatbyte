@@ -3,13 +3,14 @@ import styled from "styled-components";
 import { color } from "../Palette";
 import { SnackbarProvider } from "../Snackbar";
 import Blur from "./Blur";
+import { DarkTheme } from "@/theme";
 
 const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background-color: ${color.darkBlue};
+  background-color: ${DarkTheme.config.chatNavBackgroundColor};
   width: 100vw;
   height: 100vh;
 `;

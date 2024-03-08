@@ -72,13 +72,16 @@ export type LogoutConfirmWindow = { type: "LOGOUT_CONFIRM" }
 export type ChangePasswordWindow = { type: "CHANGE_PASSWORD" }
 export type CreateGroupWindow = { type: "CREATE_GROUP_WINDOW" }
 export type ConfirmPopupDeleteMessageWindow = { type: "CONFIRM_POPUP_DELETE_MESSAGE", messageId: number };
+export type ImageCarouselWindow = { type: "IMAGE_CARROUSEL_WINDOW", imageSrcs: string[] };
 
 export type Window = ChatWindow 
     | SettingsWindow 
     | LogoutConfirmWindow
     | ChangePasswordWindow
     | CreateGroupWindow
-    | ConfirmPopupDeleteMessageWindow;
+    | ConfirmPopupDeleteMessageWindow
+    | ImageCarouselWindow
+    ;
 
 export type ContactType = "DIRECT" | "GROUP";
 

@@ -12,6 +12,7 @@ import useAppStore from "@/store/AppStore";
 import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
 import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
 import { useToken } from "@/utility/UtilityHooks";
+import ImageCarouselWindow from "@/components/ImageCarouselWindow";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -96,6 +97,13 @@ const AppWindow: FC = () => {
             <ConfirmDeleteMessagePopup
               messageId={window.messageId}
               key="confirm_delete_message"
+            />
+          )
+        }
+        {
+          window.type === "IMAGE_CARROUSEL_WINDOW" && (
+            <ImageCarouselWindow imageSrcs={window.imageSrcs}
+              key="image_carrousel_window"
             />
           )
         }

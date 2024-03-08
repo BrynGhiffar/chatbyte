@@ -8,13 +8,22 @@ type SC__ChatListContainerProps = {
   $backgroundColor: string;
 }
 
+export const TH__ChatListContainer: FC<PropsWithChildren> = props => {
+  // const colorConfig = ;
+  const backgroundColor = useColorConfig().chatListBackgroundColor;
+  const borderLeftColor = useColorConfig().chatListBorderLeftColor;
+  return <SC__ChatListContainer
+    $backgroundColor={backgroundColor}
+    $borderLeftColor={borderLeftColor}
+  >{props.children}</SC__ChatListContainer>
+}
+
 const SC__ChatListContainer = styled.div<SC__ChatListContainerProps>`
-  transition: all 200ms ease-in-out;
+  background-color: ${props => props.$backgroundColor};
   border-right: 1px solid ${props => props.$borderLeftColor};
   font-family: ${font.appleFont};
   overflow-x: hidden;
   overflow-y: scroll;
-  background-color: ${props => props.$backgroundColor};
   ${commonCss.scrollableCss}
 `;
 
@@ -24,13 +33,3 @@ export const SC__ChatListWindow = styled.div`
   height: 100vh;
 `;
 
-
-export const TH__ChatListContainer: FC<PropsWithChildren> = props => {
-  const colorConfig = useColorConfig();
-  const borderLeftColor = colorConfig.chatListBorderLeftColor;
-  const backgroundColor = colorConfig.chatListBackgroundColor;
-  return <SC__ChatListContainer
-    $backgroundColor={backgroundColor}
-    $borderLeftColor={borderLeftColor}
-  >{props.children}</SC__ChatListContainer>
-}

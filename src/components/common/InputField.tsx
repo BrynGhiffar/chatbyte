@@ -2,6 +2,7 @@ import { useState, FC } from "react";
 import styled from "styled-components";
 import { color, commonCss, font } from "../Palette";
 import { EyeCloseSVG, EyeOpenSVG } from "./Svg";
+import { DarkTheme } from "@/theme";
 
 const InputFieldWrapper = styled.div`
     /* outline: 1px solid red; */
@@ -24,11 +25,11 @@ const InputFieldLabel = styled.span`
 
 const InputFieldInput = styled.input`
     outline: none;
-    border: none;
+    border: 1px solid ${DarkTheme.config.chatListNavSearchBorderColor};
     font-size: 1.2rem;
     padding: 0.7rem 0.5rem;
     border-radius: 4px;
-    background-color: ${color.lightBlue};
+    background-color: ${DarkTheme.config.chatListNavSearchInnerBackgroundColor};
     color: white;
 `;
 
@@ -38,20 +39,21 @@ const ToggleShowPasswordButton = styled.button<{ $showing: boolean }>`
     border: none;
     outline: none;
     border-radius: 4px;
-    background-color: ${props => props.$showing ? color.lightBlue : color.darkBlue};
+    /* background-color: ${props => props.$showing ? color.lightBlue : color.darkBlue}; */
+    background-color: transparent;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     > * {
         height: 2rem;
-        color: ${props => !props.$showing ? color.lightBlue : color.darkBlue};
+        color: ${color.white};
     }
 
     :hover {
-        background-color: ${color.lightBlue};
+        /* background-color: ${color.lightBlue}; */
         > * {
-            color: ${color.darkBlue};
+            color: ${color.white};
         }
     }
 `;

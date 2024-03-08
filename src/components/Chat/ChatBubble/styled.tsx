@@ -1,4 +1,4 @@
-import { font } from "@/components/Palette";
+import { commonCss, font } from "@/components/Palette";
 import { DivProps, DivWrapper } from "@/misc/types";
 import styled, { css } from "styled-components";
 import { PropsWithChildren, FC } from "react";
@@ -224,3 +224,68 @@ export const TH_ChatBubbleContainer: FC<TH__ChatBubbleContainerProps> = ({ child
         </SC__ChatBubbleContainer>
     );
 }
+
+type SC__ImageAttachmentProps = {
+    $oneImage: boolean;
+}
+
+export const SC__ImageAttachment = styled.div<SC__ImageAttachmentProps>`
+  width: 100%;
+  display: grid;
+  /* outline: 1px solid blue; */
+  ${
+    props => (!props.$oneImage) && (css`
+      grid-template-columns: repeat(2, 1fr);
+      img {
+        aspect-ratio: 1 / 1;
+      }
+    `)
+  }
+  gap: 3px;
+
+`;
+
+export const SC__ImageAttachmentImageWrapper = styled.div`
+  /* outline: 1px solid red; */
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+`;
+
+
+export const SC__ImageAttachmentImageOverlay = styled.div`
+  transition: all 150ms ease-in-out;
+  background-color: transparent;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: white;
+  background-color: rgba(100,100,100, 0.5);
+`;
+
+export const SC__ImageAttachmentImage = styled.img`
+  /* width: 50px; */
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  ${commonCss.transition}
+  cursor: pointer;
+  :hover {
+    filter: blur(100%);
+  }
+`;
+
+
+export const SC__ProfilePictureContainer = styled.div`
+  display: grid;
+  align-items: start;
+  /* outline: 1px solid red; */
+`;

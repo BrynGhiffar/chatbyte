@@ -75,7 +75,7 @@ const reduceMessage = async (
             if (!directMessages) { break; };
             messageMap[`DIRECT-${message.contactId}`] = directMessages.map(m => {
                 if (m.id === message.messageId) {
-                    return ({...m, deleted: true, content: "" })
+                    return ({...m, deleted: true, content: "", attachmentIds: [] })
                 }
                 return m;
             });
@@ -89,7 +89,7 @@ const reduceMessage = async (
             if (!messages) { break; };
             messageMap[`GROUP-${message.groupId}`] = messages.map(m => {
                 if (m.id === message.messageId) {
-                    return ({...m, deleted: true, content: "" })
+                    return ({...m, deleted: true, content: "", attachmentIds: [] })
                 }
                 return m;
             });
