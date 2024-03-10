@@ -8,6 +8,9 @@
 - [x] implement search in textbar.
 
 ### Features
+- [ ] Need to fix sending image without message
+- [ ] When edit message, can also edit image?
+- [ ] Fix cannot send message to a group.
 - [-] standardise how components interact with each other
 - [-] separate component logic
 - [x] implement registration

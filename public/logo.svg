@@ -7,8 +7,31 @@
    viewBox="0 0 221.13847 178.5955"
    version="1.1"
    id="svg1"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.2435648"
+     inkscape:cx="110.56923"
+     inkscape:cy="89.259526"
+     inkscape:window-width="950"
+     inkscape:window-height="1046"
+     inkscape:window-x="2885"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
   <g
@@ -26,15 +49,10 @@
        id="rect7"
        style="fill:#3d72ff;stroke-width:1.00157"
        d="M 621.27928,198.66535 H 761.28431 V 272.5529 Z" />
-    <text
-       xml:space="preserve"
-       style="font-size:85.3333px;fill:#f9f9f9;fill-opacity:1;stroke-width:1.00157"
-       x="573.40625"
-       y="195.03503"
-       id="text12"><tspan
-         id="tspan12"
-         x="573.40625"
-         y="195.03503"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.3333px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono'">010</tspan></text>
+    <path
+       style="font-size:85.3333px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono';fill:#f9f9f9;stroke-width:1.00157"
+       d="m 599.00624,195.88837 q -8.61866,0 -13.73866,-4.94933 -5.03467,-5.03467 -5.03467,-13.39733 v -27.30666 q 0,-8.36266 5.03467,-13.31199 5.12,-5.03467 13.73866,-5.03467 8.61866,0 13.65333,5.03467 5.11999,4.94933 5.11999,13.31199 v 27.30666 q 0,5.54666 -2.30399,9.72799 -2.304,4.096 -6.57067,6.4 -4.18133,2.21867 -9.89866,2.21867 z m 0,-6.57067 q 5.12,0 8.192,-3.24266 3.15733,-3.328 3.15733,-8.53333 v -27.30666 q 0,-5.20533 -3.15733,-8.44799 -3.072,-3.328 -8.192,-3.328 -5.12,0 -8.27733,3.328 -3.072,3.24266 -3.072,8.44799 v 27.30666 q 0,5.20533 3.072,8.53333 3.15733,3.24266 8.27733,3.24266 z m 0,-20.73599 q -2.304,0 -3.75467,-1.28 -1.36533,-1.28 -1.36533,-3.66933 0,-2.304 1.36533,-3.49866 1.45067,-1.28 3.75467,-1.28 2.304,0 3.66933,1.28 1.45067,1.19466 1.45067,3.49866 0,2.38933 -1.45067,3.66933 -1.36533,1.28 -3.66933,1.28 z m 33.28002,26.45332 v -6.99733 h 16.89599 v -48.63998 l -16.89599,12.62933 v -8.78933 l 14.07999,-10.49599 h 10.496 v 55.29597 h 13.82399 v 6.99733 z m 69.12,0.85334 q -8.61866,0 -13.73866,-4.94933 -5.03466,-5.03467 -5.03466,-13.39733 v -27.30666 q 0,-8.36266 5.03466,-13.31199 5.12,-5.03467 13.73866,-5.03467 8.61867,0 13.65333,5.03467 5.12,4.94933 5.12,13.31199 v 27.30666 q 0,5.54666 -2.304,9.72799 -2.304,4.096 -6.57066,6.4 -4.18134,2.21867 -9.89867,2.21867 z m 0,-6.57067 q 5.12,0 8.192,-3.24266 3.15733,-3.328 3.15733,-8.53333 v -27.30666 q 0,-5.20533 -3.15733,-8.44799 -3.072,-3.328 -8.192,-3.328 -5.11999,0 -8.27733,3.328 -3.07199,3.24266 -3.07199,8.44799 v 27.30666 q 0,5.20533 3.07199,8.53333 3.15734,3.24266 8.27733,3.24266 z m 0,-20.73599 q -2.304,0 -3.75466,-1.28 -1.36533,-1.28 -1.36533,-3.66933 0,-2.304 1.36533,-3.49866 1.45066,-1.28 3.75466,-1.28 2.304,0 3.66934,1.28 1.45066,1.19466 1.45066,3.49866 0,2.38933 -1.45066,3.66933 -1.36534,1.28 -3.66934,1.28 z"
+       id="text12"
+       aria-label="010" />
   </g>
 </svg>

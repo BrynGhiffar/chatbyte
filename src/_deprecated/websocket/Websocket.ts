@@ -1,6 +1,6 @@
 import { useToken } from "@/utility/UtilityHooks";
 import { useContext, useEffect, useState } from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+// import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import { useUpdateEffect } from "usehooks-ts";
 import { z } from "zod";
 import { useSnackbar } from "@/store/AppStore/hooks";
@@ -55,43 +55,43 @@ export type WebSocketOutgoingMessage = z.infer<typeof WebSocketOutgoingMessage>;
 const useRawDataWebSocket = () => {
     const token = useToken();
     const ept = `${WebSocketEndpoint()}${Endpoint.webSocket(token)}`;
-    const { sendMessage: sendMessageRaw, lastMessage: lastMessageRaw } = useWebSocket(ept, { share: true });
-    return { sendMessageRaw, lastMessageRaw };
+    // const { sendMessage: sendMessageRaw, lastMessage: lastMessageRaw } = useWebSocket(ept, { share: true });
+    // return { sendMessageRaw, lastMessageRaw };
 }
 
 export const useSocket = () => {
-    const { sendMessageRaw, lastMessageRaw } = useRawDataWebSocket();
+    // const { sendMessageRaw, lastMessageRaw } = useRawDataWebSocket();
     const { pushError } = useSnackbar();
     const [ lastMessageSocket, setLastMessage ] = useState<WebSocketOutgoingMessage>({ type: "empty" });
 
-    useUpdateEffect(() => {
-        if (!lastMessageRaw?.data) return;
-        const lastMessageJson = JSON.parse(lastMessageRaw?.data);
-        const parseLastMessageRaw = WebSocketOutgoingMessage.safeParse(lastMessageJson);
-        if (parseLastMessageRaw.success) {
-            setLastMessage(_ => parseLastMessageRaw.data);
-        } else {
-            console.error("---- Failed parsing websocket notification -----")
-            console.error(lastMessageJson);
-            pushError("There was an issue parsing a message notification");
-        }
-        return;
-    }, [lastMessageRaw]);
+    // useUpdateEffect(() => {
+    //     if (!lastMessageRaw?.data) return;
+    //     const lastMessageJson = JSON.parse(lastMessageRaw?.data);
+    //     const parseLastMessageRaw = WebSocketOutgoingMessage.safeParse(lastMessageJson);
+    //     if (parseLastMessageRaw.success) {
+    //         setLastMessage(_ => parseLastMessageRaw.data);
+    //     } else {
+    //         console.error("---- Failed parsing websocket notification -----")
+    //         console.error(lastMessageJson);
+    //         pushError("There was an issue parsing a message notification");
+    //     }
+    //     return;
+    // }, [lastMessageRaw]);
 
-    const sendMessageSocket = (message: WebSocketIncomingMessage) => {
-        sendMessageRaw(JSON.stringify({
-            type: "SEND_MESSAGE",
-            receiverUid: message.receiverUid,
-            message: message.content
-        }));
-    };
+    // const sendMessageSocket = (message: WebSocketIncomingMessage) => {
+    //     sendMessageRaw(JSON.stringify({
+    //         type: "SEND_MESSAGE",
+    //         receiverUid: message.receiverUid,
+    //         message: message.content
+    //     }));
+    // };
 
-    const sendGroupMessage = (message: GroupMessage) => {
-        sendMessageRaw(JSON.stringify({
-            type: "SEND_GROUP_MESSAGE",
-            groupId: message.groupId,
-            message: message.content
-        }));
-    }
-    return { sendMessageSocket, sendGroupMessage, lastMessageSocket };
+    // const sendGroupMessage = (message: GroupMessage) => {
+    //     sendMessageRaw(JSON.stringify({
+    //         type: "SEND_GROUP_MESSAGE",
+    //         groupId: message.groupId,
+    //         message: message.content
+    //     }));
+    // }
+    // return { sendMessageSocket, sendGroupMessage, lastMessageSocket };
 };
