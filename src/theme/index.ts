@@ -1,5 +1,5 @@
 import { color } from "@/components/Palette";
-import { ColorConfig, Theme } from "./type";
+import { Theme } from "./type";
 
 export const LightTheme: Theme = {
     id: "light",
@@ -42,11 +42,26 @@ export const LightTheme: Theme = {
         chatInputBorderColor: 'rgb(200,200,200)',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
+        
+        imageCarousel: {
+            buttonIconColor: "rgb(100, 100, 100)",
+            buttonBackgroundColor: "white",
+            buttonBorderColor: "rgb(200,200,200)"
+        },
 
         chatInput: {
             chatEditBackgroundColor: "#e3e3e3",
             chatEditBorderColor: "#3d72ff",
-            chatEditColor: "black"
+            chatEditColor: "black",
+            uploadAttachment: {
+                backgroundColor: "white",
+                borderColor: "rgb(200,200,200)",
+                itemBackgroundColor: color.kindaWhite,
+                buttonBackgroundColor: "white",
+                buttonHoverBackgroundColor: "#eff4ff",
+                buttonBorderColor: color.kindaWhite,
+                buttonIconColor: "black"
+            }
         },
 
         chatBubble: {
@@ -109,10 +124,25 @@ export const DarkTheme: Theme = {
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
 
+        imageCarousel: {
+            buttonIconColor: "white",
+            buttonBackgroundColor: "#0f0f0f",
+            buttonBorderColor: "#1f1f1f"
+        },
+
         chatInput: {
             chatEditBackgroundColor: "#393a3d",
             chatEditBorderColor: "#3d72ff",
-            chatEditColor: "white"
+            chatEditColor: "white",
+            uploadAttachment: {
+                backgroundColor: "#0f0f0f",
+                borderColor: "#1f1f1f",
+                itemBackgroundColor: "#1e1d1d",
+                buttonBackgroundColor: "#3a3b3e",
+                buttonHoverBackgroundColor: "#29292c",
+                buttonBorderColor: "#1f1f1f",
+                buttonIconColor: "white"
+            }
         },
 
         chatBubble: {

@@ -39,10 +39,25 @@ export type ColorConfig = {
     chatInputSendButtonColor: string,
     chatInputSendButtonBackgroundColorHover: string,
 
+    imageCarousel: {
+        buttonIconColor: string;
+        buttonBackgroundColor: string;
+        buttonBorderColor: string;
+    }
+
     chatInput: {
         chatEditBorderColor: string,
         chatEditBackgroundColor: string;
         chatEditColor: string;
+        uploadAttachment: {
+            backgroundColor: string;
+            borderColor: string;
+            itemBackgroundColor: string;
+            buttonBackgroundColor: string;
+            buttonHoverBackgroundColor: string;
+            buttonBorderColor: string;
+            buttonIconColor: string;
+        }
     },
 
     chatBubble: {

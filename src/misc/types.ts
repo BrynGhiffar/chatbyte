@@ -1,8 +1,11 @@
-import { FC, HTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
+import { DetailedHTMLProps, FC, HTMLAttributes, InputHTMLAttributes, PropsWithChildren, ImgHTMLAttributes } from "react";
+
 
 export type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
 export type DivWrapper<T = {}> = FC<PropsWithChildren<HTMLAttributes<HTMLDivElement> & T>>;
+
+export type BaseHTMLImgProps<T = {}> = FC<ImgHTMLAttributes<HTMLImageElement> & T>;
 
 export type DivProps = HTMLAttributes<HTMLDivElement>;
 

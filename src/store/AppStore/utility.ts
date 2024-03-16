@@ -30,7 +30,6 @@ export const getUserToken = async (set: AppStateSet): Promise<string | null> => 
     }
     const res = await AuthService.validateToken(token);
     if (!res.success) {
-        pushSnackbarError(set, "Token is invalid");
         set(s => ({...s, type: "INVALID_TOKEN" }));
         return null;
     }

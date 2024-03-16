@@ -1,12 +1,8 @@
-import styled from "styled-components";
-import { colorConfig, commonCss, font } from "@/components/Palette";
 import { FC, KeyboardEvent, useEffect, useRef, useState, useCallback, MouseEvent } from "react";
 import useAppStore from "@/store/AppStore";
 import { SC__SendSvg, TH__ChatEditMessageCloseButton, TH__ChatEditMessageContainer, TH__ChatInputBar, TH__ChatInputText, TH__SendButton } from "./styled";
-import { CloseSVG, EyeOpenSVG, TrashIconSVG } from "@/components/common/Svg";
-import { logDebug } from "@/utility/Logger";
-import { toBase64 } from "@/utility/UtilityFunctions";
-import { set } from "zod";
+import { CloseSVG } from "@/components/common/Svg";
+import { InputAttachment } from "./ChatInputBarAttachment";
 
 const ChatEditMessageDetail = () => {
   const cancelEdit = useAppStore(s => s.cancelEditMessage);
@@ -34,129 +30,13 @@ const ChatEditMessageDetail = () => {
   )
 }
 
-const InputAttachmentContainer = styled.div`
-  padding: 0.5rem;
-  background-color: #0f0f0f;
-  border: 1px solid #1f1f1f;
-  border-radius: 5px;
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-`
-
-type SC__AttachmentItemProps = {
-  $image: string,
-}
-
-const SC__AttachmentItem = styled.div<SC__AttachmentItemProps>`
-  height: 130px;
-  width: 110px;
-  /* background-color: #393a3d; */
-  background-image: url(${props => props.$image});
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #1e1d1d;
-  position: relative;
-  border-radius: 5px;
-`;
-
-const SC__AttachmentItemControl = styled.div`
-  background-color: #3a3b3e;
-  border: 1px solid #1f1f1f;
-  border-radius: 5px;
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  height: 20px;
-  width: 40px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-`;
-
-const SC__AttachmentControlItems = styled.div`
-  ${commonCss.transition}
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  :hover {
-    background-color: #29292c;
-  }
-  > svg {
-    color: white;
-  }
-`;
-
-const SC__AttachmentDeleteButton = styled(SC__AttachmentControlItems)`
-  :hover {
-    background-color: red;
-  }
-`;
-
-const SC__AttachmentViewButton = styled(SC__AttachmentControlItems)`
-  > svg {
-    height: 17px;
-    aspect-ratio: 1 / 1;
-  }
-`;
-
-type AttachmentItemProps = {
-  id: number;
-  file: string
-}
-
-const AttachmentItem: FC<AttachmentItemProps> = ({ id, file }) => {
-  const removeAttachmentById = useAppStore(s => s.removeAttachmentById);
-  const onClickDeleteButton = () => {
-    removeAttachmentById(id);
-  };
-  return (
-    <SC__AttachmentItem $image={file}>
-      <SC__AttachmentItemControl>
-        <SC__AttachmentViewButton>
-          <EyeOpenSVG/>
-          {/* <TrashIconSVG/> */}
-        </SC__AttachmentViewButton>
-        <SC__AttachmentDeleteButton onClick={onClickDeleteButton}>
-          <TrashIconSVG/>
-        </SC__AttachmentDeleteButton>
-      </SC__AttachmentItemControl>
-    </SC__AttachmentItem>
-  )
-}
-
-const InputAttachment: FC = () => {
-  const attachments = useAppStore(s => s.uploadAttachments);
-  if (attachments.length > 0) {
-    return (
-      <>
-        <InputAttachmentContainer>
-        {
-          attachments.map(a => (
-            <AttachmentItem
-              key={a.id}
-              id={a.id}
-              file={a.file}
-            />
-          ))
-        }
-        </InputAttachmentContainer>
-        <div/>
-      </>
-    );
-  }
-  return <></>
-}
-
-
 const ChatInputBar: FC = () => {
   const [ input, setInput ] = useState("");
   const sendMessage = useAppStore(s => s.sendMessage);
+  const attachments = useAppStore(s => s.uploadAttachments);
   const onClickSend = async () => {
     const message = input.trim();
-    if (message.length === 0) return;
+    if ((message.length === 0) && (attachments.length === 0)) return;
     setInput("");
     sendMessage(message);
   }

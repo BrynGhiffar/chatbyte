@@ -4,6 +4,9 @@ import { useColorConfig } from "@/store/AppStore/hooks";
 import { ForwardedRef, HTMLAttributes, forwardRef } from "react";
 import styled from "styled-components";
 
+// █▀ ▀█▀ █▄█ █░░ █▀▀ █▀▄
+// ▄█ ░█░ ░█░ █▄▄ ██▄ █▄▀
+
 export const SC__SendSvg = styled.svg``;
 
 type SC__ChatInputBarProps = {
@@ -119,6 +122,9 @@ const SC__ChatEditMessageCloseButton = styled.button<SC__CloseButtonProps>`
   box-shadow: none;
   color: ${props => props.$color};
 `;
+
+// ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀ █▀▄
+// ░█░ █▀█ ██▄ █░▀░█ ██▄ █▄▀
 
 export const TH__ChatInputBar: DivWrapper = ({ children, ...props }) => {
     const backgroundColor = useColorConfig().chatInputBackgroundColor;

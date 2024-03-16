@@ -2,52 +2,11 @@ import { FC, useState, useCallback, useEffect, Suspense, MouseEvent } from "reac
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover"
 import styled from "styled-components";
 import { ChevronLeftSVG, ChevronRightSVG } from "../common/Svg";
+import { TH__ImageCarouselButton, TH__ImageCarouselButtonContainer, TH__ImageCarouselContainer, TH__ImageCarouselImage } from "./styled";
 
 type ImageCarouselProps = {
     imageSrcs: string[]
 };
-
-const SC__ImageContainer = styled.div`
-    display: grid;
-    grid-template-columns: 40px auto 40px;
-    gap: 10px;
-`;
-
-type SC__ImageProps = {
-    $width: number;
-}
-
-const SC__Image = styled.img<SC__ImageProps>`
-    padding-left: calc((60vw - min(60vw, ${props => props.$width}px)) / 2);
-    padding-right: calc((60vw - min(60vw, ${props => props.$width}px)) / 2);
-    width: min(60vw, ${props => props.$width}px);
-    height: 80vh;
-    object-fit: contain;
-`;
-
-const SC__Button = styled.button`
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    height: 40px;
-    padding: 5px;
-    background-color: #0f0f0f;
-    border: 1px solid #1f1f1f;
-    aspect-ratio: 1 / 1;
-    /* outline: 1px solid red; */
-    border-radius: 50%;
-
-    > svg {
-        aspect-ratio: 1 / 1;
-        color: white;
-    }
-`;
-
-const SC__ButtonContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
 
 const toImageElement = async (src: string) => {
     const newImage = new Image();
@@ -83,26 +42,26 @@ const ImageCarrousel: FC<ImageCarouselProps> = (props) => {
     );
 
     return (
-        <SC__ImageContainer>
-            <SC__ButtonContainer>
-            <SC__Button onClick={previousImage}>
-                <ChevronLeftSVG/>
-            </SC__Button>
-            </SC__ButtonContainer>
+        <TH__ImageCarouselContainer>
+            <TH__ImageCarouselButtonContainer>
+                <TH__ImageCarouselButton onClick={previousImage}>
+                    <ChevronLeftSVG/>
+                </TH__ImageCarouselButton>
+            </TH__ImageCarouselButtonContainer>
             {
                 (images.length > index) && (
-                    <SC__Image
+                    <TH__ImageCarouselImage
                         src={images[index].src}
                         $width={images[index].width}
                     />
                 )
             }
-            <SC__ButtonContainer>
-                <SC__Button onClick={nextImage}>
+            <TH__ImageCarouselButtonContainer>
+                <TH__ImageCarouselButton onClick={nextImage}>
                     <ChevronRightSVG/>
-                </SC__Button>
-            </SC__ButtonContainer>
-        </SC__ImageContainer>
+                </TH__ImageCarouselButton>
+            </TH__ImageCarouselButtonContainer>
+        </TH__ImageCarouselContainer>
     )
 };
 
