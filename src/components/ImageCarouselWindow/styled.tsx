@@ -32,12 +32,9 @@ const SC__ImageCarouselButton = styled.button<SC__ImageCarouselButtonsProps>`
     cursor: pointer;
     height: 40px;
     padding: 5px;
-    /* background-color: #0f0f0f; */
-    /* border: 1px solid #1f1f1f; */
     background-color: ${props => props.$backgroundColor};
     border: 1px solid ${props => props.$borderColor};
     aspect-ratio: 1 / 1;
-    /* outline: 1px solid red; */
     border-radius: 50%;
 
     > svg {
