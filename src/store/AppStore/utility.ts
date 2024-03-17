@@ -24,7 +24,7 @@ export const pushSnackbarSuccess = (set: AppStateSet, message: string) => {
 export const getUserToken = async (set: AppStateSet): Promise<string | null> => {
     const token = LocalStorage.getLoginToken();
     if (!token) { 
-        pushSnackbarError(set, "Token is missing");
+        // pushSnackbarError(set, "Token is missing");
         set(s => ({...s, type: "MISSING_TOKEN" }));
         return null;
     }
