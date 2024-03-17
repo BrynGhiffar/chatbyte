@@ -42,7 +42,12 @@ export const LightTheme: Theme = {
         chatInputBorderColor: 'rgb(200,200,200)',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
-        
+
+        sidebar: {
+            backgroundColor: color.chatBlue,
+            buttonBackgroundHoverColor: "#2a4fb2",
+        },
+
         imageCarousel: {
             buttonIconColor: "rgb(100, 100, 100)",
             buttonBackgroundColor: "white",
@@ -123,6 +128,11 @@ export const DarkTheme: Theme = {
         chatInputBorderColor: '#1f1f1f',
         chatInputSendButtonColor: 'gray',
         chatInputSendButtonBackgroundColorHover: 'rgba(100, 100, 100, 0.3)',
+
+        sidebar: {
+            backgroundColor: "#1e1d1d",
+            buttonBackgroundHoverColor: "#3a3b3e"
+        },
 
         imageCarousel: {
             buttonIconColor: "white",

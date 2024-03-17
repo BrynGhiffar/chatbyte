@@ -3,6 +3,8 @@ import { DetailedHTMLProps, FC, HTMLAttributes, InputHTMLAttributes, PropsWithCh
 
 export type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;
 
+export type ButtonMouseEvent = React.MouseEvent<HTMLButtonElement, MouseEvent>;
+
 export type DivWrapper<T = {}> = FC<PropsWithChildren<HTMLAttributes<HTMLDivElement> & T>>;
 
 export type BaseHTMLImgProps<T = {}> = FC<ImgHTMLAttributes<HTMLImageElement> & T>;

@@ -147,7 +147,7 @@ const PopupWindow: FC = () => {
 const ChatList: FC = () => {
     return (
         <SC__ChatListWindow>
-            <ChatListProfile />
+            {/* <ChatListProfile /> */}
             <ContactMessageList />
         </SC__ChatListWindow>
     )

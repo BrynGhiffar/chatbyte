@@ -39,6 +39,11 @@ export type ColorConfig = {
     chatInputSendButtonColor: string,
     chatInputSendButtonBackgroundColorHover: string,
 
+    sidebar: {
+        backgroundColor: string;
+        buttonBackgroundHoverColor: string;
+    }
+
     imageCarousel: {
         buttonIconColor: string;
         buttonBackgroundColor: string;

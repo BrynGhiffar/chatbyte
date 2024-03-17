@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { color } from "@/components/Palette";
 import ChatList from "@/components/ChatList";
 import Chat from "@/components/Chat";
@@ -13,6 +13,7 @@ import { askShowNotificationPermission } from "@/api/browser/BrowserNotification
 import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
 import { useToken } from "@/utility/UtilityHooks";
 import ImageCarouselWindow from "@/components/ImageCarouselWindow";
+import Sidebar from "@/components/Sidebar";
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -21,17 +22,28 @@ const AppWindowStyled = styled.div`
   position: relative;
 `;
 
-const ChatWindowStyled = styled.div`
+type ChatWindowStyledProps = {
+  $showChatList: boolean
+}
+
+const ChatWindowStyled = styled.div<ChatWindowStyledProps>`
   height: 100vh;
   width: 100vw;
   display: grid;
-  grid-template-columns: 30vw auto;
+  ${props => {
+    if (props.$showChatList) {
+      return css`grid-template-columns: 60px 30vw auto;`
+    }
+    return css`grid-template-columns: 60px auto;`
+  }}
 `;
 
 const ChatWindow: FC = props => {
+  const showChatList = useAppStore(s => s.showChatList);
   return (
-    <ChatWindowStyled>
-      <ChatList />
+    <ChatWindowStyled $showChatList={showChatList}>
+      <Sidebar />
+      { showChatList && <ChatList /> }
       <Chat />
     </ChatWindowStyled>
   )

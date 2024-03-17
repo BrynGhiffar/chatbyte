@@ -29,7 +29,7 @@ const SC__ChatListContainer = styled.div<SC__ChatListContainerProps>`
 
 export const SC__ChatListWindow = styled.div`
   display: grid;
-  grid-template-rows: 4rem 1fr;
+  /* grid-template-rows: 4rem 1fr; */
   height: 100vh;
 `;
 

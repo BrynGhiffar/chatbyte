@@ -33,6 +33,7 @@ type Status = "online" | "offline"
 type StatusSymbolProps = {
   $status: Status,
   $outlineColor: string,
+  $width: number,
 }
 
 const StatusSymbol = styled.div<StatusSymbolProps>`
@@ -40,7 +41,7 @@ const StatusSymbol = styled.div<StatusSymbolProps>`
   position: absolute;
   bottom: 0px;
   right: 0px;
-  height: 15px;
+  width: ${props => props.$width}px;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background-color: ${props => props.$status === "online" ? '#229f56' : 'gray'};
@@ -65,7 +66,12 @@ type ProfilePictureWithStatus = {
 
 export const ProfilePictureWithStatus: FC<ProfilePictureWithStatus> = props => {
   const online = props.online;
-  return (<ProfilePicContainer $width={props.width} imageUrl={props.imageUrl}>
-    <StatusSymbol $status={online ? "online" : "offline"} $outlineColor={props.statusOutlineColor}/>
+  const width = props.width ?? 50;
+  let statusWidth = width * 0.25;
+  // if (statusWidth) {
+  //   statusWidth *= 0.3;
+  // }
+  return (<ProfilePicContainer $width={width} imageUrl={props.imageUrl}>
+    <StatusSymbol $status={online ? "online" : "offline"} $outlineColor={props.statusOutlineColor} $width={statusWidth}/>
   </ProfilePicContainer>)
 }

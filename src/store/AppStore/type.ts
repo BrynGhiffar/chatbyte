@@ -29,6 +29,7 @@ export type AppStateState = {
     windowStack: Window[],
     message: MessageMap,
     selectedContact: GroupContact | Contact | null,
+    showChatList: boolean,
     theme: Theme,
 }
 
@@ -53,6 +54,7 @@ export type AppStateAction = {
 
     onChangeChatListSearch: (search: string) => void;
 
+    toggleShowChatList: () => void,
     setTheme: (themeId: ThemeId) => void;
 
     addUploadAttachments: (files: File[]) => void,

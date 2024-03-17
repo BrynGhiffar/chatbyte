@@ -8,16 +8,16 @@
 - [x] implement search in textbar.
 
 ### Features
-- [ ] add themeing to upload image component in chat input
-- [ ] Need to fix sending image without message
+- [x] add themeing to upload image component in chat input
+- [x] Need to fix sending image without message
 - [ ] When edit message, can also edit image?
-- [-] standardise how components interact with each other
+- [-] standardise how components interact with each other. Components communicate by sharing state. This is done through the state manager.
 - [-] separate component logic
 - [x] implement registration
 - [x] implement change password
 - [x] implement change username
 - [-] implement sessions
-- [ ] implement collapsable contact list
+- [x] implement collapsable contact list
 - [ ] implement chat groups
     - [x] create chat groups
     - [ ] chat group invitations

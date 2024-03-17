@@ -43,7 +43,8 @@ const initialState: AppStateState = {
     windowStack: [ { type: "CHAT_WINDOW" } ],
     message: {},
     selectedContact: null,
-    theme: LightTheme,
+    showChatList: true,
+    theme: AllThemes.find((th) => th.id === LocalStorage.getTheme()) ?? LightTheme,
 }
 
 const useAppStore = create<AppState, [
@@ -174,6 +175,10 @@ const useAppStore = create<AppState, [
 
     onChangeChatListSearch: (search) => set(s => ({...s, chatlistSearch: search})),
 
+    // Show hide chatlist
+    toggleShowChatList: () => {
+        set(s => ({ ...s, showChatList: !s.showChatList}))
+    },
     // Themes
     setTheme: (themeId: ThemeId) => {
         const theme = AllThemes.find(th => th.id === themeId);
