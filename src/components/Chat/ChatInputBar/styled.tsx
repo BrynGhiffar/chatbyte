@@ -161,6 +161,7 @@ export const TH__SendButton: ButtonWrapper = ({ children, ...props }) => {
         <SC__SendButton
             $color={color}
             $hoverBackgroundColor={hoverBackgroundColor}
+            { ...props }
         >
             {children}
         </SC__SendButton>
