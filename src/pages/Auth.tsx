@@ -9,9 +9,7 @@ import { useSnackbar } from "@/store/AppStore/hooks";
 import { DarkTheme } from "@/theme";
 
 const LoginWrapper = styled.div`
-    height: 50%;
-    aspect-ratio: 1 / 1;
-    
+    width: 20%;
     display: grid;
     grid-template-rows: 1fr 3fr;
     * {
@@ -40,7 +38,6 @@ const InputFieldGroup = styled.div`
 
 const LoginButton = styled.button`
     ${commonCss.transition}
-    margin-top: 1rem;
     width: 100%;
     outline: none;
     border: none;
@@ -52,6 +49,9 @@ const LoginButton = styled.button`
     cursor: pointer;
     border-radius: 4px;
 
+    :focus-visible {
+        outline: 1px solid white;
+    }
     /* :hover {
         color: ${color.darkBlue};
         background-color: ${color.lightBlue};
@@ -68,6 +68,12 @@ const LoginFieldEmpty: LoginField = {
     password: ""
 
 }
+
+const SC__Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+`;
 
 const Page: FC = () => {
     const [ loginField, setLoginField ] = useState(LoginFieldEmpty);
@@ -104,21 +110,23 @@ const Page: FC = () => {
                 <img src="/logo.svg" alt="" />
                 Chatbyte
             </LoginTitle>
-            <InputFieldGroup>
+            <SC__Form onSubmit={e => { e.preventDefault(); e.stopPropagation(); }}>
                 <InputField 
                     label="Email *"
                     value={loginField.email}
                     onChange={val => setLoginField(f => ({ ...f, email: val }))}
+                    onClickEnter={onClickLogin}
                 />
                 <InputField 
                     label="Password *" 
                     password
                     value={loginField.password}
                     onChange={val => setLoginField(f => ({ ...f, password: val }))}
+                    onClickEnter={onClickLogin}
                 />
                 <LoginButton onClick={onClickLogin}>LOGIN</LoginButton>
                 <LoginButton onClick={onClickRegister}>REGISTER</LoginButton>
-            </InputFieldGroup>
+            </SC__Form>
         </LoginWrapper>
     )
 };
