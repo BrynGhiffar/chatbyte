@@ -18,7 +18,6 @@ export const toImageSrc = (file: File) => new Promise((resolve, reject) => {
 export const formatDate = (date: string): string => {
     // convert date from UTC iso string to local time
     const dd = moment.utc(date);
-    logDebug(dd);
     if (!dd.isValid()) {
         return "Invalid Date";
     }
