@@ -1,3 +1,4 @@
+import { formatDate } from "@/utility/UtilityFunctions";
 import { AppStateGet, AppStateSet, Contact, GroupContact } from "../AppStore/type";
 import { WebSocketGroupMessageNotification, WebSocketMessageNotification } from "./type";
 
@@ -15,7 +16,7 @@ export const pushDirectMessageNotification = (
         isUser: message.isUser,
         receiverRead: message.receiverRead,
         senderName: "",
-        time: message.sentAt,
+        time: formatDate(message.sentAt), // Need to change format according to user local timezone. %H:%M
         deleted: false,
         edited: false,
         attachmentIds: message.attachments.map(at => at.id)
@@ -37,7 +38,7 @@ export const pushGroupMessageNotification = (
         isUser: get().loggedInUserId === message.senderId,
         receiverRead: false,
         senderName: message.username,
-        time: message.sentAt,
+        time: formatDate(message.sentAt), // Need to change according to timezone format
         deleted: false,
         edited: false,
         attachmentIds: message.attachments.map(at => at.id)
