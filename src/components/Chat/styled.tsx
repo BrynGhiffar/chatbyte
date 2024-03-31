@@ -41,10 +41,3 @@ export const TH__ChatWindow: TH__ChatWindow = ({ children, highlight, ...props }
         </SC__ChatWindow>
     )
 }
-
-export const InvisibleInput = styled.input`
-    position: absolute;
-    visibility: hidden;
-    width: 0px;
-    height: 0px;
-`;

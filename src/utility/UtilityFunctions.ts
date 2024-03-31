@@ -1,5 +1,7 @@
 import moment from "moment";
 import { logDebug } from "./Logger";
+import useAppStore from "@/store/AppStore";
+import { useSnackbar } from "@/store/AppStore/hooks";
 
 export const toBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -23,3 +25,18 @@ export const formatDate = (date: string): string => {
     }
     return dd.local().format("HH:mm");
 };
+
+export const filterSupportedAttachments = (acceptedFiles: File[]) => {
+    const pushError = useAppStore.getState().pushSnackbarError;
+    let files = [];
+    for (let i = 0; i < acceptedFiles.length; i++) {
+        const file = acceptedFiles[i];
+        if (file.type.startsWith("image/")) {
+          files.push(file);
+        } else {
+          pushError("Currently we only support images as attachments");
+        }
+    }
+    logDebug(files);
+    return files;
+}

@@ -8,7 +8,7 @@ import { GroupService } from "@/api/http/GroupService";
 import AllThemes, { LightTheme } from "@/theme";
 import { ThemeId } from "@/theme/type";
 import { LocalStorage } from "@/utility/LocalStorage";
-import { toBase64 } from "@/utility/UtilityFunctions";
+import { filterSupportedAttachments, toBase64 } from "@/utility/UtilityFunctions";
 
 const setInitialData = (
     set: AppStateSet, 
@@ -91,7 +91,7 @@ const useAppStore = create<AppState, [
         set({ selectedContact: contact, editMessage: null, uploadAttachments: [] });
     },
     addUploadAttachments: async (files) => {
-        const newAttachments = files.map(async file => {
+        const newAttachments = filterSupportedAttachments(files).map(async file => {
             const id = Math.floor(Math.random() * 1000);
             const fileB64 = await toBase64(file)
             return ({
@@ -100,6 +100,7 @@ const useAppStore = create<AppState, [
             })
         });
         const att = await Promise.all(newAttachments);
+        console.log("appstore", att);
         set({ uploadAttachments: get().uploadAttachments.concat(att) })
     },
     removeAttachmentById: (id: number) => {

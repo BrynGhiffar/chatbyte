@@ -4,11 +4,13 @@ import ChatGrid from "./ChatGrid";
 import ChatInputBar from "./ChatInputBar";
 import EmptyChatWindow from "./EmptyChatWindow";
 import { useSelectedContact, useSnackbar, useWindow } from "@/store/AppStore/hooks";
-import { InvisibleInput, TH__ChatWindow } from "./styled";
+import { TH__ChatWindow } from "./styled";
 import Dropzone, { FileRejection, useDropzone } from "react-dropzone";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
 import { logDebug } from "@/utility/Logger";
 import useAppStore from "@/store/AppStore";
+import { filterSupportedAttachments } from "@/utility/UtilityFunctions";
+import InvisibleInput from "../common/InvisibleInput";
 
 const Chat: FC = () => {
   const contact = useSelectedContact();
@@ -28,15 +30,6 @@ const Chat: FC = () => {
 
   const onDrop: (<T extends File>(acceptedFiles: T[], fileRejections: FileRejection[]) => void) = (acceptedFiles) => {
     setDragOver(false);
-    let files = [];
-    for (let i = 0; i < acceptedFiles.length; i++) {
-        const file = acceptedFiles[i];
-        if (file.type.startsWith("image/")) {
-          files.push(file);
-        } else {
-          return pushError("Currently we only support images as attachments");
-        }
-    }
     addAttachment(acceptedFiles);
   }
 
