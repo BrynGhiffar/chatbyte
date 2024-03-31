@@ -1,6 +1,6 @@
 import { useTheme } from "@/store/AppStore/hooks";
 import AllThemes from "@/theme";
-import { useState, FC } from "react";
+import { FC } from "react";
 import styled, { css } from "styled-components";
 
 

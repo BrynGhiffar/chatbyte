@@ -2,7 +2,6 @@ import { ButtonWrapper, DivWrapper } from "@/misc/types";
 import { useColorConfig } from "@/store/AppStore/hooks";
 import styled from "styled-components";
 import { commonCss } from "../Palette";
-import useAppStore from "@/store/AppStore";
 
 
 const SC__SidebarContainer = styled.div<{ $backgroundColor: string, }>`

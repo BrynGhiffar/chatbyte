@@ -1,9 +1,8 @@
-import { useState, FC, useCallback, KeyboardEvent } from "react";
+import { DarkTheme } from "@/theme";
+import { FC, KeyboardEvent, useCallback, useState } from "react";
 import styled from "styled-components";
 import { color, commonCss, font } from "../Palette";
 import { EyeCloseSVG, EyeOpenSVG } from "./Svg";
-import { DarkTheme } from "@/theme";
-import { logDebug } from "@/utility/Logger";
 
 const InputFieldWrapper = styled.div`
     display: flex;

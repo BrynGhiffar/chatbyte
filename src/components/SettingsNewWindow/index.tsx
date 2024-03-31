@@ -1,13 +1,13 @@
-import { FC, useCallback, useRef, useState, PropsWithChildren } from "react";
+import useAppStore from "@/store/AppStore";
+import { FC, PropsWithChildren, useCallback, useState } from "react";
 import styled from "styled-components";
 import { commonCss, font } from "../Palette";
-import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
-import { ProfileSettings } from "./ProfileSettings";
-import { ThemeSettings } from "./ThemeSettings";
-import { SessionSettings } from "./SessionSettings";
-import useAppStore from "@/store/AppStore";
-import { TH__SidebarContainer, TH__SidebarItemContainer } from "./styled";
 import { TH__GenericPopupContainer } from "../common/new/Popup";
+import { ProfileSettings } from "./ProfileSettings";
+import { SessionSettings } from "./SessionSettings";
+import { ThemeSettings } from "./ThemeSettings";
+import { TH__SidebarContainer, TH__SidebarItemContainer } from "./styled";
+import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
 
 const PopupContainer = styled(TH__GenericPopupContainer)`
     height: 80vh;

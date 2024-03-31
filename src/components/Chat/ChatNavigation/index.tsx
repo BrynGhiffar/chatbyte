@@ -1,9 +1,7 @@
-import styled from "styled-components";
-import { color, colorConfig, font } from "@/components/Palette";
 import { ProfilePicture } from "@/components/common/ProfilePicture";
-import { FC } from "react";
-import { useAvatarImage } from "@/utility/UtilityHooks";
 import { useSelectedContact } from "@/store/AppStore/hooks";
+import { useAvatarImage } from "@/utility/UtilityHooks";
+import { FC } from "react";
 import { TH__ChatNavigation, TH__ChatNavigationName } from "./styled";
 
 const ChatNavigation: FC = () => {

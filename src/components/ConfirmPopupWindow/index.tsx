@@ -1,8 +1,7 @@
 import { useWindow } from "@/store/AppStore/hooks";
-import { useLogout } from "@/utility/UtilityHooks";
 import { FC, useCallback } from "react";
-import { LogoutButton, PopupBottomHalf, PopupButton, PopupContainer, PopupTopHalf } from "./styled";
 import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
+import { LogoutButton, PopupBottomHalf, PopupButton, PopupContainer, PopupTopHalf } from "./styled";
 
 type PopupClick = { dismiss: () => void }
 

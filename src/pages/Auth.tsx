@@ -1,12 +1,12 @@
-import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { color, commonCss, font } from "@/components/Palette";
 import { AuthService } from "@/api/http/AuthService";
-import { LocalStorage } from "@/utility/LocalStorage";
+import { color, commonCss, font } from "@/components/Palette";
 import { InputField } from "@/components/common/InputField";
 import { useSnackbar } from "@/store/AppStore/hooks";
 import { DarkTheme } from "@/theme";
+import { LocalStorage } from "@/utility/LocalStorage";
+import { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const LoginWrapper = styled.div`
     width: 20%;

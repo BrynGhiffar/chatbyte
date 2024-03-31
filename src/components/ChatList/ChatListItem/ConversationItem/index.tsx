@@ -1,9 +1,9 @@
+import { ProfilePicture, ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import useAppStore from "@/store/AppStore";
 import { useColorConfig, useSelectedContact } from "@/store/AppStore/hooks";
 import { useAvatarImage } from "@/utility/UtilityHooks";
 import { FC, useState } from "react";
 import { TH__ChatListItemContainer } from "../styled";
-import { ProfilePicture, ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { SC__Description, SC__DescriptionMessage, SC__DescriptionName, SC__DescriptionNotification, SC__DescriptionNotificationIcon, SC__DescriptionTime } from "./styled";
 
 type ConversationItemProps = {

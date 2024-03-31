@@ -1,9 +1,9 @@
-import styled, { css } from "styled-components";
-import { FC, PropsWithChildren } from 'react';
-import { color, commonCss, font } from "../Palette";
-import { VerticalStackContainer } from "../common/StackContainer";
-import { DivProps, DivWrapper } from "@/misc/types";
+import { DivProps } from "@/misc/types";
 import { useColorConfig } from "@/store/AppStore/hooks";
+import { FC, PropsWithChildren } from 'react';
+import styled, { css } from "styled-components";
+import { commonCss, font } from "../Palette";
+import { VerticalStackContainer } from "../common/StackContainer";
 
 type SC__SidebarContainerProps = {
     $backgroundColor: string;

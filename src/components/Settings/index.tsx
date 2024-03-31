@@ -1,14 +1,14 @@
-import { FC, useRef, useCallback, ChangeEvent, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { color, commonCss } from '../Palette';
-import { InputField } from '../common/InputField';
-import { Button } from '../common/Button';
-import { BackButtonSVG, CameraSVG, CloseSVG } from '../common/Svg';
-import { LocalStorage } from '@/utility/LocalStorage';
-import { useAvatarImage, useToken } from '@/utility/UtilityHooks';
-import { useWindow } from '@/store/AppStore/hooks';
 import { UserService } from '@/api/http/UserService';
 import useAppStore from '@/store/AppStore';
+import { useWindow } from '@/store/AppStore/hooks';
+import { LocalStorage } from '@/utility/LocalStorage';
+import { useAvatarImage } from '@/utility/UtilityHooks';
+import { ChangeEvent, FC, useCallback, useRef } from 'react';
+import styled from 'styled-components';
+import { color, commonCss } from '../Palette';
+import { Button } from '../common/Button';
+import { InputField } from '../common/InputField';
+import { BackButtonSVG, CameraSVG } from '../common/Svg';
 
 const SettingsWindowStyled = styled.div`
     /* position: relative; */

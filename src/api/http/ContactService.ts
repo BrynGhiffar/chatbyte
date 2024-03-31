@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BackendEndpoint, Endpoint, request } from "./Endpoint";
+import { Endpoint, request } from "./Endpoint";
 
 const GetContactResponse = z.object({
     success: z.literal(true),

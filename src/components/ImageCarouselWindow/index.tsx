@@ -1,6 +1,5 @@
-import { FC, useState, useCallback, useEffect, Suspense, MouseEvent } from "react"
-import { BlurBackgroundCover } from "../common/BackgroundBlurCover"
-import styled from "styled-components";
+import { FC, MouseEvent, useCallback, useEffect, useState } from "react";
+import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
 import { ChevronLeftSVG, ChevronRightSVG } from "../common/Svg";
 import { TH__ImageCarouselButton, TH__ImageCarouselButtonContainer, TH__ImageCarouselContainer, TH__ImageCarouselImage } from "./styled";
 

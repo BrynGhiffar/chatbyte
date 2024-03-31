@@ -1,7 +1,7 @@
-import styled from 'styled-components';
 import { commonCss } from '@/components/Palette';
-import { useColorConfig } from '@/store/AppStore/hooks';
 import { DivWrapper } from '@/misc/types';
+import { useColorConfig } from '@/store/AppStore/hooks';
+import styled from 'styled-components';
 
 // █▀ ▀█▀ █▄█ █░░ █▀▀ █▀▄
 // ▄█ ░█░ ░█░ █▄▄ ██▄ █▄▀

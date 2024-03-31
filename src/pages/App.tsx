@@ -1,19 +1,19 @@
-import styled, { css } from "styled-components";
-import { color } from "@/components/Palette";
-import ChatList from "@/components/ChatList";
+import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
+import ChangePasswordWindow from "@/components/ChangePasswordWindow";
 import Chat from "@/components/Chat";
-import { FC, PropsWithChildren, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import ChatList from "@/components/ChatList";
+import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
+import { CreateGroupWindow } from "@/components/CreateGroupWindow";
+import ImageCarouselWindow from "@/components/ImageCarouselWindow";
+import { color } from "@/components/Palette";
 import { PopupLogoutWindow } from "@/components/PopupLogout";
 import SettingsNewWindow from "@/components/SettingsNewWindow";
-import ChangePasswordWindow from "@/components/ChangePasswordWindow";
-import { CreateGroupWindow } from "@/components/CreateGroupWindow";
-import useAppStore from "@/store/AppStore";
-import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
-import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
-import { useToken } from "@/utility/UtilityHooks";
-import ImageCarouselWindow from "@/components/ImageCarouselWindow";
 import Sidebar from "@/components/Sidebar";
+import useAppStore from "@/store/AppStore";
+import { useToken } from "@/utility/UtilityHooks";
+import { AnimatePresence, motion } from "framer-motion";
+import { FC, PropsWithChildren, useEffect } from "react";
+import styled, { css } from "styled-components";
 
 const AppWindowStyled = styled.div`
   height: 100vh;

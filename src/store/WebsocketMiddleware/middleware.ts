@@ -1,11 +1,10 @@
-import { SendGroupMessage, SendMessage, StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl, WebsocketMiddlewareType } from "./type";
-import { LocalStorage } from "@/utility/LocalStorage";
-import { fetchSetDirectConversations, fetchSetGroupConversations, fetchSetMessageRead, getUserToken, pushSnackbarError, pushSnackbarSuccess } from "../AppStore/utility";
-import { AppState, AppStateGet, AppStateSet, Conversation } from "../AppStore/type";
-import { logDebug, logError } from "@/utility/Logger";
-import { isContactSelected, pushDirectMessageNotification, pushGroupMessageNotification } from "./utility";
-import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
 import { showBrowserNotification } from "@/api/browser/BrowserNotification";
+import { Endpoint, WebSocketEndpoint } from "@/api/http/Endpoint";
+import { logDebug, logError } from "@/utility/Logger";
+import { AppState, AppStateGet, AppStateSet } from "../AppStore/type";
+import { fetchSetDirectConversations, fetchSetGroupConversations, fetchSetMessageRead, getUserToken, pushSnackbarError } from "../AppStore/utility";
+import { StoreType, WebSocketOutgoingMessage, WebsocketMiddleware, WebsocketMiddlewareImpl, WebsocketMiddlewareType } from "./type";
+import { isContactSelected, pushDirectMessageNotification, pushGroupMessageNotification } from "./utility";
 
 const reduceMessage = async (
     set: AppStateSet, 

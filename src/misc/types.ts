@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, FC, HTMLAttributes, InputHTMLAttributes, PropsWithChildren, ImgHTMLAttributes } from "react";
+import { FC, HTMLAttributes, ImgHTMLAttributes, InputHTMLAttributes, PropsWithChildren } from "react";
 
 
 export type DivMouseEvent = React.MouseEvent<HTMLDivElement, MouseEvent>;

@@ -1,16 +1,15 @@
-import { FC, useRef, useState, Ref } from "react";
-import ChatNavigation from "./ChatNavigation";
+import useAppStore from "@/store/AppStore";
+import { useSelectedContact, useSnackbar } from "@/store/AppStore/hooks";
+import { logDebug } from "@/utility/Logger";
+import { FC, useState } from "react";
+import { FileRejection, useDropzone } from "react-dropzone";
+import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
+import InvisibleInput from "../common/InvisibleInput";
 import ChatGrid from "./ChatGrid";
 import ChatInputBar from "./ChatInputBar";
+import ChatNavigation from "./ChatNavigation";
 import EmptyChatWindow from "./EmptyChatWindow";
-import { useSelectedContact, useSnackbar, useWindow } from "@/store/AppStore/hooks";
 import { TH__ChatWindow } from "./styled";
-import Dropzone, { FileRejection, useDropzone } from "react-dropzone";
-import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
-import { logDebug } from "@/utility/Logger";
-import useAppStore from "@/store/AppStore";
-import { filterSupportedAttachments } from "@/utility/UtilityFunctions";
-import InvisibleInput from "../common/InvisibleInput";
 
 const Chat: FC = () => {
   const contact = useSelectedContact();

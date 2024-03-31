@@ -1,12 +1,12 @@
-import { FC, useCallback, useState } from 'react';
-import styled from 'styled-components';
-import { InputField } from '../common/new/InputField';
-import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
-import { GenericBottomPopupButton, TH__GenericPopupContainer } from '../common/new/Popup';
-import { VerticalStackContainer } from '../common/StackContainer';
-import { useToken } from '@/utility/UtilityHooks';
 import { AuthService } from '@/api/http/AuthService';
 import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
+import { useToken } from '@/utility/UtilityHooks';
+import { FC, useCallback, useState } from 'react';
+import styled from 'styled-components';
+import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
+import { VerticalStackContainer } from '../common/StackContainer';
+import { InputField } from '../common/new/InputField';
+import { GenericBottomPopupButton, TH__GenericPopupContainer } from '../common/new/Popup';
 
 const PopupContainer = styled(TH__GenericPopupContainer)`
     height: 280px;

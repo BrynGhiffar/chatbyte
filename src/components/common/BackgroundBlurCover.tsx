@@ -1,7 +1,7 @@
 import { DivProps } from '@/misc/types';
 import useAppStore from '@/store/AppStore';
 import { HTMLMotionProps, motion } from 'framer-motion';
-import { FC, PropsWithChildren, forwardRef } from 'react';
+import { FC, PropsWithChildren } from 'react';
 import styled from "styled-components";
 
 const BlurBackgroundCoverStyled = styled(motion.div)`

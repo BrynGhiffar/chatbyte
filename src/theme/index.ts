@@ -163,7 +163,6 @@ export const DarkTheme: Theme = {
 
         popup: {
             borderColor: '#1e1d1d',
-            // borderColor: 'red',
             backgroundColor: 'white'
         },
 

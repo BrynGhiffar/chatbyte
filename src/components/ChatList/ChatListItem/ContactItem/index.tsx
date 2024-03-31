@@ -1,9 +1,9 @@
+import { ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import useAppStore from "@/store/AppStore";
 import { useColorConfig } from "@/store/AppStore/hooks";
 import { useAvatarImage } from "@/utility/UtilityHooks";
 import { FC, useState } from "react";
 import { TH__ChatListItemContainer } from "../styled";
-import { ProfilePictureWithStatus } from "@/components/common/ProfilePicture";
 import { SC__ChatContactName } from "./styled";
 
 type ContactItemProps = {

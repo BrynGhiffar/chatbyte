@@ -1,8 +1,7 @@
-import styled, { css } from "styled-components";
-import { PropsWithChildren, FC } from 'react';
-import { colorConfig } from "../Palette";
-import { DivProps, DivWrapper } from "@/misc/types";
+import { DivProps } from "@/misc/types";
 import { useColorConfig } from "@/store/AppStore/hooks";
+import { FC, PropsWithChildren } from 'react';
+import styled, { css } from "styled-components";
 
 type SC__ChatWindowProps = {
     $backgroundColor: string;

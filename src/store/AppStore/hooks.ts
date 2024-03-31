@@ -1,5 +1,5 @@
 import { Theme, ThemeId } from "@/theme/type";
-import useAppStore from "."
+import useAppStore from ".";
 
 export const useWindow = () => useAppStore(s => ({ 
     top: s.windowStack[s.windowStack.length - 1],

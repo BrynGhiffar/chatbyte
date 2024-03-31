@@ -1,14 +1,13 @@
-import styled from "styled-components";
-import { FC, useCallback, useState, useRef } from "react";
-import { DoubleCheckmarkSVG, PencilIconSVG, TrashIconSVG } from "../../common/Svg";
-import { Side } from "./type";
-import { SC__ChatBubbleMessage, SC__ChatBubbleName, SC__ChatBubbleTime, SC__ChatRow, SC__CheckmarkContainer, SC__CheckmarkTimeContainer, SC__ImageAttachment, SC__ImageAttachmentImage, SC__ImageAttachmentImageOverlay, SC__ImageAttachmentImageWrapper, SC__ProfilePictureContainer, TH_ChatBubbleContainer, TH__Button } from "./styled";
-import { useColorConfig, useSelectedContact, useWindow } from "@/store/AppStore/hooks";
-import useAppStore from "@/store/AppStore";
-import { AnimatePresence } from "framer-motion";
-import { ProfilePicture } from "@/components/common/ProfilePicture";
-import { useAvatarImage } from "@/utility/UtilityHooks";
 import { AttachmentSrc } from "@/api/http/Endpoint";
+import { ProfilePicture } from "@/components/common/ProfilePicture";
+import useAppStore from "@/store/AppStore";
+import { useColorConfig, useSelectedContact, useWindow } from "@/store/AppStore/hooks";
+import { useAvatarImage } from "@/utility/UtilityHooks";
+import { AnimatePresence } from "framer-motion";
+import { FC, useCallback, useRef, useState } from "react";
+import { DoubleCheckmarkSVG, PencilIconSVG, TrashIconSVG } from "../../common/Svg";
+import { SC__ChatBubbleMessage, SC__ChatBubbleName, SC__ChatBubbleTime, SC__ChatRow, SC__CheckmarkContainer, SC__CheckmarkTimeContainer, SC__ImageAttachment, SC__ImageAttachmentImage, SC__ImageAttachmentImageOverlay, SC__ImageAttachmentImageWrapper, SC__ProfilePictureContainer, TH_ChatBubbleContainer, TH__Button } from "./styled";
+import { Side } from "./type";
 
 
 type ReadReceiptProps = {

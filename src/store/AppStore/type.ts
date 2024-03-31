@@ -1,6 +1,4 @@
-import { ColorConfig, Theme, ThemeId } from "@/theme/type";
-import { StoreApi } from "zustand";
-import { WebsocketMiddlewareType } from "../WebsocketMiddleware/type";
+import { Theme, ThemeId } from "@/theme/type";
 
 export type AppStateType = "FETCHING_INITIAL_USER_DATA" 
     | "NORMAL" 

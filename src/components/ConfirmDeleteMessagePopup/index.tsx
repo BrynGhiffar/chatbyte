@@ -1,6 +1,6 @@
-import { FC } from "react";
 import ConfirmPopupWindow from "@/components/ConfirmPopupWindow";
 import useAppStore from "@/store/AppStore";
+import { FC } from "react";
 
 type ConfirmDeleteMessagePopupProps = {
     messageId: number

@@ -1,7 +1,7 @@
-import { FC, PropsWithChildren } from 'react';
 import { commonCss, font } from "@/components/Palette";
 import { DivProps, DivWrapper } from "@/misc/types";
 import { useColorConfig } from "@/store/AppStore/hooks";
+import { FC, PropsWithChildren } from 'react';
 import styled from "styled-components";
 
 type SC__ChatListProfileContainerProps = {

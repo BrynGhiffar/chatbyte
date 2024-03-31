@@ -1,13 +1,13 @@
-import { LocalStorage } from "@/utility/LocalStorage";
-import { AppStateGet, AppStateSet, Contact, Conversation, GroupContact, GroupConversation } from "./type";
 import { AuthService } from "@/api/http/AuthService";
-import { GroupService } from "@/api/http/GroupService";
-import { UserService, avatarImageGroupUrl, avatarImageUrl } from "@/api/http/UserService";
 import { ContactService } from "@/api/http/ContactService";
+import { GroupService } from "@/api/http/GroupService";
 import MessageService from "@/api/http/MessageService";
+import { UserService, avatarImageGroupUrl, avatarImageUrl } from "@/api/http/UserService";
 import AllThemes, { LightTheme } from "@/theme";
-import { WebsocketMiddlewareType } from "../WebsocketMiddleware/type";
+import { LocalStorage } from "@/utility/LocalStorage";
 import { formatDate } from "@/utility/UtilityFunctions";
+import { WebsocketMiddlewareType } from "../WebsocketMiddleware/type";
+import { AppStateGet, AppStateSet, Contact, Conversation, GroupContact, GroupConversation } from "./type";
 
 const setFetchInitialFailed = (set: AppStateSet) => set(s => ({ ...s, type: "ERROR_FETCHING_INITIAL_USER_DATA" }));
 

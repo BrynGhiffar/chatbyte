@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import { colorConfig, commonCss, font } from "@/components/Palette";
+import { commonCss, font } from "@/components/Palette";
 import { useColorConfig } from "@/store/AppStore/hooks";
 import { FC, PropsWithChildren } from "react";
+import styled from "styled-components";
 
 type SC__ChatListContainerProps = {
   $borderLeftColor: string;

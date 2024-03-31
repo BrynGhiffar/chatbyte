@@ -1,8 +1,8 @@
+import { toBase64 } from "@/utility/UtilityFunctions";
 import { useAvatarImage } from "@/utility/UtilityHooks";
-import { useRef, FC, useEffect, ChangeEvent, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import styled from "styled-components";
 import { CameraSVG } from "./Svg";
-import { toBase64 } from "@/utility/UtilityFunctions";
 
 const ImageContainerStyled = styled.div<{imageUrl: string, $diameter: number}>`
     aspect-ratio: 1 / 1;

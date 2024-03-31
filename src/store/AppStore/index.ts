@@ -1,14 +1,14 @@
-import { create } from "zustand";
-import { AppState, AppStateSet, AppStateState, Contact, ContactType, Conversation, GroupContact, GroupConversation, Message, Window } from "./type";
-import { WebSocketMiddlewareMethods } from "../WebsocketMiddleware/type";
-import { websocket } from "../WebsocketMiddleware/middleware";
-import { devtools } from "zustand/middleware";
-import { fetchSetDirectContacts, fetchSetDirectConversations, fetchSetDirectMessage, fetchSetGroupContact, fetchSetGroupConversations, fetchSetGroupMessage, fetchSetMessageRead, fetchSetUserDetails, getUserToken, initializeTheme, popWindow, pushSnackbarError, pushSnackbarSuccess } from "./utility";
 import { GroupService } from "@/api/http/GroupService";
 import AllThemes, { LightTheme } from "@/theme";
 import { ThemeId } from "@/theme/type";
 import { LocalStorage } from "@/utility/LocalStorage";
 import { filterSupportedAttachments, toBase64 } from "@/utility/UtilityFunctions";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
+import { websocket } from "../WebsocketMiddleware/middleware";
+import { WebSocketMiddlewareMethods } from "../WebsocketMiddleware/type";
+import { AppState, AppStateSet, AppStateState, Contact, ContactType, Conversation, GroupContact, GroupConversation, Window } from "./type";
+import { fetchSetDirectContacts, fetchSetDirectConversations, fetchSetDirectMessage, fetchSetGroupContact, fetchSetGroupConversations, fetchSetGroupMessage, fetchSetMessageRead, fetchSetUserDetails, getUserToken, initializeTheme, popWindow, pushSnackbarError, pushSnackbarSuccess } from "./utility";
 
 const setInitialData = (
     set: AppStateSet, 

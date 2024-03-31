@@ -1,9 +1,7 @@
-import styled from "styled-components";
-import { commonCss } from "@/components/Palette";
-import { useRef, MutableRefObject, useEffect, memo } from "react";
-import ChatBubble from "../ChatBubble";
 import { useSelectedContactMessages } from "@/store/AppStore/hooks";
 import { Message } from "@/store/AppStore/type";
+import { MutableRefObject, useEffect, useRef } from "react";
+import ChatBubble from "../ChatBubble";
 import { SC__ChatGrid } from "./styled";
 
 const useScrollToBottom = (ref: MutableRefObject<HTMLDivElement | null>) => {

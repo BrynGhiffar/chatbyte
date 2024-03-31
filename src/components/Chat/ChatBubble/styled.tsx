@@ -1,10 +1,10 @@
 import { commonCss, font } from "@/components/Palette";
 import { DivProps, DivWrapper } from "@/misc/types";
-import styled, { css } from "styled-components";
-import { PropsWithChildren, FC } from "react";
 import { useColorConfig } from "@/store/AppStore/hooks";
-import { Side } from "./type";
 import { motion } from "framer-motion";
+import { FC, PropsWithChildren } from "react";
+import styled, { css } from "styled-components";
+import { Side } from "./type";
 
 const debugOutline = () => {
     const cond = true;

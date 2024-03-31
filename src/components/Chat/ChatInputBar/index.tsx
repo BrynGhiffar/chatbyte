@@ -1,9 +1,9 @@
-import { FC, KeyboardEvent, useEffect, useRef, useState, useCallback, MouseEvent, ChangeEventHandler } from "react";
-import useAppStore from "@/store/AppStore";
-import { SC__SendSvg, TH__ChatEditMessageCloseButton, TH__ChatEditMessageContainer, TH__ChatInputBar, TH__ChatInputDecorationContainer, TH__ChatInputText, TH__ChatInputTextWrapper, TH__SendButton, TH__UploadAttachmentButton } from "./styled";
-import { AddSymbolSVG, CloseSVG } from "@/components/common/Svg";
-import { InputAttachment } from "./ChatInputBarAttachment";
 import InvisibleInput from "@/components/common/InvisibleInput";
+import { AddSymbolSVG, CloseSVG } from "@/components/common/Svg";
+import useAppStore from "@/store/AppStore";
+import { ChangeEventHandler, FC, KeyboardEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import { InputAttachment } from "./ChatInputBarAttachment";
+import { SC__SendSvg, TH__ChatEditMessageCloseButton, TH__ChatEditMessageContainer, TH__ChatInputBar, TH__ChatInputDecorationContainer, TH__ChatInputText, TH__ChatInputTextWrapper, TH__SendButton, TH__UploadAttachmentButton } from "./styled";
 
 const ChatEditMessageDetail = () => {
   const cancelEdit = useAppStore(s => s.cancelEditMessage);

@@ -1,7 +1,7 @@
 import { commonCss, font } from "@/components/Palette";
-import { ButtonWrapper, DivWrapper, InputProps, InputWrapper } from "@/misc/types";
+import { ButtonWrapper, DivWrapper, InputProps } from "@/misc/types";
 import { useColorConfig } from "@/store/AppStore/hooks";
-import { FC, ForwardedRef, HTMLAttributes, PropsWithChildren, forwardRef } from "react";
+import { ForwardedRef, forwardRef } from "react";
 import styled from "styled-components";
 
 // █▀ ▀█▀ █▄█ █░░ █▀▀ █▀▄

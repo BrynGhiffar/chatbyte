@@ -1,6 +1,6 @@
+import { AddSymbolSVG } from "@/components/common/Svg";
 import { FC, PropsWithChildren } from "react";
 import { TH__SeparatorBlock, TH__SeparatorBlockAddContainer, TH__SeparatorBlockTitle } from "./styled";
-import { AddSymbolSVG } from "@/components/common/Svg";
 
 
 type ListSeparatorProps = {

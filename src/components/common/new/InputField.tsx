@@ -1,11 +1,10 @@
-import styled from "styled-components";
-import { FC, PropsWithChildren } from 'react';
-import Select, { GroupBase, MultiValueProps, MultiValueRemoveProps, OptionProps, PlaceholderProps, ValueContainerProps, components } from "react-select";
 import { commonCss } from "@/components/Palette";
-import { SingleCheckmarkSVG } from "../Svg";
-import { ProfilePicture } from "../ProfilePicture";
 import { useAvatarImage } from "@/utility/UtilityHooks";
-import { logDebug } from "@/utility/Logger";
+import { FC, PropsWithChildren } from 'react';
+import Select, { ValueContainerProps, components } from "react-select";
+import styled from "styled-components";
+import { ProfilePicture } from "../ProfilePicture";
+import { SingleCheckmarkSVG } from "../Svg";
 
 const InputFieldStyled = styled.input`
     width: 98%;

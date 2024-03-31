@@ -1,9 +1,7 @@
+import { DarkTheme } from "@/theme";
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
-import { color } from "../Palette";
 import { SnackbarProvider } from "../Snackbar";
-import Blur from "./Blur";
-import { DarkTheme } from "@/theme";
 
 const PageWrapper = styled.div`
   display: flex;

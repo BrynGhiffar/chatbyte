@@ -1,14 +1,14 @@
-import { FC, useCallback, useState } from 'react';
-import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
-import styled from 'styled-components';
-import { GenericBottomPopupButton, TH__GenericPopupContainer } from '../common/new/Popup';
-import { VerticalStackContainer } from '../common/StackContainer';
-import ProfileUploadImage from '../common/ProfileUploadImage';
-import { InputField, InputFieldSearchableDropDown } from '../common/new/InputField';
-import { color } from '../Palette';
-import { useToken } from '@/utility/UtilityHooks';
-import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
 import useAppStore from '@/store/AppStore';
+import { useSnackbar, useWindow } from '@/store/AppStore/hooks';
+import { useToken } from '@/utility/UtilityHooks';
+import { FC, useCallback, useState } from 'react';
+import styled from 'styled-components';
+import { color } from '../Palette';
+import { BlurBackgroundCover } from '../common/BackgroundBlurCover';
+import ProfileUploadImage from '../common/ProfileUploadImage';
+import { VerticalStackContainer } from '../common/StackContainer';
+import { InputField, InputFieldSearchableDropDown } from '../common/new/InputField';
+import { GenericBottomPopupButton, TH__GenericPopupContainer } from '../common/new/Popup';
 
 const PopupContainer = styled(TH__GenericPopupContainer)`
     width: 500px;

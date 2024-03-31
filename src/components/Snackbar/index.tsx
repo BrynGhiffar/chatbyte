@@ -1,10 +1,10 @@
-import { FC, PropsWithChildren, createContext, useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { color, commonCss, font } from "../Palette";
-import { useEffectOnce } from "usehooks-ts";
-import { CloseSVG } from "../common/Svg";
-import { motion, AnimatePresence } from "framer-motion";
 import useAppStore from "@/store/AppStore";
+import { AnimatePresence, motion } from "framer-motion";
+import { FC, PropsWithChildren, createContext } from "react";
+import styled, { keyframes } from "styled-components";
+import { useEffectOnce } from "usehooks-ts";
+import { commonCss, font } from "../Palette";
+import { CloseSVG } from "../common/Svg";
 
 type SnackbarType = "success" | "failure";
 

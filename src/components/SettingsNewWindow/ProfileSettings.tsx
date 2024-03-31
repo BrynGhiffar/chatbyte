@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { Button } from "../common/new/Button";
-import { FC, useCallback, useState } from "react";
-import ProfileUploadImage from "../common/ProfileUploadImage";
-import { InputField } from "../common/new/InputField";
-import { useToken } from "@/utility/UtilityHooks";
-import useAppStore from "@/store/AppStore";
 import { UserService } from "@/api/http/UserService";
+import useAppStore from "@/store/AppStore";
+import { useToken } from "@/utility/UtilityHooks";
+import { FC, useCallback, useState } from "react";
+import styled from "styled-components";
+import ProfileUploadImage from "../common/ProfileUploadImage";
+import { Button } from "../common/new/Button";
+import { InputField } from "../common/new/InputField";
 
 
 const ProfileDetailContainer = styled.div`

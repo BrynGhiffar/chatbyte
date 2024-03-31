@@ -1,6 +1,5 @@
-import { z } from "zod"
+import { z } from "zod";
 import { Endpoint, request } from "./Endpoint";
-import { logDebug } from "@/utility/Logger";
 
 const GetGroupsResponse = z.object({
     success: z.literal(true),
