@@ -1,8 +1,7 @@
-import { FC, PropsWithChildren, useEffect } from "react";
-import useAppStore from "@/store/AppStore";
+import { FC, PropsWithChildren, useEffect } from 'react';
 
-export const ApplicationContext: FC<PropsWithChildren> = (props) => {
+import useAppStore from '@/store/AppStore';
 
-
+export const ApplicationContext: FC<PropsWithChildren> = props => {
   return props.children;
-}
+};

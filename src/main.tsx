@@ -1,31 +1,33 @@
-import ReactDOM from 'react-dom/client'
-import App from './pages/App.tsx'
+import ReactDOM from 'react-dom/client';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
 import Auth from '@/pages/Auth.tsx';
-import "./index.css";
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 import { Layout } from './components/common/Layout.tsx';
+import './index.css';
+import App from './pages/App.tsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: (
       <Layout>
-        <App/>
+        <App />
       </Layout>
-    )
+    ),
   },
   {
-    path: "/auth",
+    path: '/auth',
     element: (
       <Layout>
-        <Auth/>
+        <Auth />
       </Layout>
-    )
-  }
-])
+    ),
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   // <React.StrictMode>
-    <RouterProvider router={router}/>
+  <RouterProvider router={router} />
   // </React.StrictMode>,
-)
+);

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from 'react';
 
 export type Message = {
   id: number;
@@ -18,16 +18,15 @@ export type ChatContext = {
 type ContactId = number;
 
 export type ChatState = {
-  messages: Message[],
+  messages: Message[];
 };
 
 export const InitialChatState: ChatState = {
-  messages: []
+  messages: [],
 };
-
 
 export const ChatContext = createContext<ChatContext>({
   state: InitialChatState,
   // sendMessage: (message: string) => {},
-  setState: () => {}
+  setState: () => {},
 });

@@ -1,13 +1,20 @@
-import useAppStore from "@/store/AppStore";
-import { FC } from "react";
-import { TH__AttachmentDeleteButton, TH__AttachmentItem, TH__AttachmentItemControl, TH__AttachmentViewButton, TH__InputAttachmentContainer } from "./styled";
-import { EyeOpenSVG, TrashIconSVG } from "@/components/common/Svg";
+import { FC } from 'react';
+
+import { EyeOpenSVG, TrashIconSVG } from '@/components/common/Svg';
+import useAppStore from '@/store/AppStore';
+
+import {
+  TH__AttachmentDeleteButton,
+  TH__AttachmentItem,
+  TH__AttachmentItemControl,
+  TH__AttachmentViewButton,
+  TH__InputAttachmentContainer,
+} from './styled';
 
 type AttachmentItemProps = {
   id: number;
-  file: string
-}
-
+  file: string;
+};
 
 const AttachmentItem: FC<AttachmentItemProps> = ({ id, file }) => {
   const removeAttachmentById = useAppStore(s => s.removeAttachmentById);
@@ -18,15 +25,15 @@ const AttachmentItem: FC<AttachmentItemProps> = ({ id, file }) => {
     <TH__AttachmentItem $image={file}>
       <TH__AttachmentItemControl>
         <TH__AttachmentViewButton>
-          <EyeOpenSVG/>
+          <EyeOpenSVG />
         </TH__AttachmentViewButton>
         <TH__AttachmentDeleteButton onClick={onClickDeleteButton}>
-          <TrashIconSVG/>
+          <TrashIconSVG />
         </TH__AttachmentDeleteButton>
       </TH__AttachmentItemControl>
     </TH__AttachmentItem>
-  )
-}
+  );
+};
 
 export const InputAttachment: FC = () => {
   const attachments = useAppStore(s => s.uploadAttachments);
@@ -34,19 +41,13 @@ export const InputAttachment: FC = () => {
     return (
       <>
         <TH__InputAttachmentContainer>
-        {
-          attachments.map(a => (
-            <AttachmentItem
-              key={a.id}
-              id={a.id}
-              file={a.file}
-            />
-          ))
-        }
+          {attachments.map(a => (
+            <AttachmentItem key={a.id} id={a.id} file={a.file} />
+          ))}
         </TH__InputAttachmentContainer>
-        <div/>
+        <div />
       </>
     );
   }
-  return <></>
-}
+  return <></>;
+};

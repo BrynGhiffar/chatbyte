@@ -1,58 +1,63 @@
-import { useWindow } from "@/store/AppStore/hooks";
-import { FC, useCallback } from "react";
-import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
-import { LogoutButton, PopupBottomHalf, PopupButton, PopupContainer, PopupTopHalf } from "./styled";
+import { FC, useCallback } from 'react';
 
-type PopupClick = { dismiss: () => void }
+import { useWindow } from '@/store/AppStore/hooks';
+
+import { BlurBackgroundCover } from '@components/common/BackgroundBlurCover';
+
+import {
+  LogoutButton,
+  PopupBottomHalf,
+  PopupButton,
+  PopupContainer,
+  PopupTopHalf,
+} from './styled';
+
+type PopupClick = { dismiss: () => void };
 
 type ConfirmPopupProps = {
-    onClickRightButton: (click: PopupClick) => void,
-    onClickLeftButton: (click: PopupClick) => void,
-    popupMainLabel: string,
-    rightButtonLabel: string,
-    leftButtonLabel: string,
-}
+  onClickRightButton: (click: PopupClick) => void;
+  onClickLeftButton: (click: PopupClick) => void;
+  popupMainLabel: string;
+  rightButtonLabel: string;
+  leftButtonLabel: string;
+};
 
-const Popup: FC<ConfirmPopupProps> = (props) => {
-    // const logout = useLogout();
-    const { popWindow } = useWindow();
+const Popup: FC<ConfirmPopupProps> = props => {
+  // const logout = useLogout();
+  const { popWindow } = useWindow();
 
-    const click: PopupClick = { 
-        dismiss: () => {
-            popWindow();
-        }
-    }
-    const onClickRightButton = useCallback(() => {
-        props.onClickRightButton(click);
-    }, []);
-    const onClickLeftButton = useCallback(() => {
-        props.onClickLeftButton(click);
-    }, [])
-    return (
-        <PopupContainer>
-            <PopupTopHalf>{props.popupMainLabel}</PopupTopHalf>
-            <PopupBottomHalf>
-                <PopupButton
-                    onClick={onClickLeftButton}
-                >{props.leftButtonLabel}</PopupButton>
-                <LogoutButton 
-                    onClick={onClickRightButton}
-                >{props.rightButtonLabel}</LogoutButton>
-            </PopupBottomHalf>
-        </PopupContainer>
-    )
-}
+  const click: PopupClick = {
+    dismiss: () => {
+      popWindow();
+    },
+  };
+  const onClickRightButton = useCallback(() => {
+    props.onClickRightButton(click);
+  }, []);
+  const onClickLeftButton = useCallback(() => {
+    props.onClickLeftButton(click);
+  }, []);
+  return (
+    <PopupContainer>
+      <PopupTopHalf>{props.popupMainLabel}</PopupTopHalf>
+      <PopupBottomHalf>
+        <PopupButton onClick={onClickLeftButton}>
+          {props.leftButtonLabel}
+        </PopupButton>
+        <LogoutButton onClick={onClickRightButton}>
+          {props.rightButtonLabel}
+        </LogoutButton>
+      </PopupBottomHalf>
+    </PopupContainer>
+  );
+};
 
-
-
-const ConfirmPopupWindow: FC<ConfirmPopupProps> = (props) => {
-    return(
-        <BlurBackgroundCover dismissOnClick>
-            <Popup
-                {...props}
-            />
-        </BlurBackgroundCover>
-    )
-}
+const ConfirmPopupWindow: FC<ConfirmPopupProps> = props => {
+  return (
+    <BlurBackgroundCover dismissOnClick>
+      <Popup {...props} />
+    </BlurBackgroundCover>
+  );
+};
 
 export default ConfirmPopupWindow;

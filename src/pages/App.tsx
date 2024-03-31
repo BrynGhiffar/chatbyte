@@ -1,19 +1,21 @@
-import { askShowNotificationPermission } from "@/api/browser/BrowserNotification";
-import ChangePasswordWindow from "@/components/ChangePasswordWindow";
-import Chat from "@/components/Chat";
-import ChatList from "@/components/ChatList";
-import ConfirmDeleteMessagePopup from "@/components/ConfirmDeleteMessagePopup";
-import { CreateGroupWindow } from "@/components/CreateGroupWindow";
-import ImageCarouselWindow from "@/components/ImageCarouselWindow";
-import { color } from "@/components/Palette";
-import { PopupLogoutWindow } from "@/components/PopupLogout";
-import SettingsNewWindow from "@/components/SettingsNewWindow";
-import Sidebar from "@/components/Sidebar";
-import useAppStore from "@/store/AppStore";
-import { useToken } from "@/utility/UtilityHooks";
-import { AnimatePresence, motion } from "framer-motion";
-import { FC, PropsWithChildren, useEffect } from "react";
-import styled, { css } from "styled-components";
+import { AnimatePresence, motion } from 'framer-motion';
+import { FC, PropsWithChildren, useEffect } from 'react';
+
+import { askShowNotificationPermission } from '@/api/browser/BrowserNotification';
+import ChangePasswordWindow from '@/components/ChangePasswordWindow';
+import Chat from '@/components/Chat';
+import ChatList from '@/components/ChatList';
+import ConfirmDeleteMessagePopup from '@/components/ConfirmDeleteMessagePopup';
+import { CreateGroupWindow } from '@/components/CreateGroupWindow';
+import ImageCarouselWindow from '@/components/ImageCarouselWindow';
+import { color } from '@/components/Palette';
+import { PopupLogoutWindow } from '@/components/PopupLogout';
+import SettingsNewWindow from '@/components/SettingsNewWindow';
+import Sidebar from '@/components/Sidebar';
+import useAppStore from '@/store/AppStore';
+import { useToken } from '@/utility/UtilityHooks';
+
+import styled, { css } from 'styled-components';
 
 const AppWindowStyled = styled.div`
   height: 100vh;
@@ -23,8 +25,8 @@ const AppWindowStyled = styled.div`
 `;
 
 type ChatWindowStyledProps = {
-  $showChatList: boolean
-}
+  $showChatList: boolean;
+};
 
 const ChatWindowStyled = styled.div<ChatWindowStyledProps>`
   height: 100vh;
@@ -32,9 +34,13 @@ const ChatWindowStyled = styled.div<ChatWindowStyledProps>`
   display: grid;
   ${props => {
     if (props.$showChatList) {
-      return css`grid-template-columns: 60px 30vw auto;`
+      return css`
+        grid-template-columns: 60px 30vw auto;
+      `;
     }
-    return css`grid-template-columns: 60px auto;`
+    return css`
+      grid-template-columns: 60px auto;
+    `;
   }}
 `;
 
@@ -43,10 +49,10 @@ const ChatWindow: FC = props => {
   return (
     <ChatWindowStyled $showChatList={showChatList}>
       <Sidebar />
-      { showChatList && <ChatList /> }
+      {showChatList && <ChatList />}
       <Chat />
     </ChatWindowStyled>
-  )
+  );
 };
 
 const AnimateChildWindowStyled = styled(motion.div)`
@@ -58,14 +64,14 @@ const AnimateChildWindowStyled = styled(motion.div)`
 const AnimateChildWindow: FC<PropsWithChildren> = props => {
   return (
     <AnimateChildWindowStyled
-      initial={{opacity: 0, backdropFilter: 'blur(4px)' }}
-      animate={{opacity: 1, backdropFilter: 'blur(4px)'}}
-      exit={{opacity: 0}}
-      transition={{ ease: "linear", }}
+      initial={{ opacity: 0, backdropFilter: 'blur(4px)' }}
+      animate={{ opacity: 1, backdropFilter: 'blur(4px)' }}
+      exit={{ opacity: 0 }}
+      transition={{ ease: 'linear' }}
     >
       {props.children}
     </AnimateChildWindowStyled>
-  )
+  );
 };
 
 const AppWindow: FC = () => {
@@ -74,72 +80,49 @@ const AppWindow: FC = () => {
     <AppWindowStyled>
       <AnimatePresence initial={false}>
         <AnimateChildWindowStyled>
-            <ChatWindow/>
+          <ChatWindow />
         </AnimateChildWindowStyled>
-        { 
-          window.type === "SETTINGS_WINDOW" && (
-            <SettingsNewWindow
-              key="settings_new"
-            />
-          )
-        }
-        {
-          window.type === "LOGOUT_CONFIRM" && (
-              <PopupLogoutWindow
-                key="logout"
-              />
-          )
-        }
-        {
-          window.type === "CHANGE_PASSWORD" && (
-            <ChangePasswordWindow
-              key="change_password"
-            />
-          )
-        }
-        {
-          window.type === "CREATE_GROUP_WINDOW" && (
-            <CreateGroupWindow
-              key="create_group_window"
-            />
-          )
-        }
-        {
-          window.type === "CONFIRM_POPUP_DELETE_MESSAGE" && (
-            <ConfirmDeleteMessagePopup
-              messageId={window.messageId}
-              key="confirm_delete_message"
-            />
-          )
-        }
-        {
-          window.type === "IMAGE_CARROUSEL_WINDOW" && (
-            <ImageCarouselWindow imageSrcs={window.imageSrcs}
-              key="image_carrousel_window"
-            />
-          )
-        }
+        {window.type === 'SETTINGS_WINDOW' && (
+          <SettingsNewWindow key='settings_new' />
+        )}
+        {window.type === 'LOGOUT_CONFIRM' && <PopupLogoutWindow key='logout' />}
+        {window.type === 'CHANGE_PASSWORD' && (
+          <ChangePasswordWindow key='change_password' />
+        )}
+        {window.type === 'CREATE_GROUP_WINDOW' && (
+          <CreateGroupWindow key='create_group_window' />
+        )}
+        {window.type === 'CONFIRM_POPUP_DELETE_MESSAGE' && (
+          <ConfirmDeleteMessagePopup
+            messageId={window.messageId}
+            key='confirm_delete_message'
+          />
+        )}
+        {window.type === 'IMAGE_CARROUSEL_WINDOW' && (
+          <ImageCarouselWindow
+            imageSrcs={window.imageSrcs}
+            key='image_carrousel_window'
+          />
+        )}
       </AnimatePresence>
     </AppWindowStyled>
   );
-}
+};
 
 export default function App() {
   useToken();
   const fetchInitialData = useAppStore(s => s.fetchInitialData);
-  
+
   useEffect(() => {
     fetchInitialData();
     askShowNotificationPermission();
     const onFocus = () => {
       // fetchInitialData();
-    }
+    };
     window.addEventListener('focus', onFocus);
     return () => {
       window.removeEventListener('focus', onFocus);
-    }
+    };
   }, [fetchInitialData]);
-  return (
-        <AppWindow/>
-  )
+  return <AppWindow />;
 }

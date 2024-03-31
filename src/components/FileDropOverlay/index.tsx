@@ -1,9 +1,7 @@
-import { FC } from "react";
-import { BlurBackgroundCover } from "../common/BackgroundBlurCover";
+import { FC } from 'react';
+
+import { BlurBackgroundCover } from '@components/common/BackgroundBlurCover';
 
 const FileDropOverlay: FC = () => {
-    return (
-        <BlurBackgroundCover>
-        </BlurBackgroundCover>
-    )
-}
+  return <BlurBackgroundCover></BlurBackgroundCover>;
+};

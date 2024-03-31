@@ -1,15 +1,17 @@
-import { commonCss } from '@/components/Palette';
 import { DivWrapper } from '@/misc/types';
 import { useColorConfig } from '@/store/AppStore/hooks';
+
+import { commonCss } from '@components/Palette';
+
 import styled from 'styled-components';
 
 // █▀ ▀█▀ █▄█ █░░ █▀▀ █▀▄
 // ▄█ ░█░ ░█░ █▄▄ ██▄ █▄▀
 
 type SC__InputAttachmentContainerProps = {
-    $backgroundColor: string,
-    $borderColor: string
-}
+  $backgroundColor: string;
+  $borderColor: string;
+};
 
 export const SC__InputAttachmentContainer = styled.div<SC__InputAttachmentContainerProps>`
   padding: 0.5rem;
@@ -19,12 +21,12 @@ export const SC__InputAttachmentContainer = styled.div<SC__InputAttachmentContai
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
-`
+`;
 
 type SC__AttachmentItemProps = {
-  $image: string,
-  $backgroundColor: string,
-}
+  $image: string;
+  $backgroundColor: string;
+};
 
 export const SC__AttachmentItem = styled.div<SC__AttachmentItemProps>`
   height: 130px;
@@ -40,8 +42,8 @@ export const SC__AttachmentItem = styled.div<SC__AttachmentItemProps>`
 `;
 
 type SC__AttachmentItemControl = {
-    $backgroundColor: string;
-    $borderColor: string;
+  $backgroundColor: string;
+  $borderColor: string;
 };
 
 export const SC__AttachmentItemControl = styled.div<SC__AttachmentItemControl>`
@@ -61,8 +63,8 @@ export const SC__AttachmentItemControl = styled.div<SC__AttachmentItemControl>`
 `;
 
 type SC__AttachmentControlItems = {
-    $backgroundHoverColor: string;
-    $iconColor: string;
+  $backgroundHoverColor: string;
+  $iconColor: string;
 };
 
 export const SC__AttachmentControlItems = styled.div<SC__AttachmentControlItems>`
@@ -97,103 +99,93 @@ export const SC__AttachmentViewButton = styled(SC__AttachmentControlItems)`
 // ▀█▀ █░█ █▀▀ █▀▄▀█ █▀▀ █▀▄
 // ░█░ █▀█ ██▄ █░▀░█ ██▄ █▄▀
 
-export const TH__InputAttachmentContainer: DivWrapper = ({ children, ...props }) => {
-    const backgroundColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .backgroundColor;
-    const borderColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .borderColor;
-    return (
-        <SC__InputAttachmentContainer
-            $backgroundColor={backgroundColor}
-            $borderColor={borderColor}
-            { ...props }
-        >
-            { children }
-        </SC__InputAttachmentContainer>
-    )
-}
+export const TH__InputAttachmentContainer: DivWrapper = ({
+  children,
+  ...props
+}) => {
+  const backgroundColor =
+    useColorConfig().chatInput.uploadAttachment.backgroundColor;
+  const borderColor = useColorConfig().chatInput.uploadAttachment.borderColor;
+  return (
+    <SC__InputAttachmentContainer
+      $backgroundColor={backgroundColor}
+      $borderColor={borderColor}
+      {...props}
+    >
+      {children}
+    </SC__InputAttachmentContainer>
+  );
+};
 
 // SC__AttachmentItem
-export const TH__AttachmentItem: DivWrapper<{ $image: string }> = ({ children, ...props }) => {
-    const backgroundColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .itemBackgroundColor;
-    return (
-        <SC__AttachmentItem
-            $backgroundColor={backgroundColor}
-            { ...props }
-        >
-            { children }
-        </SC__AttachmentItem>
-    )
+export const TH__AttachmentItem: DivWrapper<{ $image: string }> = ({
+  children,
+  ...props
+}) => {
+  const backgroundColor =
+    useColorConfig().chatInput.uploadAttachment.itemBackgroundColor;
+  return (
+    <SC__AttachmentItem $backgroundColor={backgroundColor} {...props}>
+      {children}
+    </SC__AttachmentItem>
+  );
 };
 
 // SC__AttachmentItemControl
-export const TH__AttachmentItemControl: DivWrapper = ({ children, ...props }) => {
-    const backgroundColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonBackgroundColor;
-    const borderColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonBorderColor;
-    return (
-        <SC__AttachmentItemControl
-            $backgroundColor={backgroundColor}
-            $borderColor={borderColor}
-            { ...props }
-        >
-            { children }
-        </SC__AttachmentItemControl>
-    );
+export const TH__AttachmentItemControl: DivWrapper = ({
+  children,
+  ...props
+}) => {
+  const backgroundColor =
+    useColorConfig().chatInput.uploadAttachment.buttonBackgroundColor;
+  const borderColor =
+    useColorConfig().chatInput.uploadAttachment.buttonBorderColor;
+  return (
+    <SC__AttachmentItemControl
+      $backgroundColor={backgroundColor}
+      $borderColor={borderColor}
+      {...props}
+    >
+      {children}
+    </SC__AttachmentItemControl>
+  );
 };
 
 // SC__AttachmentDeleteButton
-export const TH__AttachmentDeleteButton: DivWrapper = ({ children, ...props }) => {
-    const backgroundHoverColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonHoverBackgroundColor;
-    
-    const iconColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonIconColor
-    return (
-        <SC__AttachmentDeleteButton
-            $backgroundHoverColor={backgroundHoverColor}
-            $iconColor={iconColor}
-            { ...props }
-        >
-            { children }
-        </SC__AttachmentDeleteButton>
-    )
-}
+export const TH__AttachmentDeleteButton: DivWrapper = ({
+  children,
+  ...props
+}) => {
+  const backgroundHoverColor =
+    useColorConfig().chatInput.uploadAttachment.buttonHoverBackgroundColor;
 
+  const iconColor = useColorConfig().chatInput.uploadAttachment.buttonIconColor;
+  return (
+    <SC__AttachmentDeleteButton
+      $backgroundHoverColor={backgroundHoverColor}
+      $iconColor={iconColor}
+      {...props}
+    >
+      {children}
+    </SC__AttachmentDeleteButton>
+  );
+};
 
-export const TH__AttachmentViewButton: DivWrapper = ({ children, ...props }) => {
-    const backgroundHoverColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonHoverBackgroundColor;
-    
-    const iconColor = useColorConfig()
-        .chatInput
-        .uploadAttachment
-        .buttonIconColor;
-    return (
-        <SC__AttachmentViewButton
-            $backgroundHoverColor={backgroundHoverColor}
-            $iconColor={iconColor}
-            { ...props }
-        >
-            { children }
-        </SC__AttachmentViewButton>
-    )
+export const TH__AttachmentViewButton: DivWrapper = ({
+  children,
+  ...props
+}) => {
+  const backgroundHoverColor =
+    useColorConfig().chatInput.uploadAttachment.buttonHoverBackgroundColor;
+
+  const iconColor = useColorConfig().chatInput.uploadAttachment.buttonIconColor;
+  return (
+    <SC__AttachmentViewButton
+      $backgroundHoverColor={backgroundHoverColor}
+      $iconColor={iconColor}
+      {...props}
+    >
+      {children}
+    </SC__AttachmentViewButton>
+  );
 };

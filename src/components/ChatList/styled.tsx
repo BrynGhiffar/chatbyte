@@ -1,22 +1,28 @@
-import { commonCss, font } from "@/components/Palette";
-import { useColorConfig } from "@/store/AppStore/hooks";
-import { FC, PropsWithChildren } from "react";
-import styled from "styled-components";
+import { FC, PropsWithChildren } from 'react';
+
+import { commonCss, font } from '@/components/Palette';
+import { useColorConfig } from '@/store/AppStore/hooks';
+
+import styled from 'styled-components';
 
 type SC__ChatListContainerProps = {
   $borderLeftColor: string;
   $backgroundColor: string;
-}
+};
 
 export const TH__ChatListContainer: FC<PropsWithChildren> = props => {
   // const colorConfig = ;
   const backgroundColor = useColorConfig().chatListBackgroundColor;
   const borderLeftColor = useColorConfig().chatListBorderLeftColor;
-  return <SC__ChatListContainer
-    $backgroundColor={backgroundColor}
-    $borderLeftColor={borderLeftColor}
-  >{props.children}</SC__ChatListContainer>
-}
+  return (
+    <SC__ChatListContainer
+      $backgroundColor={backgroundColor}
+      $borderLeftColor={borderLeftColor}
+    >
+      {props.children}
+    </SC__ChatListContainer>
+  );
+};
 
 const SC__ChatListContainer = styled.div<SC__ChatListContainerProps>`
   background-color: ${props => props.$backgroundColor};
@@ -32,4 +38,3 @@ export const SC__ChatListWindow = styled.div`
   /* grid-template-rows: 4rem 1fr; */
   height: 100vh;
 `;
-

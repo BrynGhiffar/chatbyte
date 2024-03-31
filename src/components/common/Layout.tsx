@@ -1,7 +1,10 @@
-import { DarkTheme } from "@/theme";
-import { PropsWithChildren } from "react";
-import styled from "styled-components";
-import { SnackbarProvider } from "../Snackbar";
+import { PropsWithChildren } from 'react';
+
+import { DarkTheme } from '@/theme';
+
+import { SnackbarProvider } from '@components/Snackbar';
+
+import styled from 'styled-components';
 
 const PageWrapper = styled.div`
   display: flex;
@@ -14,11 +17,9 @@ const PageWrapper = styled.div`
 `;
 
 export function Layout({ children }: PropsWithChildren) {
-    return (
-        <PageWrapper>
-                <SnackbarProvider>
-                    {children}
-                </SnackbarProvider>
-        </PageWrapper>
-    )
+  return (
+    <PageWrapper>
+      <SnackbarProvider>{children}</SnackbarProvider>
+    </PageWrapper>
+  );
 }
