@@ -1,8 +1,13 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useRef } from 'react';
+import { useResizable } from 'react-resizable-layout';
 
 import { DivMouseEvent } from '@/misc/types';
 import useAppStore from '@/store/AppStore';
-import { useChatListSearch, useWindow } from '@/store/AppStore/hooks';
+import {
+  useChatListSearch,
+  useColorConfig,
+  useWindow,
+} from '@/store/AppStore/hooks';
 import {
   Contact,
   Conversation,
@@ -17,7 +22,12 @@ import ContactItem from './ChatListItem/ContactItem';
 import ConversationItem from './ChatListItem/ConversationItem';
 import ListSeparator from './ListSeparator';
 import Search from './Search';
-import { SC__ChatListWindow, TH__ChatListContainer } from './styled';
+import {
+  SC__ChatListContainer,
+  SC__ChatListSeparator,
+  SC__ChatListWindow,
+  TH__ChatListContactContainer,
+} from './styled';
 
 const filterContacts = (searchStr: string, contact: Contact): boolean => {
   if (searchStr === '') {
@@ -55,7 +65,7 @@ const ContactMessageList: FC = () => {
   }, [push]);
 
   return (
-    <TH__ChatListContainer>
+    <TH__ChatListContactContainer>
       <Search />
       <ListSeparator hideAdd>DIRECT CONVERSATIONS</ListSeparator>
       {directConversations.map(c => (
@@ -99,7 +109,7 @@ const ContactMessageList: FC = () => {
             />
           )
       )}
-    </TH__ChatListContainer>
+    </TH__ChatListContactContainer>
   );
 };
 
@@ -153,12 +163,27 @@ const PopupWindow: FC = () => {
   );
 };
 
-const ChatList: FC = () => {
+const ChatList: FC = props => {
+  const chatListContainerRef = useRef(null);
+  const { position, separatorProps } = useResizable({
+    containerRef: chatListContainerRef,
+    axis: 'x',
+    initial: 600,
+    min: 400,
+  });
+  const backgroundColor = useColorConfig().chatListBackgroundColor;
+  const borderLeftColor = useColorConfig().chatListBorderLeftColor;
   return (
-    <SC__ChatListWindow>
-      {/* <ChatListProfile /> */}
-      <ContactMessageList />
-    </SC__ChatListWindow>
+    <SC__ChatListContainer ref={chatListContainerRef}>
+      <SC__ChatListWindow $width={position}>
+        <ContactMessageList />
+      </SC__ChatListWindow>
+      <SC__ChatListSeparator
+        {...separatorProps}
+        $backgroundColor={backgroundColor}
+        $borderColor={borderLeftColor}
+      />
+    </SC__ChatListContainer>
   );
 };
 

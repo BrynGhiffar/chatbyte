@@ -9,6 +9,7 @@ type SC__EmptyChatWindowProps = {
 
 const SC__EmptyChatWindow = styled.div<SC__EmptyChatWindowProps>`
   background: ${props => props.$backgroundColor};
+  flex-grow: 1;
 `;
 
 export const TH__EmptyChatWindow: DivWrapper = ({ children, ...props }) => {

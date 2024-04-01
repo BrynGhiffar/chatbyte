@@ -16,6 +16,7 @@ export const SC__ChatWindow = styled.div<SC__ChatWindowProps>`
   overflow: hidden;
   background-color: ${props => props.$backgroundColor};
   position: relative;
+  flex-grow: 1;
   ${props =>
     props.$highlight
       ? css`

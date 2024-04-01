@@ -12,6 +12,7 @@ const SC__SidebarContainer = styled.div<{ $backgroundColor: string }>`
   justify-content: center;
   padding-top: 1rem;
   padding-bottom: 2rem;
+  width: 60px;
 `;
 
 const SC__SidebarContainerTop = styled.div`
