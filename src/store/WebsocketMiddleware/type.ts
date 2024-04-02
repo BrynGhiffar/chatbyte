@@ -145,6 +145,16 @@ export const EditGroupMessageNotification = z.object({
   content: z.string(),
 });
 
+export const UsersOnline = z.object({
+  type: z.literal('USERS_ONLINE'),
+  users: z.array(
+    z.object({
+      userId: z.number(),
+      online: z.boolean(),
+    })
+  ),
+});
+
 export const WebSocketOutgoingMessage = z
   .object({ type: z.literal('empty') })
   .or(WebSocketMessageNotification)
@@ -154,7 +164,8 @@ export const WebSocketOutgoingMessage = z
   .or(DeleteDirectMessageNotification)
   .or(DeleteGroupMessageNotification)
   .or(EditDirectMessageNotification)
-  .or(EditGroupMessageNotification);
+  .or(EditGroupMessageNotification)
+  .or(UsersOnline);
 
 export type WebSocketOutgoingMessage = z.infer<typeof WebSocketOutgoingMessage>;
 export type WebSocketGroupMessageNotification = z.infer<

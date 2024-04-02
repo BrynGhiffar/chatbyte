@@ -49,6 +49,7 @@ const ContactMessageList: FC = () => {
   const groupConversations = useAppStore(s => s.groupConversations).filter(
     contact => filterContactMessage(searchStr, contact)
   );
+  const isUserOnline = useAppStore(s => s.isUserOnline);
   const directConversations = useAppStore(s => s.conversations).filter(
     contactMessage => filterContactMessage(searchStr, contactMessage)
   );
@@ -70,7 +71,7 @@ const ContactMessageList: FC = () => {
       <ListSeparator hideAdd>DIRECT CONVERSATIONS</ListSeparator>
       {directConversations.map(c => (
         <ConversationItem
-          online={false}
+          online={isUserOnline(c.id)}
           type={'DIRECT'}
           key={c.id}
           uid={c.id}
@@ -101,7 +102,7 @@ const ContactMessageList: FC = () => {
         c =>
           c && (
             <ContactItem
-              online={false}
+              online={isUserOnline(c.id)}
               type={c.type}
               key={c.id}
               name={c.name}

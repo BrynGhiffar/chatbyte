@@ -11,7 +11,6 @@ import { LocalStorage } from '@/utility/LocalStorage';
 import styled from 'styled-components';
 
 const LoginWrapper = styled.div`
-  width: 20%;
   display: grid;
   grid-template-rows: 1fr 3fr;
   * {

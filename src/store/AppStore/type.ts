@@ -12,6 +12,10 @@ interface MessageMap {
   [key: string]: Message[];
 }
 
+interface OnlineUserMap {
+  [key: number]: boolean;
+}
+
 export type AppStateState = {
   editMessage: { message: Message; scrollIntoView: () => void } | null;
   uploadAttachments: Attachment[];
@@ -27,6 +31,7 @@ export type AppStateState = {
   groupConversations: GroupConversation[];
   windowStack: Window[];
   message: MessageMap;
+  onlineUserMap: OnlineUserMap;
   selectedContact: GroupContact | Contact | null;
   showChatList: boolean;
   theme: Theme;
@@ -58,6 +63,7 @@ export type AppStateAction = {
   onChangeChatListSearch: (search: string) => void;
 
   toggleShowChatList: () => void;
+  isUserOnline: (userId: number) => boolean;
   setTheme: (themeId: ThemeId) => void;
 
   addUploadAttachments: (files: File[]) => void;

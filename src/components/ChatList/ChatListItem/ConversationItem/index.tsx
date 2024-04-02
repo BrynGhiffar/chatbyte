@@ -50,7 +50,6 @@ const ConversationItem: FC<ConversationItemProps> = props => {
   let statusOutlineColor = backgroundColor;
   if (hover) statusOutlineColor = hoverBackgroundColor;
   if (selected) statusOutlineColor = selectedBackgroundColor;
-  let descriptionMessage = message;
   return (
     <TH__ChatListItemContainer
       $selected={selected}

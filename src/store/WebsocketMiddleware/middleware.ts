@@ -175,6 +175,15 @@ const reduceMessage = async (
       await fetchSetGroupConversations(set, token);
       break;
     }
+    case 'USERS_ONLINE': {
+      // modify data structure that keeps track of users that are online.
+      let onlineMap: { [key: number]: boolean } = get().onlineUserMap;
+      message.users.forEach(
+        status => (onlineMap = { ...onlineMap, [status.userId]: status.online })
+      );
+      set({ onlineUserMap: onlineMap });
+      break;
+    }
     default:
       break;
   }
@@ -283,6 +292,7 @@ const connect = (
     const data = JSON.parse(evt.data);
     const resParse = WebSocketOutgoingMessage.safeParse(data);
     if (!resParse.success) {
+      logError(data);
       pushSnackbarError(set, 'Error parsing data');
       return;
     }

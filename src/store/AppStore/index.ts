@@ -5,6 +5,7 @@ import { GroupService } from '@/api/http/GroupService';
 import AllThemes, { LightTheme } from '@/theme';
 import { ThemeId } from '@/theme/type';
 import { LocalStorage } from '@/utility/LocalStorage';
+import { logDebug } from '@/utility/Logger';
 import {
   filterSupportedAttachments,
   toBase64,
@@ -73,6 +74,7 @@ const initialState: AppStateState = {
   conversations: [],
   windowStack: [{ type: 'CHAT_WINDOW' }],
   message: {},
+  onlineUserMap: {},
   selectedContact: null,
   showChatList: true,
   theme: AllThemes.find(th => th.id === LocalStorage.getTheme()) ?? LightTheme,
@@ -102,6 +104,7 @@ const useAppStore = create<
           fetchSetDirectContacts(set, token),
           fetchSetDirectConversations(set, token),
         ]);
+        logDebug('Finish fetching contacts and conversations');
         await Promise.all(
           get().contacts.map(contact =>
             fetchSetDirectMessage(set, get, token, contact)
@@ -254,6 +257,11 @@ const useAppStore = create<
       // Show hide chatlist
       toggleShowChatList: () => {
         set(s => ({ ...s, showChatList: !s.showChatList }));
+      },
+      // contact online status
+      isUserOnline: (userId: number) => {
+        const isOnline = get().onlineUserMap[userId] ?? false;
+        return isOnline;
       },
       // Themes
       setTheme: (themeId: ThemeId) => {
