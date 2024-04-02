@@ -168,7 +168,7 @@ const ChatList: FC = props => {
   const { position, separatorProps } = useResizable({
     containerRef: chatListContainerRef,
     axis: 'x',
-    initial: 600,
+    initial: 400,
     min: 400,
   });
   const backgroundColor = useColorConfig().chatListBackgroundColor;

@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, forwardRef } from 'react';
 
 import { DivProps } from '@/misc/types';
 import { useColorConfig } from '@/store/AppStore/hooks';
@@ -34,19 +34,18 @@ type TH__ChatWindowProps = PropsWithChildren<
 
 type TH__ChatWindow = FC<TH__ChatWindowProps>;
 
-export const TH__ChatWindow: TH__ChatWindow = ({
-  children,
-  highlight,
-  ...props
-}) => {
-  const backgroundColor = useColorConfig().chatGridBackgroundColor;
-  return (
-    <SC__ChatWindow
-      $highlight={highlight}
-      $backgroundColor={backgroundColor}
-      {...props}
-    >
-      {children}
-    </SC__ChatWindow>
-  );
-};
+export const TH__ChatWindow = forwardRef<HTMLDivElement, TH__ChatWindowProps>(
+  ({ children, highlight, ...props }, ref) => {
+    const backgroundColor = useColorConfig().chatGridBackgroundColor;
+    return (
+      <SC__ChatWindow
+        $highlight={highlight}
+        $backgroundColor={backgroundColor}
+        ref={ref}
+        {...props}
+      >
+        {children}
+      </SC__ChatWindow>
+    );
+  }
+);

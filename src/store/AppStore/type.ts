@@ -1,6 +1,7 @@
 import { Theme, ThemeId } from '@/theme/type';
 
 export type AppStateType =
+  | 'LOGGED_OUT'
   | 'FETCHING_INITIAL_USER_DATA'
   | 'NORMAL'
   | 'ERROR_FETCHING_INITIAL_USER_DATA'
@@ -61,6 +62,7 @@ export type AppStateAction = {
 
   addUploadAttachments: (files: File[]) => void;
   removeAttachmentById: (id: number) => void;
+  logout: (cleanup: () => void) => void;
 };
 
 export type Attachment = {

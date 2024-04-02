@@ -60,7 +60,7 @@ const setInitialData = (
   }));
 
 const initialState: AppStateState = {
-  type: 'FETCHING_INITIAL_USER_DATA',
+  type: 'LOGGED_OUT',
   uploadAttachments: [],
   editMessage: null,
   snackbarMessage: [],
@@ -261,6 +261,13 @@ const useAppStore = create<
         if (!theme) return;
         LocalStorage.setTheme(themeId);
         set({ theme });
+      },
+      // Logout
+      logout: (cleanup: () => void) => {
+        LocalStorage.removeLoginToken();
+        api.websocket.wsDisconnect();
+        set({ ...initialState, type: 'LOGGED_OUT' });
+        cleanup();
       },
     }))
   )

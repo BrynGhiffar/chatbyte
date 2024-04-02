@@ -83,8 +83,11 @@ const ImageAttachment: FC<ImageAttachmentProps> = props => {
   return (
     <SC__ImageAttachment $oneImage={images.length === 1}>
       {images.slice(0, 4).map((im, i) => (
-        <SC__ImageAttachmentImageWrapper onClick={onClickImageWrapper}>
-          <SC__ImageAttachmentImage src={im.src} key={im.key} />
+        <SC__ImageAttachmentImageWrapper
+          onClick={onClickImageWrapper}
+          key={im.key}
+        >
+          <SC__ImageAttachmentImage src={im.src} />
           {images.length > 4 && i === 3 && (
             <SC__ImageAttachmentImageOverlay>
               +{images.length}

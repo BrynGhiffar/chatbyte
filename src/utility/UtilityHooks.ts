@@ -3,20 +3,22 @@ import { useNavigate } from 'react-router-dom';
 
 import { AuthService } from '@/api/http/AuthService';
 import { avatarImageGroupUrl, avatarImageUrl } from '@/api/http/UserService';
+import useAppStore from '@/store/AppStore';
 
 import { LocalStorage } from './LocalStorage';
 
 export const useToken = () => {
   const navigate = useNavigate();
   const token = LocalStorage.getLoginToken();
+  const logout = useLogout();
   useEffect(() => {
     const run = async () => {
       if (!token) {
-        return navigate('/auth');
+        return logout();
       }
       const response = await AuthService.validateToken(token);
       if (!response.success) {
-        return navigate('/auth');
+        return logout();
       }
     };
     run();
@@ -26,9 +28,9 @@ export const useToken = () => {
 
 export const useLogout = () => {
   const navigate = useNavigate();
+  const logout = useAppStore(s => s.logout);
   return () => {
-    LocalStorage.removeLoginToken();
-    navigate('/auth');
+    logout(() => navigate('/auth'));
   };
 };
 

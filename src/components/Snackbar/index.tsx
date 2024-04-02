@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { FC, PropsWithChildren, createContext } from 'react';
+import { FC, PropsWithChildren, createContext, forwardRef } from 'react';
 import { useEffectOnce } from 'usehooks-ts';
 
 import useAppStore from '@/store/AppStore';
@@ -136,34 +136,37 @@ type SnackbarProps = {
   message?: string;
 };
 
-const Snackbar: FC<SnackbarProps> = props => {
-  const timeout = props.timeout ?? 4000;
-  const onClose = props.onClose ?? (() => {});
-  const type = props.type ?? 'failure';
-  const backgroundColor = type === 'failure' ? '#f95959' : '#42b883';
+const Snackbar: FC<SnackbarProps> = forwardRef<HTMLDivElement, SnackbarProps>(
+  (props, ref) => {
+    const timeout = props.timeout ?? 4000;
+    const onClose = props.onClose ?? (() => {});
+    const type = props.type ?? 'failure';
+    const backgroundColor = type === 'failure' ? '#f95959' : '#42b883';
 
-  useEffectOnce(() => {
-    const id = setTimeout(onClose, timeout);
-    return () => {
-      clearInterval(id);
-    };
-  });
+    useEffectOnce(() => {
+      const id = setTimeout(onClose, timeout);
+      return () => {
+        clearInterval(id);
+      };
+    });
 
-  return (
-    <SnackbarStyled
-      backgroundColor={backgroundColor}
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ ease: 'easeInOut' }}
-    >
-      <SnackbarDescription>{props.message ?? ''}</SnackbarDescription>
-      <CloseSnackbarButton onClick={onClose}>
-        <CloseSVG />
-      </CloseSnackbarButton>
-    </SnackbarStyled>
-  );
-};
+    return (
+      <SnackbarStyled
+        backgroundColor={backgroundColor}
+        layout
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ ease: 'easeInOut' }}
+        ref={ref}
+      >
+        <SnackbarDescription>{props.message ?? ''}</SnackbarDescription>
+        <CloseSnackbarButton onClick={onClose}>
+          <CloseSVG />
+        </CloseSnackbarButton>
+      </SnackbarStyled>
+    );
+  }
+);
 
 export default Snackbar;

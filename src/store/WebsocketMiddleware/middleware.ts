@@ -289,7 +289,19 @@ const connect = (
     const message = resParse.data;
     await reduceMessage(set, get, store.websocket, message);
   };
-  wsConn.onclose = () => {};
+  wsConn.onclose = () => {
+    // Whenever websocket connection closes for whatever reason
+    // request for a reconnect after 1 second.
+    // This is to maintain the guarantee that whenever
+    // a user is accessing the site, it must maintain
+    // a websocket connection.
+    logDebug('Connection closed reconnecting in 1 seconds');
+    setTimeout(() => {
+      if (get().type !== 'LOGGED_OUT') {
+        connect(set, get, token, store);
+      }
+    }, 1000);
+  };
   store.websocket.wsDisconnect = () => {
     wsConn.close();
   };
