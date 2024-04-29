@@ -36,7 +36,7 @@
 - [x] implement sending images
 - [ ] implement sending video
 - [x] implement desktop notification on receive new message.
-- [ ] implement resizable
+- [x] implement resizable
 
 ### Fixes
 
