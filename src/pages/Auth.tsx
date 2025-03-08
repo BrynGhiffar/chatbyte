@@ -8,7 +8,7 @@ import { useSnackbar } from '@/store/AppStore/hooks';
 import { DarkTheme } from '@/theme';
 import { LocalStorage } from '@/utility/LocalStorage';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const LoginWrapper = styled.div`
   display: grid;
@@ -36,26 +36,46 @@ const LoginTitle = styled.div`
 
 const InputFieldGroup = styled.div``;
 
-const LoginButton = styled.button`
+interface AuthButtonProps {
+  $type?: 'login' | 'register';
+}
+
+const AuthButton = styled.button<AuthButtonProps>`
   ${commonCss.transition}
   width: 100%;
   outline: none;
-  border: none;
-  font-size: 1.5rem;
+  ${props =>
+    props.$type == 'login'
+      ? 'border: 1px solid transparent;'
+      : `border: 1px solid ${DarkTheme.config.chatInputBorderColor};`}
+  font-size: 1rem;
   padding: 0.5rem 0px;
   font-weight: 600;
   color: ${color.white};
-  background-color: ${DarkTheme.config.chatListNavSearchBackgroundColor};
+  background-color: ${props =>
+    props.$type == 'login'
+      ? DarkTheme.config.chatBubbleBackgroundColorUserSent
+      : DarkTheme.config.chatListNavSearchInnerBackgroundColor};
   cursor: pointer;
   border-radius: 4px;
 
   :focus-visible {
     outline: 1px solid white;
   }
-  /* :hover {
-        color: ${color.darkBlue};
-        background-color: ${color.lightBlue};
-    } */
+  ${commonCss.transition}
+
+  ${props => {
+    if (props.$type == 'login') {
+      return css`
+        :hover {
+          box-shadow: 0px 0px 10px 2px
+            ${DarkTheme.config.chatBubbleBackgroundColorUserSent};
+        }
+      `;
+    } else {
+      return null;
+    }
+  }}
 `;
 
 interface LoginField {
@@ -72,6 +92,18 @@ const SC__Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 10px 0px;
+`;
+
+const SC__ByteSpan = styled.span`
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: ${color.chatBlue};
 `;
 
 const Page: FC = () => {
@@ -110,7 +142,7 @@ const Page: FC = () => {
     <LoginWrapper>
       <LoginTitle>
         <img src='/logo.svg' alt='' />
-        Chatbyte
+        chat<SC__ByteSpan>byte</SC__ByteSpan>
       </LoginTitle>
       <SC__Form
         onSubmit={e => {
@@ -120,19 +152,23 @@ const Page: FC = () => {
       >
         <InputField
           label='Email *'
+          placeholder='email'
           value={loginField.email}
           onChange={val => setLoginField(f => ({ ...f, email: val }))}
           onClickEnter={onClickLogin}
         />
         <InputField
           label='Password *'
+          placeholder='password'
           password
           value={loginField.password}
           onChange={val => setLoginField(f => ({ ...f, password: val }))}
           onClickEnter={onClickLogin}
         />
-        <LoginButton onClick={onClickLogin}>LOGIN</LoginButton>
-        <LoginButton onClick={onClickRegister}>REGISTER</LoginButton>
+        <AuthButton onClick={onClickLogin} $type='login'>
+          Log in
+        </AuthButton>
+        <AuthButton onClick={onClickRegister}>Register</AuthButton>
       </SC__Form>
     </LoginWrapper>
   );

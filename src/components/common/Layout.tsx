@@ -11,7 +11,7 @@ const PageWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  background-color: ${DarkTheme.config.chatNavBackgroundColor};
+  background-color: ${DarkTheme.config.chatEmptyBackgroundColor};
   width: 100vw;
   height: 100vh;
 `;
