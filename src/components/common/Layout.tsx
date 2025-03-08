@@ -12,6 +12,7 @@ const PageWrapper = styled.div`
   align-items: center;
 
   background-color: ${DarkTheme.config.chatEmptyBackgroundColor};
+  background-image: url('/bytes-wallpaper.png');
   width: 100vw;
   height: 100vh;
 `;
