@@ -318,7 +318,7 @@ export default function Page() {
             <SC__BigPar>
               The messaging app for <SC__BlueSpan>devs.</SC__BlueSpan>
             </SC__BigPar>
-            <SC__SmallPar>Featured with:</SC__SmallPar>
+            <SC__SmallPar>Features include:</SC__SmallPar>
             <SC__FeatureList>
               <SC__FeatureListItem>
                 <SVGGroups width='40px' color={color.chatBlue} />
