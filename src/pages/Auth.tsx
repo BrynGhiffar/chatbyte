@@ -19,7 +19,7 @@ const LoginWrapper = styled.div`
   /* outline: 1px solid red; */
 `;
 
-const LoginTitle = styled.div`
+const LoginTitle = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,20 +28,18 @@ const LoginTitle = styled.div`
   font-weight: bold;
   /* letter-spacing: 0.2ch; */
   color: white;
+  text-decoration: none;
   > * {
     padding-right: 1rem;
     height: 3rem;
   }
 `;
 
-const InputFieldGroup = styled.div``;
-
 interface AuthButtonProps {
   $type?: 'login' | 'register';
 }
 
 const AuthButton = styled.button<AuthButtonProps>`
-  ${commonCss.transition}
   width: 100%;
   outline: none;
   ${props =>
@@ -121,7 +119,7 @@ const Page: FC = () => {
       return;
     }
     LocalStorage.setLoginToken(res.payload);
-    navigate('/');
+    navigate('/chat');
   };
   const onClickRegister = async () => {
     const email = loginField.email.trim();
@@ -140,7 +138,7 @@ const Page: FC = () => {
   };
   return (
     <LoginWrapper>
-      <LoginTitle>
+      <LoginTitle href='/'>
         <img src='/logo.svg' alt='' />
         chat<SC__ByteSpan>byte</SC__ByteSpan>
       </LoginTitle>
