@@ -1,0 +1,4 @@
+/target
+/.vscode
+/pyclient/venv
+/sql/coretan.sql
