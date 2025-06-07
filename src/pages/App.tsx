@@ -33,17 +33,6 @@ const ChatWindowStyled = styled.div<ChatWindowStyledProps>`
   height: 100vh;
   width: 100vw;
   display: flex;
-  /* display: grid; */
-  /* ${props => {
-    if (props.$showChatList) {
-      return css`
-        grid-template-columns: 60px 30vw auto;
-      `;
-    }
-    return css`
-      grid-template-columns: 60px auto;
-    `;
-  }} */
 `;
 
 const ChatWindow: FC = props => {
