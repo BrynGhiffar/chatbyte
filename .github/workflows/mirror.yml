@@ -1,0 +1,41 @@
+name: Mirror Private Repo to Public (with Workflows)
+
+on:
+  # Trigger manually for testing or initial sync
+  workflow_dispatch:
+
+  # Schedule to run periodically (e.g., every 6 hours)
+  schedule:
+    - cron: '0 */6 * * *' # At minute 0 past every 6th hour
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest # Use a GitHub-hosted runner (safer)
+
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions Bot"
+          # Optional: Configure git to store credentials for the session (useful if pushing often)
+          # git config --global credential.helper store
+
+      - name: Clone Private Repository (bare clone)
+        # Use a temporary directory to avoid conflicts with the workspace
+        run: |
+          git clone --bare https://${{ secrets.MIRROR_PAT }}@github.com/BrynGhiffar/chatbyte.git /tmp/source-repo.git
+        env:
+          # This is explicitly for cloning the private repo
+          # It's good practice to ensure the token is used for this specific step
+          GITHUB_TOKEN: ${{ secrets.MIRROR_PAT }} # Using MIRROR_PAT for cloning private repo
+
+      - name: Push to Public Mirror
+        run: |
+          cd /tmp/source-repo.git
+          # Set the remote for the public mirror
+          git remote add public_mirror https://github.com/BrynGhiffar/chatbyte-mirror.git
+          # Push all branches and tags to the public mirror
+          git push public_mirror --mirror
+        env:
+          # IMPORTANT: Use the PAT for pushing to the public mirror
+          GITHUB_TOKEN: ${{ secrets.MIRROR_PAT }}
