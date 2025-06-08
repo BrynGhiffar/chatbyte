@@ -37,13 +37,14 @@ jobs:
           version: latest
 
       - name: Deploy Backend
-        uses: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
+        uses: applyboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          script: |
             set -e
-
             echo "Connected to server. Starting deployment"
             cd chatbyte
             docker compose pull
             docker compose down --remove-orphans
             docker compose up -d
-          '
