@@ -16,7 +16,7 @@ import { useToken } from '@/utility/UtilityHooks';
 
 import Sidebar from '@components/Sidebar';
 
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const AppWindowStyled = styled.div`
   height: 100vh;

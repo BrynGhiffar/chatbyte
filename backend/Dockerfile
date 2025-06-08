@@ -1,13 +1,27 @@
-FROM rust:1.76.0-slim-buster
+FROM rust:1.87-alpine as builder
 
+WORKDIR /app/src/chatbyte-be
+RUN USER=root
 
-WORKDIR /usr/src/chatbyte-be
+RUN apk update
+RUN apk add build-base openssl-dev musl-dev --no-cache
 
+COPY Cargo.toml Cargo.lock ./
+
+RUN mkdir -p src && \
+	echo "fn main() { }" > src/main.rs && \
+	cargo build --release --target x86_64-unknown-linux-musl
+
+RUN rm src/main.rs
 COPY . .
 
-RUN apt update
-RUN apt install libssl-dev pkg-config -y
+RUN cargo build --release --locked --target x86_64-unknown-linux-musl
 
-RUN cargo install --path .
+FROM alpine:latest
+
+WORKDIR /app
+RUN apk update
+
+COPY --from=builder /app/src/chatbyte-be/target/x86_64-unknown-linux-musl/release/chatbyte-be /app/chatbyte-be
 
 CMD [ "chatbyte-be" ]

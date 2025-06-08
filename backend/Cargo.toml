@@ -40,3 +40,4 @@ axum = { version = "0.6.20", features = ["ws", "multipart"] }
 anyhow = "1.0.75"
 thiserror = "1.0.49"
 tower-http = { version = "0.4.4", features = ["cors"] }
+mimalloc = { version = "0.1" }

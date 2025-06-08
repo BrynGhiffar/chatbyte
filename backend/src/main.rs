@@ -8,7 +8,11 @@ mod run;
 mod service;
 mod utility;
 mod websocket;
+use mimalloc::MiMalloc;
 // use entities::{ prelude::*, * };
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> std::io::Result<()> {
