@@ -108,11 +108,12 @@ impl AppState {
     }
 
     pub fn read_empty_profile() -> Vec<u8> {
+        let empty_image_path = std::env::var("EMPTY_PROFILE_IMG_PATH").expect("EMPTY_PROFILE_IMG_PATH is missing");
         let mut buffer = Vec::<u8>::new();
         let mut f =
-            File::open("src/assets/empty-profile.jpg").expect("Empty profile image missing");
+            File::open(&empty_image_path).expect("Empty profile image missing");
         f.read_to_end(&mut buffer)
             .expect("Issue when reading file error");
-        return buffer;
+        buffer
     }
 }

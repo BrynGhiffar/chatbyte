@@ -8,6 +8,7 @@ services:
       JWT_SECRET: khio3asAA
       JWT_EXPIRATION_MINS: 60
       DATABASE_URL: postgresql://postgres:password@chatbyte-db:5432/postgres
+      EMPTY_PROFILE_IMG_PATH: /app/empty-profile.jpg
       RUST_BACKTRACE: full
       PORT: 9000
   chatbyte-db:
