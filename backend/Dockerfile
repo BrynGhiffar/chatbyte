@@ -22,6 +22,6 @@ FROM alpine:latest
 WORKDIR /app
 RUN apk update
 
-COPY --from=builder /app/src/chatbyte-be/target/x86_64-unknown-linux-musl/release/chatbyte-be /app/chatbyte-be
+COPY --from=builder /app/src/chatbyte-be/target/x86_64-unknown-linux-musl/release/chatbyte-be /app
 
-CMD [ "chatbyte-be" ]
+CMD [ "/app/chatbyte-be" ]
