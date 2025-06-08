@@ -30,7 +30,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/BrynGhiffar/chatbyte-be:latest
+            ghcr.io/brynghiffar/chatbyte-be:latest
 
       # - name: Install Tailscale
       #   uses: |
