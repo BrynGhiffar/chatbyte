@@ -33,7 +33,7 @@ jobs:
         run: |
           cd /tmp/source-repo.git
           # Set the remote for the public mirror
-          git remote add public_mirror https://github.com/BrynGhiffar/chatbyte-mirror.git
+          git remote add public_mirror https://${{ secrets.MIRROR_PAT }}@github.com/BrynGhiffar/chatbyte-mirror.git
           # Push all branches and tags to the public mirror
           git push public_mirror --mirror
         env:
