@@ -316,7 +316,7 @@ export default function Page() {
         <SC__Main>
           <SC__MainLeft>
             <SC__BigPar>
-              The messaging app for <SC__BlueSpan>devs.</SC__BlueSpan>
+              The messaging app for <SC__BlueSpan>dev.</SC__BlueSpan>
             </SC__BigPar>
             <SC__SmallPar>Features include:</SC__SmallPar>
             <SC__FeatureList>
