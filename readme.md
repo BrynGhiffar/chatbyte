@@ -6,6 +6,8 @@
 
 Code repository for ChatByte chat application.
 
+Test
+
 # Next Steps
 
 - [x] implement change to settings page animation.
