@@ -42,7 +42,7 @@ impl AuthService {
 
     fn is_email_regex(email: &str) -> bool {
         let regex = Regex::new(r#"(?m)^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$"#).unwrap();
-        return regex.is_match(email);
+        regex.is_match(email)
     }
 
     fn passwords_match(
@@ -50,7 +50,7 @@ impl AuthService {
         hashed_password: &str,
     ) -> Result<bool, anyhow::Error> {
         let valid = bcrypt::verify(plain_password, hashed_password)?;
-        return Ok(valid);
+        Ok(valid)
     }
 
     pub async fn login(
@@ -150,7 +150,7 @@ impl AuthService {
             .await;
         match res {
             Ok(succ) if succ => Ok(ChangePasswordSuccess),
-            Ok(_) => bail!(FailedToChangePasswordInternalServerError),
+            Ok(_) => bail!(FailedToChangePassword),
             Err(e) => bail!(e),
         }
     }

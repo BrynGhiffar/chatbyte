@@ -36,13 +36,14 @@ impl FromRow<'_, PgRow> for AttachmentRepositoryModel {
     }
 }
 
-impl ToString for AttachmentFileType {
-    fn to_string(&self) -> String {
+impl std::fmt::Display for AttachmentFileType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use AttachmentFileType::*;
-        match self {
-            Png => "PNG".to_string(),
-            Jpeg => "JPEG".to_string(),
-        }
+        let repr = match self {
+            Png => "PNG",
+            Jpeg => "JPEG",
+        };
+        write!(f, "{}", repr)
     }
 }
 

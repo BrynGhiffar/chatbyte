@@ -54,7 +54,7 @@ pub struct UserOnlineStatus {
 pub enum WsRequest {
     #[serde(rename = "SEND_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    SendMessage {
+    Send {
         receiver_uid: i32,
         message: String,
         attachments: Vec<MessageAttachment>,
@@ -62,7 +62,7 @@ pub enum WsRequest {
 
     #[serde(rename = "SEND_GROUP_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    SendGroupMessage {
+    SendGroup {
         group_id: i32,
         message: String,
         attachments: Vec<MessageAttachment>,
@@ -70,30 +70,30 @@ pub enum WsRequest {
 
     #[serde(rename = "READ_DIRECT_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    ReadDirectMessage { receiver_uid: i32 },
+    ReadDirect { receiver_uid: i32 },
 
     #[serde(rename = "READ_GROUP_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    ReadGroupMessage { group_id: i32 },
+    ReadGroup { group_id: i32 },
 
     #[serde(rename = "DELETE_DIRECT_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    DeleteDirectMessage { message_id: i32 },
+    DeleteDirect { message_id: i32 },
 
     #[serde(rename = "DELETE_GROUP_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    DeleteGroupMessage { message_id: i32 },
+    DeleteGroup { message_id: i32 },
 
     #[serde(rename = "EDIT_DIRECT_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    EditDirectMessage {
+    EditDirect {
         message_id: i32,
         edited_content: String,
     },
 
     #[serde(rename = "EDIT_GROUP_MESSAGE")]
     #[serde(rename_all = "camelCase")]
-    EditGroupMessage {
+    EditGroup {
         message_id: i32,
         edited_content: String,
     },
@@ -106,9 +106,10 @@ impl FromStr for WsRequest {
     }
 }
 
-impl ToString for WsRequest {
-    fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
+impl std::fmt::Display for WsRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let ss = serde_json::to_string(self).map_err(|_| std::fmt::Error)?;
+        write!(f, "{}", ss)
     }
 }
 
@@ -182,9 +183,10 @@ pub enum WsResponse {
     UsersOnline { users: Vec<UserOnlineStatus> },
 }
 
-impl ToString for WsResponse {
-    fn to_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
+impl std::fmt::Display for WsResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let ss = serde_json::to_string(self).map_err(|_| std::fmt::Error)?;
+        write!(f, "{}", ss)
     }
 }
 

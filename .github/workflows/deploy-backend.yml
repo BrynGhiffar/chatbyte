@@ -15,9 +15,9 @@ jobs:
       - name: Login to Github Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: harbor.bghiffar.com
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
 
       - name: Build and push container to GHCR
         uses: docker/build-push-action@v5
@@ -26,7 +26,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/brynghiffar/chatbyte:latest
+            harbor.bghiffar.com/library/chatbyte:latest
 
       - name: Tailscale
         uses: tailscale/github-action@v3

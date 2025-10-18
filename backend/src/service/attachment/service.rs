@@ -35,6 +35,6 @@ impl AttachmentService {
             }
             Err(e) => bail!(e),
         };
-        return Ok((attachment, file_type));
+        Ok((attachment, file_type))
     }
 }

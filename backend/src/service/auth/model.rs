@@ -82,5 +82,5 @@ pub enum ServerError {
     #[error("password length must be at least 5 characters")]
     ChangePasswordBadRequestPasswordTooShort,
     #[error("failed to change password")]
-    FailedToChangePasswordInternalServerError,
+    FailedToChangePassword,
 }

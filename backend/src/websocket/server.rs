@@ -69,8 +69,8 @@ impl WsServer {
             .collect::<HashSet<_>>();
         let online_users = self
             .user_storage
-            .iter()
-            .map(|(_, handle)| handle.user_id)
+            .values()
+            .map(|handle| handle.user_id)
             .collect::<HashSet<_>>();
         let online_contacts = online_users
             .intersection(&contact_ids)
@@ -204,14 +204,12 @@ impl WsServer {
             sender_uid,
             receiver_uid,
         };
-        let res = self
+        self
             .message_repository
             .update_message_read(receiver_uid, sender_uid)
-            .await;
-        match res {
-            Ok(_) => {}
-            Err(e) => return Some(log::info!("{}", e)),
-        };
+            .await
+            .inspect_err(|e| log::info!("{}", e))
+            .ok()?;
         self.send_session_message(sender_uid, message);
         Some(())
     }
@@ -225,12 +223,12 @@ impl WsServer {
         let res = self
             .group_repository
             .read_all_message(*user_id, group_id)
-            .await;
-        match res {
-            Ok(succ) if succ => (),
-            Ok(_) => log::error!("failed to update group message read"),
-            Err(e) => log::error!("{e}"),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
+        if !res {
+            log::error!("failed to update group message read");
+        }
         Some(())
     }
 
@@ -290,12 +288,13 @@ impl WsServer {
             user_id: sender_uid,
             ..
         } = self.user_storage.get(&session_id)?;
-        let result = self.group_repository.find_group_members(group_id).await;
-        let member_ids = match result {
-            Ok(ids) => ids,
-            Err(e) => return Some(log::error!("{e}")),
-        };
-        if !member_ids.contains(&sender_uid) {
+        let member_ids = self
+            .group_repository
+            .find_group_members(group_id)
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
+        if !member_ids.contains(sender_uid) {
             log::error!("User with id '{sender_uid}' is not part of group with id '{group_id}'");
             return Some(());
         }
@@ -313,7 +312,7 @@ impl WsServer {
                 attachment: bytes,
             });
         }
-        let res = self
+        let message = self
             .message_service
             .create_group_message(CreateGroupMessageModel {
                 group_id,
@@ -321,11 +320,10 @@ impl WsServer {
                 content: message,
                 attachment: create_attachments,
             })
-            .await;
-        let message = match res {
-            Ok(m) => WsResponse::from_group_message(m),
-            Err(e) => return Some(log::error!("{e}")),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .map(WsResponse::from_group_message)
+            .ok()?;
         for mid in member_ids.iter() {
             self.send_session_message(*mid, message.clone());
         }
@@ -340,20 +338,22 @@ impl WsServer {
         let SessionHandle {
             user_id: sender_id, ..
         } = self.user_storage.get(&session_id)?;
-        let result = self.message_repository.find_message_by_id(message_id).await;
-        let message = match result {
-            Ok(Some(message)) => message,
-            Ok(None) => return Some(()),
-            Err(e) => return Some(log::info!("{e}")),
-        };
+        let message = self
+            .message_repository
+            .find_message_by_id(message_id)
+            .await
+            .inspect_err(|e| log::info!("{e}"))
+            .ok()
+            .flatten()?;
         if message.sender_id != *sender_id {
             return Some(());
         }
-        let result = self.message_repository.delete_message(message_id).await;
-        let success = match result {
-            Ok(succ) => succ,
-            Err(e) => return Some(log::error!("{e}")),
-        };
+        let success = self
+            .message_repository
+            .delete_message(message_id)
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
         if !success {
             return Some(());
         }
@@ -377,34 +377,31 @@ impl WsServer {
     ) -> Option<()> {
         use WsResponse::*;
         let session_handle = self.user_storage.get(&session_id)?;
-        let result = self.group_repository.find_message_by_id(message_id).await;
-        let message = match result {
-            Ok(Some(mess)) => mess,
-            Ok(None) => return Some(()),
-            Err(e) => return Some(log::info!("{}", e)),
-        };
+        let message = self
+            .group_repository
+            .find_message_by_id(message_id)
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()
+            .flatten()?;
         if message.sender_id != session_handle.user_id {
             return Some(());
         }
-        let result = self
+        let success = self
             .group_repository
             .set_message_to_delete(message_id)
-            .await;
-        let success = match result {
-            Ok(succ) => succ,
-            Err(e) => return Some(log::info!("{e}")),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
         if !success {
             return Some(());
         }
-        let result = self
+        let members = self
             .group_repository
             .find_group_members(message.group_id)
-            .await;
-        let members = match result {
-            Ok(mems) => mems,
-            Err(e) => return Some(log::info!("{e}")),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
         for user_id in members {
             self.send_session_message(
                 user_id,
@@ -424,23 +421,22 @@ impl WsServer {
         edited_content: String,
     ) -> Option<()> {
         let session_handle = self.user_storage.get(&session_id)?;
-        let result = self.message_repository.find_message_by_id(message_id).await;
-        let message = match result {
-            Ok(Some(mess)) => mess,
-            Ok(None) => return Some(()),
-            Err(e) => return Some(log::error!("{e}")),
-        };
+        let message = self
+            .message_repository
+            .find_message_by_id(message_id)
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()
+            .flatten()?;
         if message.sender_id != session_handle.user_id {
             return Some(());
         }
-        let result = self
+        let message = self
             .message_repository
             .edit_message_by_id(message_id, edited_content.clone())
-            .await;
-        let message = match result {
-            Ok(mess) => mess,
-            Err(e) => return Some(log::error!("{e}")),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
 
         self.send_session_message(
             message.sender_id,
@@ -469,31 +465,28 @@ impl WsServer {
         edited_content: String,
     ) -> Option<()> {
         let session_handle = self.user_storage.get(&session_id)?;
-        let result = self.group_repository.find_message_by_id(message_id).await;
-        let message = match result {
-            Ok(Some(mess)) => mess,
-            Ok(None) => return Some(()),
-            Err(e) => return Some(log::error!("{e}")),
-        };
+        let message = self
+            .group_repository
+            .find_message_by_id(message_id)
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()
+            .flatten()?;
         if message.sender_id != session_handle.user_id {
             return Some(());
         }
-        let result = self
+        self
             .group_repository
             .edit_message_by_id(message_id, edited_content.clone())
-            .await;
-        let _ = match result {
-            Ok(mess) => mess,
-            Err(e) => return Some(log::error!("{e}")),
-        };
-        let result = self
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
+        let members = self
             .group_repository
             .find_group_members(message.group_id)
-            .await;
-        let members = match result {
-            Ok(mem) => mem,
-            Err(e) => return Some(log::error!("{e}")),
-        };
+            .await
+            .inspect_err(|e| log::error!("{e}"))
+            .ok()?;
         for member_id in members {
             self.send_session_message(
                 member_id,
@@ -520,7 +513,7 @@ impl WsServer {
             }
         };
         match message {
-            WsRequest::SendMessage {
+            WsRequest::Send {
                 receiver_uid,
                 message,
                 attachments,
@@ -528,7 +521,7 @@ impl WsServer {
                 self.handle_user_send_message(session_id, receiver_uid, message, attachments)
                     .await;
             }
-            WsRequest::SendGroupMessage {
+            WsRequest::SendGroup {
                 group_id,
                 message,
                 attachments,
@@ -536,28 +529,28 @@ impl WsServer {
                 self.handle_send_group_message(session_id, group_id, message, attachments)
                     .await;
             }
-            WsRequest::ReadDirectMessage { receiver_uid } => {
+            WsRequest::ReadDirect { receiver_uid } => {
                 self.handle_read_message(session_id, receiver_uid).await;
             }
-            WsRequest::ReadGroupMessage { group_id } => {
+            WsRequest::ReadGroup { group_id } => {
                 self.handle_group_read_message(session_id, group_id).await;
             }
-            WsRequest::DeleteDirectMessage { message_id } => {
+            WsRequest::DeleteDirect { message_id } => {
                 self.handle_delete_direct_message(session_id, message_id)
                     .await;
             }
-            WsRequest::DeleteGroupMessage { message_id } => {
+            WsRequest::DeleteGroup { message_id } => {
                 self.handle_delete_group_message(session_id, message_id)
                     .await;
             }
-            WsRequest::EditDirectMessage {
+            WsRequest::EditDirect {
                 message_id,
                 edited_content,
             } => {
                 self.handle_edit_direct_message(session_id, message_id, edited_content)
                     .await;
             }
-            WsRequest::EditGroupMessage {
+            WsRequest::EditGroup {
                 message_id,
                 edited_content,
             } => {

@@ -30,7 +30,7 @@ pub struct GroupRepository {
 
 impl GroupRepository {
     pub fn new(conn: Pool<Postgres>) -> Self {
-        return GroupRepository { conn };
+        GroupRepository { conn }
     }
 
     pub async fn create_group(

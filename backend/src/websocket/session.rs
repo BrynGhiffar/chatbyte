@@ -154,7 +154,7 @@ impl Session {
                 // from client
                 SessionSource::WebSocketClose => {
                     token_checker.abort();
-                    let _ = self
+                    self
                         .app_tx
                         .send(AppMessage::Disconnect {
                             session_id: self.session_id,
@@ -173,12 +173,11 @@ impl Session {
             loop {
                 tokio::time::sleep(Duration::from_secs(1)).await;
                 let valid = verify_token(token.clone());
-                if let Err(_) = valid {
+                if valid.is_err() {
                     ch_tx.send(true).unwrap();
                     break;
                 }
             }
-            ()
         });
         (handle, ch_rx)
     }

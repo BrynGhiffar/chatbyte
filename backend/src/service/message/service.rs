@@ -50,7 +50,7 @@ impl MessageService {
     {
         let name = &create_attachment_models.name;
         let attachment = &create_attachment_models.attachment;
-        let att_type = match detect_file_type(&attachment) {
+        let att_type = match detect_file_type(attachment) {
             Ok(r) => r,
             Err(e) => return Err(e),
         };

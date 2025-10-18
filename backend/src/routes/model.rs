@@ -129,7 +129,7 @@ impl IntoResponse for AttachmentResponse {
                 headers.append("Content-Type", HeaderValue::from_static("image/jpeg"));
             }
         };
-        return response;
+        response
     }
 }
 
@@ -142,7 +142,7 @@ impl IntoResponse for ImageResponse {
         let headers = response.headers_mut();
         headers.remove("Content-Type");
         headers.append("Content-Type", HeaderValue::from_static("image/png"));
-        return response;
+        response
     }
 }
 
@@ -252,7 +252,7 @@ impl FromRequestParts<AppState> for AuthorizedUser
             Err(_) => return Err(TokenAuthenticationError::InvalidToken),
         };
         let auth_token = auth_token.trim_start_matches("Bearer ");
-        Self::authenticate(&auth_token, &state.env_jwt_secret)
+        Self::authenticate(auth_token, &state.env_jwt_secret)
     }
 }
 

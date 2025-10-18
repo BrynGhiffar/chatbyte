@@ -20,11 +20,11 @@ pub fn verify_token(token: String) -> Result<i32, String> {
         return Err("Error decoding token payload".to_string());
     };
 
-    let Some(uid): Option<u64> = claims.get("uid").map(|n| n.clone()) else {
+    let Some(uid): Option<u64> = claims.get("uid").copied() else {
         return Err("Uid is missing from payload".to_string());
     };
 
-    let Some(expiration): Option<u64> = claims.get("expiration").map(|n| n.clone()) else {
+    let Some(expiration): Option<u64> = claims.get("expiration").copied() else {
         return Err("Expiration is missing from headers".to_string());
     };
 
@@ -41,5 +41,5 @@ pub fn verify_token(token: String) -> Result<i32, String> {
         return Err("UID cannot be cast from payload".to_string());
     };
 
-    return Ok(uid);
+    Ok(uid)
 }
