@@ -19,14 +19,14 @@ jobs:
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
 
-      - name: Build and push container to GHCR
+      - name: Build and push container to private registry
         uses: docker/build-push-action@v5
         with:
           context: backend
           platforms: linux/amd64
           push: true
           tags: |
-            harbor.bghiffar.com/library/chatbyte:latest
+            harbor.bghiffar.com/chatbyte:${{ github.sha }}
 
       - name: Tailscale
         uses: tailscale/github-action@v3
@@ -37,15 +37,9 @@ jobs:
           version: latest
       - name: Deploy Backend
         run: |
-          tailscale ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
+          tailscale ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+
             set -e
 
-            echo "Connected to server. Starting deployment"
-
-            cd chatbyte
-            docker compose pull
-            docker compose down --remove-orphans
-            docker compose up -d
-
-            echo "Deployment finished successfully"
-          '
+            kubectl set image deployment/chatbyte-backend chatbyte-backend=harbor.bghiffar.com/chatbyte:${{ github.sha }}
+          "
