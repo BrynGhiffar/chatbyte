@@ -41,5 +41,5 @@ jobs:
 
             set -e
 
-            kubectl set image deployment/chatbyte-backend chatbyte-backend=harbor.bghiffar.com/chatbyte:${{ github.sha }}
+            kubectl set image deployment/chatbyte-backend chatbyte-backend=harbor.bghiffar.com/chatbyte/backend:${{ github.sha }}
           "
