@@ -26,7 +26,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            harbor.bghiffar.com/chatbyte:${{ github.sha }}
+            harbor.bghiffar.com/chatbyte/backend:${{ github.sha }}
 
       - name: Tailscale
         uses: tailscale/github-action@v3
